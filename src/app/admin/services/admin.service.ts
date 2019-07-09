@@ -7,7 +7,6 @@ import {AdminCategory} from '../../models/user/AdminCategory';
 import {AdminInvite} from '../../models/user/AdminInvite';
 import {Apollo} from 'apollo-angular';
 import gql from 'graphql-tag';
-import {map} from 'rxjs/operators';
 import {Subscription} from 'apollo-client/util/Observable';
 
 @Injectable({

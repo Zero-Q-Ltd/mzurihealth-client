@@ -70,7 +70,7 @@ import {InMemoryCache} from 'apollo-cache-inmemory';
 })
 export class AppModule {
     constructor(apollo: Apollo, httpLink: HttpLink) {
-        const link = httpLink.create({uri: 'http://localhost:4242/query'});
+        const link = httpLink.create({uri: 'http://localhost:4242/api'});
         const cache = new InMemoryCache();
 
         apollo.create({

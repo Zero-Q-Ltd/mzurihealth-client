@@ -1,13 +1,14 @@
-import {Injectable} from '@angular/core';
-import {BehaviorSubject, ReplaySubject} from 'rxjs';
-import {Router} from '@angular/router';
-import {emptyadmin, HospitalAdmin} from '../../models/user/HospitalAdmin';
-import {NotificationService} from '../../shared/services/notifications.service';
-import {AdminCategory} from '../../models/user/AdminCategory';
-import {AdminInvite} from '../../models/user/AdminInvite';
-import {Apollo} from 'apollo-angular';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, ReplaySubject } from 'rxjs';
+import { Router } from '@angular/router';
+import { emptyadmin, HospitalAdmin } from '../../models/user/HospitalAdmin';
+import { NotificationService } from '../../shared/services/notifications.service';
+import { AdminCategory } from '../../models/user/AdminCategory';
+import { AdminInvite } from '../../models/user/AdminInvite';
+import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
-import {Subscription} from 'apollo-client/util/Observable';
+import { Subscription } from 'apollo-client/util/Observable';
+import { Patient } from 'app/models/patient/Patient';
 
 @Injectable({
     providedIn: 'root'
@@ -26,10 +27,10 @@ export class AdminService {
     firstlogin = false;
     validuser: boolean;
     admincategories: BehaviorSubject<Array<AdminCategory>> = new BehaviorSubject<Array<AdminCategory>>([]);
-// We use the gql tag to parse our query string into a query document
+    // We use the gql tag to parse our query string into a query document
     CurrentUserForProfile = gql`
         query Patient {
-            currentUser {
+            HospAdmin {
                 login
                 avatar_url
             }
@@ -38,16 +39,14 @@ export class AdminService {
     private querySubscription: Subscription;
 
     constructor(private router: Router,
-                private notificationservice: NotificationService,
-                private apollo: Apollo
+        private notificationservice: NotificationService,
+        private apollo: Apollo
     ) {
         console.log('sending query');
 
-        this.querySubscription = this.apollo.watchQuery<any>({
-            query: this.CurrentUserForProfile
-        })
+        this.apollo.watchQuery<Patient>({query: this.CurrentUserForProfile})
             .valueChanges
-            .subscribe(({data, loading}) => {
+            .subscribe(({ data, loading }) => {
                 console.log(data);
             });
     }

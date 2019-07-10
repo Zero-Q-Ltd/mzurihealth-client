@@ -1,0 +1,35 @@
+<form (ngSubmit)="addnote()" [formGroup]="newnoteform" class="p-24" fxLayout="column">
+    <mat-form-field appearance="outline">
+        <mat-label>Title</mat-label>
+        <input formControlName="title" matInput required>
+        <mat-icon class="secondary-text" matSuffix>title</mat-icon>
+        <mat-error>Title required!</mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+        <mat-label>Note</mat-label>
+        <textarea formControlName="note" matInput required></textarea>
+    </mat-form-field>
+    <button class="py-4" color="accent" mat-raised-button>Save Note</button>
+</form>
+
+<div *ngFor="let note of patientnotes" class="p-24" fxLayout="column">
+    <mat-card class="p-24" fxFlex="100%">
+        <mat-card-header>
+            <div class="example-header-image" mat-card-avatar></div>
+            <mat-card-title>{{note.title}}</mat-card-title>
+            <mat-card-subtitle>{{note.admin.name}}
+                : {{note.metadata.lastEdit?.toDate().toDateString()}}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+            <p>
+                {{note.note}}
+            </p>
+        </mat-card-content>
+        <mat-card-actions>
+            <button (click)="addhelpful()" color="accent" mat-raised-button matBadge="{{note.helpful}}"
+                    matBadgeColor="warn">Helpful
+            </button>
+            <button mat-button>Question</button>
+        </mat-card-actions>
+    </mat-card>
+</div>

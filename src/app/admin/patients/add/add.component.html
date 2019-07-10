@@ -1,0 +1,313 @@
+<div class="page-layout carded fullwidth tabbed " id="patients">
+
+    <!-- TOP BACKGROUND -->
+    <div class="top-bg accent"></div>
+    <!-- / TOP BACKGROUND -->
+
+    <!-- CENTER -->
+    <div class="center">
+
+        <!-- HEADER -->
+        <div class="header accent p-16 p-sm-24" fxLayout="column" fxLayout.gt-xs="row"
+             fxLayoutAlign="start" fxLayoutAlign.gt-xs="space-between center">
+
+            <!-- APP TITLE -->
+            <div fxLayout="row" fxLayoutAlign="start center">
+
+                <div class="logo" fxLayout="row" fxLayoutAlign="start center">
+                    <mat-icon [@animate]="{value:'*',params:{delay:'50ms',scale:'0.2'}}"
+                              class="logo-icon mr-16">person_add
+                    </mat-icon>
+                    <span [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}"
+                          class="logo-text h1">New Patient : &nbsp;</span>
+                    <span [@animate]="{value:'*',params:{delay:'300ms',x:'-25px'}}"
+                          class="logo-text h2"> <strong>{{patientfileno.no}}</strong></span>
+                </div>
+
+            </div>
+            <div fxLayout="row" fxLayoutAlign="start end">
+                <span [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}"
+                      class="logo-text h3">{{getTime()}}</span>
+            </div>
+            <!-- / APP TITLE -->
+
+        </div>
+
+        <!-- CONTENT CARD -->
+        <div class="content-card">
+
+            <!-- CONTENT -->
+            <div class="content">
+
+                <form (ngSubmit)="submitPatientsForm()" [formGroup]="patientsForm" class=" p-24 m-24"
+                      fxFlex="1 0 auto" fxLayout="column" fxLayoutAlign="start" name="form">
+
+                    <!--<div class="h2 mb-24">New Patient</div>-->
+
+                    <span class="pl-24" fxFlex="1 1 100%">Personal information</span>
+                    <section formGroupName="personalinfo" fxFlex="1 0 auto" fxLayout="column">
+
+                        <!--First name, second name-->
+                        <div fxFlex="1 0 auto" fxLayout="row" fxLayoutAlign="start center">
+
+                            <mat-form-field appearance="outline" class="pr-4" fxFlex="33">
+                                <mat-label>First name</mat-label>
+                                <input autocomplete="off" formControlName="firstname" matInput required>
+                                <mat-icon class="secondary-text" matSuffix>account_circle</mat-icon>
+                                <mat-error>First Name is required!</mat-error>
+                            </mat-form-field>
+
+                            <mat-form-field appearance="outline" class="pl-4" fxFlex="33">
+                                <mat-label>Last name</mat-label>
+                                <input autocomplete="off" formControlName="lastname" matInput required>
+                                <mat-icon class="secondary-text" matSuffix>account_circle</mat-icon>
+                                <mat-error>Last Name is required!</mat-error>
+                            </mat-form-field>
+
+                            <mat-form-field appearance="outline" class="pl-4" fxFlex="33">
+                                <mat-label>Patient file number</mat-label>
+                                <input autocomplete="off" formControlName="fileno" matInput required>
+                                <mat-icon class="secondary-text" matSuffix>account_circle</mat-icon>
+                                <mat-error *ngIf="personalinfo.get('fileno').errors?.required">File number is
+                                    required!
+                                </mat-error>
+                                <mat-error *ngIf="personalinfo.get('fileno').errors?.fileError">Select a non used
+                                    number!
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+
+
+                        <!--ID Number, Gender, DateOf birth-->
+                        <div fxFlex="1 0 auto" fxLayout="row" fxLayoutAlign="start center">
+
+                            <mat-form-field appearance="outline" class="pr-4" fxFlex="33">
+                                <mat-label>ID number</mat-label>
+                                <input autocomplete="off" formControlName="idno" matInput required type="string">
+                                <mat-icon class="secondary-text" matSuffix>account_circle</mat-icon>
+                                <mat-error>ID number is required!</mat-error>
+                            </mat-form-field>
+
+                            <mat-form-field appearance="outline" class="pl-4" fxFlex="33">
+                                <mat-label>Gender</mat-label>
+                                <mat-select formControlName="gender" required>
+                                    <mat-option [value]="'1'">
+                                        Male
+                                    </mat-option>
+                                    <mat-option [value]="'0'">
+                                        Female
+                                    </mat-option>
+                                </mat-select>
+
+                                <mat-icon class="secondary-text" matSuffix>account_circle</mat-icon>
+                                <mat-error>Gender is required!</mat-error>
+                            </mat-form-field>
+
+                            <mat-form-field appearance="outline" class="pl-4" fxFlex="33">
+                                <mat-label>Enter date of birth</mat-label>
+                                <input #bDate (focus)="myDatepicker.open()" [matDatepicker]="myDatepicker"
+                                       [max]="maxDate" autocomplete="off"
+                                       formControlName="birth" matInput placeholder="Please choose a date">
+
+                                <mat-datepicker-toggle [for]="myDatepicker" matSuffix></mat-datepicker-toggle>
+                                <mat-datepicker #myDatepicker (closed)="bDate.blur()"
+                                                startView="multi-year"></mat-datepicker>
+
+                                <mat-error>Date of birth is required</mat-error>
+                                <mat-error>Date of birth should be valid</mat-error>
+                            </mat-form-field>
+                        </div>
+
+                        <!--Email address-->
+                        <div fxFlex="1 0 auto" fxLayout="row wrap" fxLayoutAlign="start center">
+
+                            <mat-form-field appearance="outline" fxFlex="100">
+                                <mat-label>Email Address</mat-label>
+                                <input autocomplete="off" formControlName="email" matInput
+                                       placeholder="Enter your email">
+                                <mat-error>Email address is required!</mat-error>
+                            </mat-form-field>
+
+                        </div>
+
+                        <!--occupation-->
+                        <div fxFlex="1 0 auto" fxLayout="row wrap" fxLayoutAlign="start center">
+
+                            <mat-form-field appearance="outline" fxFlex="100">
+                                <mat-label>Occupation</mat-label>
+                                <input autocomplete="off" formControlName="occupation" matInput
+                                       placeholder="Enter your occupation">
+                                <mat-error>Occupation is required!</mat-error>
+                            </mat-form-field>
+
+                        </div>
+
+                        <!--How to reach the patient-->
+                        <!--Place of work, phone, post Address-->
+                        <div fxFlex="1 0 auto" fxLayout="row" fxLayoutAlign="start center">
+
+                            <mat-form-field appearance="outline" fxFlex="33">
+                                <mat-label>Place of work</mat-label>
+                                <input autocomplete="off" formControlName="workplace" matInput required>
+                                <mat-icon class="secondary-text" matSuffix>location_city</mat-icon>
+                                <mat-error>Place of work is required</mat-error>
+                            </mat-form-field>
+
+                            <mat-form-field appearance="outline" class="px-8" fxFlex="34">
+                                <mat-label>Mobile Number</mat-label>
+                                <input autocomplete="off" formControlName="phone" matInput maxlength="14" minlength="10"
+                                       required>
+                                <mat-icon class="secondary-text" matSuffix>local_phone</mat-icon>
+                                <mat-error *ngIf="personalinfo.get('phone').errors?.required">Phone number is
+                                    required!
+                                </mat-error>
+                                <mat-error *ngIf="personalinfo.controls['phone'].errors?.numberError">Phone number
+                                    should be a number
+                                </mat-error>
+
+                                <mat-error *ngIf="personalinfo.controls['phone'].errors?.minlength">Phone number
+                                    Please write the 10 digit number (07..)
+                                </mat-error>
+                            </mat-form-field>
+
+                            <mat-form-field appearance=" outline
+                                " fxFlex="33">
+                                <mat-label>Address</mat-label>
+                                <input #postalCode autocomplete="off" formControlName="address"
+                                       matInput maxlength="20" required>
+                                <mat-icon class="secondary-text" matSuffix>markunread_mailbox</mat-icon>
+                                <mat-hint align="end">{{postalCode.value.length}} / 10</mat-hint>
+                                <mat-error>Postal Code is required!</mat-error>
+                            </mat-form-field>
+
+                        </div>
+
+                    </section>
+
+                    <span class="pl-24" fxFlex="1 1 100%">Insurance Details</span>
+                    <!--insurance group-->
+                    <section *ngFor="let item of patientsForm.get('insurance')['controls']; let i = index;"
+                             formArrayName="insurance" fxFlex="1 0 auto"
+                             fxLayout="column">
+
+                        <!--Insurance company, Insurance Number-->
+                        <div [formGroupName]="i" fxFlex="1 0 auto" fxLayout="row" fxLayoutAlign="start center">
+
+                            <mat-form-field appearance="outline" class="pr-4" fxFlex="50">
+                                <mat-label>Insurance Company</mat-label>
+
+                                <mat-select formControlName="id">
+                                    <mat-option *ngFor="let option of allInsurance | keyvalue"
+                                                [value]="option?.key ">
+                                        {{option.value.name |titlecase}}
+                                    </mat-option>
+                                </mat-select>
+                                <mat-icon class="secondary-text" matSuffix>local_hospital</mat-icon>
+                            </mat-form-field>
+
+                            <mat-form-field appearance="outline" class="pl-4" fxFlex="45">
+                                <mat-label>Insurance Number</mat-label>
+                                <input autocomplete="off" formControlName="insurancenumber" matInput required>
+                                <mat-icon class="secondary-text" matSuffix>confirmation_number</mat-icon>
+
+                                <mat-error>Insurance number is required</mat-error>
+
+                            </mat-form-field>
+
+                            <div class="pl-8" fxFlex="5">
+                                <button (click)="removeInsurance(i)" color="warn" mat-mini-fab type="button">
+                                    <mat-icon *ngIf="i !== 0">clear</mat-icon>
+                                    <mat-icon *ngIf="i === 0">delete</mat-icon>
+                                </button>
+                            </div>
+
+                        </div>
+
+                    </section>
+
+                    <div fxFlex="1 0 auto" fxLayout="column" fxLayoutAlign="start start">
+                        <button (click)="addInsurance()" color="basic" mat-mini-fab type="button">
+                            <mat-icon>library_add</mat-icon>
+                        </button>
+                        <br>
+                    </div>
+
+
+                    <span class="pl-24" fxFlex="1 1 100%">Next of kin information</span>
+
+                    <!--next of kin group-->
+                    <section formGroupName="nextofkin" fxFlex="1 0 auto" fxLayout="column">
+
+
+                        <!--Relationship status-->
+                        <div fxFlex="1 0 auto" fxLayout="row" fxLayoutAlign="start center">
+
+                            <mat-form-field appearance="outline" fxFlex="100">
+                                <mat-label>Relationship</mat-label>
+                                <input autocomplete="off" formControlName="relationship" matInput required>
+                                <mat-icon class="secondary-text" matSuffix>outlined_flag</mat-icon>
+                                <mat-error>Relationship is required!</mat-error>
+                            </mat-form-field>
+
+                        </div>
+
+                        <!--Next of kin-->
+                        <div fxFlex="1 0 auto" fxLayout="row" fxLayoutAlign="start center">
+
+                            <mat-form-field appearance="outline" class="pr-4" fxFlex="50">
+                                <mat-label>Next of kin name</mat-label>
+                                <input autocomplete="off" formControlName="name" matInput required>
+                                <mat-icon class="secondary-text" matSuffix>local_hospital</mat-icon>
+                            </mat-form-field>
+
+
+                            <mat-form-field appearance="outline" class="pl-4" fxFlex="50">
+                                <mat-label>Kin Phone</mat-label>
+                                <input autocomplete="off" formControlName="phone" matInput maxlength="10" minlength="10"
+                                       required>
+                                <mat-icon class="secondary-text" matSuffix>local_phone</mat-icon>
+
+                                <mat-error *ngIf="nextofkin.get('phone').errors?.required">Phone number is
+                                    required!
+                                </mat-error>
+                                <mat-error *ngIf="nextofkin.controls['phone'].errors?.numberError">Phone number
+                                    should be a number
+                                </mat-error>
+
+                                <mat-error *ngIf="nextofkin.controls['phone'].errors?.minlength">Phone number
+                                    Please write the 10 digit number (07..)
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+
+                        <div fxFlex="1 0 auto" fxLayout="row" fxLayoutAlign="start center">
+
+                            <div fxFlex="1 0 auto" fxLayout="row wrap" fxLayoutAlign="start center">
+
+                                <mat-form-field appearance="outline" fxFlex="100">
+                                    <mat-label>Kin workplace</mat-label>
+                                    <input autocomplete="off" formControlName="workplace" matInput
+                                           placeholder="Enter kin workplace" required>
+                                    <mat-error>Workplace is required!</mat-error>
+                                </mat-form-field>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+
+                    <div fxFlex="1 0 auto" fxLayout="row" fxLayoutAlign="center center">
+                        <button [disabled]="savingUser" class="p-8" color="accent" fxFlex="50" fxLayout="row"
+                                fxLayoutAlign="center center" mat-raised-button>
+                            <mat-spinner *ngIf="savingUser" [diameter]="30"></mat-spinner>
+                            <span *ngIf="!savingUser">Save Patient</span>
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,131 @@
+<mat-table #table
+           [dataSource]="patientsdatasource"
+           class="patients-table"
+           fusePerfectScrollbar
+           matSort>
+
+    <!-- fileNo Column -->
+    <ng-container matColumnDef="FileNo">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>FileNo</mat-header-cell>
+        <mat-cell *matCellDef="let patient">
+            <p class="text-truncate">{{patient.patientdata.fileinfo?.no}}</p>
+        </mat-cell>
+    </ng-container>
+
+    <!-- Image Column -->
+    <ng-container matColumnDef="Photo">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell *matCellDef="let patient">
+            <img *ngIf="patient.patientdata.personalinfo.gender == 1"
+                 [src]="patient.patientdata.personalinfo.photoURL || 'assets/images/avatars/male.png'"
+                 alt=""
+                 class="avatar">
+            <img *ngIf="patient.patientdata.personalinfo.gender == 0"
+                 [src]="patient.patientdata.personalinfo.photoURL || 'assets/images/avatars/female.png'"
+                 alt=""
+                 class="avatar">
+        </mat-cell>
+    </ng-container>
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="Name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
+        <mat-cell *matCellDef="let patient">
+            <p class="text-truncate">{{patient.patientdata.personalinfo.name}}</p>
+        </mat-cell>
+    </ng-container>
+
+
+    <!-- Age Column -->
+    <ng-container matColumnDef="Age">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Age
+        </mat-header-cell>
+        <mat-cell *matCellDef="let patient">
+            <p class="price text-truncate">
+                {{patient.patientdata.personalinfo.dob | age}}
+            </p>
+        </mat-cell>
+    </ng-container>
+
+
+    <!-- Price Column -->
+    <ng-container matColumnDef="ID">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>ID Number
+        </mat-header-cell>
+        <mat-cell *matCellDef="let patient">
+            <p class="price text-truncate">
+                {{patient.patientdata.personalinfo.idno}}
+            </p>
+        </mat-cell>
+    </ng-container>
+
+
+    <!-- Price Column -->
+    <ng-container matColumnDef="Phone">
+        <mat-header-cell *matHeaderCellDef>Phone
+        </mat-header-cell>
+        <mat-cell *matCellDef="let patient">
+            <p class="price text-truncate">
+                {{patient.patientdata.personalinfo.phone}}
+            </p>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="Last Visit">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Last Visit
+        </mat-header-cell>
+        <mat-cell *matCellDef="let patient">
+            <p class="price text-truncate">
+                {{patient.patientdata.fileinfo?.lastvisit.toDate().toDateString()}}
+            </p>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="Status">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Status
+        </mat-header-cell>
+        <mat-cell *matCellDef="let patient; let i = index">
+            <mat-chip-list [ngSwitch]='patient.queuedata.checkin.status'>
+                <mat-chip *ngSwitchCase="1" color="primary" mat-raised-button selected>Waiting</mat-chip>
+                <mat-chip *ngSwitchCase="2" color="basic" mat-raised-button selected>In Progress</mat-chip>
+            </mat-chip-list>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="Action">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Action
+        </mat-header-cell>
+        <mat-cell *matCellDef="let patient; let i = index">
+            <span [ngSwitch]='i'>
+                <span *ngSwitchCase="0" [ngSwitch]="patient.queuedata.checkin.status">
+                    <button (click)="acceptpatient(patient)" *ngSwitchCase="1" color="warn" mat-raised-button matRipple>
+                        Accept
+                    </button>
+                    <button *ngSwitchCase="2" color="accent" mat-raised-button matRipple>
+
+                    </button>
+                </span>
+                <span *ngSwitchDefault>
+                    <button (click)="redirectpatient(patient)" color="primary" mat-raised-button matRipple>
+                        Redirect
+                    </button>
+                </span>
+            </span>
+        </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="patientsheaders; sticky:true"></mat-header-row>
+
+    <mat-row (click)="viewinvoice(patient)"
+             *matRowDef="let patient; columns: patientsheaders;" class="product"
+             matRipple>
+    </mat-row>
+
+</mat-table>
+
+<mat-paginator #paginator
+               [length]="patientsdatasource.data.length"
+               [pageIndex]="0"
+               [pageSizeOptions]="[5, 10, 25, 100]"
+               [pageSize]="10">
+</mat-paginator>

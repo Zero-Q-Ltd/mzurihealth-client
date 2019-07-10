@@ -1,0 +1,55 @@
+<div>
+    <form [formGroup]="proceduresform">
+        <mat-form-field appearance="outline" class="m-6 w-100-p">
+            <mat-label>Category</mat-label>
+            <mat-select formControlName="category" required>
+                <mat-option *ngFor="let category of procedurecategories" [value]="category">
+                    {{category.name |titlecase}}
+                </mat-option>
+            </mat-select>
+            <mat-icon *ngIf="!loadingprocedures" class="secondary-text" matSuffix>apps</mat-icon>
+            <mat-error>Category is required!</mat-error>
+        </mat-form-field>
+    </form>
+    <mat-progress-bar *ngIf="loadingprocedures" mode="indeterminate"></mat-progress-bar>
+    <mat-form-field appearance="outline" class="m-6 w-100-p">
+        <input (keyup)="applyFilter($event.target.value)" matInput>
+        <mat-label>Filter</mat-label>
+        <mat-icon class="disabled-text" matSuffix>search</mat-icon>
+    </mat-form-field>
+    <mat-table [@animateStagger]="{value:'50'}" [dataSource]="categoryprocedures">
+
+        <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef> Name</mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.name | titlecase}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="category">
+            <mat-header-cell *matHeaderCellDef>Sub Category</mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{getcategory(element.category) | titlecase}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="minprice">
+            <mat-header-cell *matHeaderCellDef>Min Price</mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.pricing.min | number }} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="maxprice">
+            <mat-header-cell *matHeaderCellDef>Max Price</mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.pricing.max | number}} </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="procedureheaders"></mat-header-row>
+        <mat-row (click)="onSelect(row)"
+                 *matRowDef="let row; columns: procedureheaders;"
+                 [@animate]="{value:'*',params:{y:'100%'}}"
+                 [ngClass]="{'highlight' : row == selectedprocedure}" matRipple>
+        </mat-row>
+    </mat-table>
+    <mat-paginator [length]="categoryprocedures.data.length"
+                   [pageSizeOptions]="[10, 25, 50, 100]"
+                   [pageSize]="10">
+    </mat-paginator>
+
+</div>
+

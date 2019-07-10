@@ -1,0 +1,432 @@
+{
+    "channels": {
+        "mobilemoney": [
+            {
+                "name": "airtel",
+                "imageurl": ""
+            },
+            {
+                "name": "mpesa",
+                "imageurl": ""
+            },
+            {
+                "name": "mtn",
+                "imageurl": ""
+            },
+            {
+                "name": "mtn",
+                "imageurl": ""
+            },
+            {
+                "name": "tigo",
+                "imageurl": ""
+            },
+            {
+                "name": "voda",
+                "imageurl": ""
+            }
+        ],
+        "card": [
+            {
+                "name": "visa",
+                "imageurl": ""
+            },
+            {
+                "name": "mastercard",
+                "imageurl": ""
+            }
+        ],
+        "insurance": [
+            {
+                "name": "AAR Insurance Company Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "Africa Merchant Assurance Company Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "AIG Kenya Insurance Company Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "Allianz Insurance Company of Kenya Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "APA Insurance Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "APA Life Assurance Company Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "Barclays Life Assurance Kenya Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "Britam General Insurance Company(K) Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "Britam Life Assurance Company(K) Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "Cannon Assurance Company Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "Capex Life Asssurance Company Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "CIC General Insurance Company Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "CIC Life Assurance Company Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "Continental Reinsurance Limited(Kenya)",
+                "imageurl": ""
+            },
+            {
+                "name": "Corporate Insurance Company Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "Directline Assurance Company Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "East Africa Reinsurance Company Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "Fidelity Shield Insurance Company Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "First Assurance Company Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "GA Insurance Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "GA Life Assurance Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "Geminia Insurance Co.Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "ICEA Lion General Insurance Company Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "ICEA LION Life Assurance Company Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "Intra Africa Assurance Company Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "Invesco Assurance Company Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "Kenindia Assurance Company Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "Kenya Orient Insurance Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "Kenya Orient Life Assurance Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "Kenya Reinsurance Corporation Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "Liberty Life Assurance Kenya Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "Madison Insurance Company Kenya Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "Mayfair Insurance Company Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "Metropolitan Cannon Life Assurance Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "Occidental Insurance Company Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "Old Mutual Assurance Company Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "Pacis Insurance Company Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "Phoenix of East Africa Assurance Co.Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "Pioneer General Insurance Company Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "Pioneer Assurance Company Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "Prudential Life Assurance Company Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "Resolution Insurance Company Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "Saham Assurance Company Kenya Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "Sanlam General Insurance Company Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "Sanlam Life Assurance Company Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "Takaful Insurance of Africa Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "Tausi Assurance Company Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "The Heritage Insurance Company Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "The Jubilee Insurance Company of Kenya Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "The Kenyan Alliance Insurance Company Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "The Monarch Insurance Company Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "Trident Insurance Company Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "UAP Insurance Company Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "UAP Life Assurance Company Limited",
+                "imageurl": ""
+            },
+            {
+                "name": "Xplico Insurance Company Limited",
+                "imageurl": ""
+            }
+        ],
+        "bank": [
+            {
+                "name": "abc bank (kenya)",
+                "imageurl": ""
+            },
+            {
+                "name": "victoria commercial bank",
+                "imageurl": ""
+            },
+            {
+                "name": "united bank for africa",
+                "imageurl": ""
+            },
+            {
+                "name": "trans national bank kenya",
+                "imageurl": ""
+            },
+            {
+                "name": "standard chartered kenya",
+                "imageurl": ""
+            },
+            {
+                "name": "stanbic bank kenya",
+                "imageurl": ""
+            },
+            {
+                "name": "spire bank",
+                "imageurl": ""
+            },
+            {
+                "name": "sidian bank",
+                "imageurl": ""
+            },
+            {
+                "name": "sbm bank kenya limited",
+                "imageurl": ""
+            },
+            {
+                "name": "prime bank (kenya)",
+                "imageurl": ""
+            },
+            {
+                "name": "paramount universal bank",
+                "imageurl": ""
+            },
+            {
+                "name": "oriental commercial bank",
+                "imageurl": ""
+            },
+            {
+                "name": "nic bank",
+                "imageurl": ""
+            },
+            {
+                "name": "national bank of kenya",
+                "imageurl": ""
+            },
+            {
+                "name": "middle east bank kenya",
+                "imageurl": ""
+            },
+            {
+                "name": "mayfair bank",
+                "imageurl": ""
+            },
+            {
+                "name": "kenya commercial bank",
+                "imageurl": ""
+            },
+            {
+                "name": "jamii bora bank",
+                "imageurl": ""
+            },
+            {
+                "name": "imperial bank kenya (in receivership)",
+                "imageurl": ""
+            },
+            {
+                "name": "i&m bank",
+                "imageurl": ""
+            },
+            {
+                "name": "housing finance company of kenya",
+                "imageurl": ""
+            },
+            {
+                "name": "habib bank ag zurich",
+                "imageurl": ""
+            },
+            {
+                "name": "gulf african bank",
+                "imageurl": ""
+            },
+            {
+                "name": "guardian bank",
+                "imageurl": ""
+            },
+            {
+                "name": "guaranty trust bank kenya",
+                "imageurl": ""
+            },
+            {
+                "name": "first community bank",
+                "imageurl": ""
+            },
+            {
+                "name": "family bank",
+                "imageurl": ""
+            },
+            {
+                "name": "equity bank",
+                "imageurl": ""
+            },
+            {
+                "name": "ecobank kenya",
+                "imageurl": ""
+            },
+            {
+                "name": "dubai islamic bank",
+                "imageurl": ""
+            },
+            {
+                "name": "diamond trust bank",
+                "imageurl": ""
+            },
+            {
+                "name": "development bank of kenya",
+                "imageurl": ""
+            },
+            {
+                "name": "credit bank",
+                "imageurl": ""
+            },
+            {
+                "name": "cooperative bank of kenya",
+                "imageurl": ""
+            },
+            {
+                "name": "consolidated bank of kenya",
+                "imageurl": ""
+            },
+            {
+                "name": "commercial bank of africa",
+                "imageurl": ""
+            },
+            {
+                "name": "citibank",
+                "imageurl": ""
+            },
+            {
+                "name": "chase bank kenya",
+                "imageurl": ""
+            },
+            {
+                "name": "barclays bank of kenya",
+                "imageurl": ""
+            },
+            {
+                "name": "bank of india",
+                "imageurl": ""
+            },
+            {
+                "name": "bank of baroda",
+                "imageurl": ""
+            },
+            {
+                "name": "bank of africa",
+                "imageurl": ""
+            }
+        ]
+    }
+}

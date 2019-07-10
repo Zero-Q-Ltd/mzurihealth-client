@@ -1,0 +1,196 @@
+<admin-add></admin-add>
+
+<mat-table #table
+           [@animateStagger]="{value:'50'}" [dataSource]="adminsdatasource"
+           class="admins-table"
+           fusePerfectScrollbar
+           matSort>
+
+    <!-- Image Column -->
+    <ng-container matColumnDef="image">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell *matCellDef="let admin">
+            <img alt=""
+                 class="admins-img"
+                 src="{{admin.data.photoURL }}">
+        </mat-cell>
+    </ng-container>
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="Name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
+        <mat-cell *matCellDef="let admin">
+            <p class="text-truncate">{{admin.data.displayName}}</p>
+        </mat-cell>
+    </ng-container>
+
+
+    <ng-container matColumnDef="Email">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Email
+        </mat-header-cell>
+        <mat-cell *matCellDef="let admin">
+            <p class="price text-truncate">
+                {{admin.data.email}}
+            </p>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="Phone">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Phone
+        </mat-header-cell>
+        <mat-cell *matCellDef="let admin">
+            <p class="price text-truncate">
+                {{admin.profiledata.phone}}
+            </p>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="Address">
+        <mat-header-cell *matHeaderCellDef>Address
+        </mat-header-cell>
+        <mat-cell *matCellDef="let admin">
+            <p class="price text-truncate">
+                {{admin.profiledata.address}}
+            </p>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="Level">
+        <mat-header-cell *matHeaderCellDef>Level
+        </mat-header-cell>
+        <mat-cell *matCellDef="let admin">
+            <p class="price text-truncate">
+                {{categorytext(admin.config.categoryid)}}
+            </p>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="Status">
+        <mat-header-cell *matHeaderCellDef>Status
+        </mat-header-cell>
+        <mat-cell *matCellDef="let admin">
+            <p class="price text-truncate">
+                {{admin.profiledata.status}}
+            </p>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="Action">
+        <mat-header-cell *matHeaderCellDef>Action
+        </mat-header-cell>
+        <mat-cell *matCellDef="let admin">
+            <button (click)='disableadmin($event, admin) ; false' *ngIf="admin.status"
+                    [disabled]="userdata.config.level>admin.config.level || userdata._id === admin._id "
+                    class="sendbutton"
+                    color="warn" mat-raised-button
+                    matRipple>
+                Disable User
+                <mat-icon>cancel</mat-icon>
+            </button>
+            <button (click)='enableadmin($event, admin) ; false' *ngIf="!admin.status"
+                    [disabled]="userdata.config.level>admin.config.level || userdata._id === admin._id "
+                    class="sendbutton"
+                    color="accent" mat-raised-button
+                    matRipple>
+                Enable User
+                <mat-icon>transit_enterexit</mat-icon>
+            </button>
+        </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="adminheaders; sticky:true"></mat-header-row>
+
+    <mat-row (click)="onSelect(admin)" *matRowDef="let admin; columns: adminheaders;"
+             class="product"
+             matRipple>
+    </mat-row>
+
+</mat-table>
+<!--just maintain the same structure for the two tables but load different content-->
+<mat-table
+    [@animateStagger]="{value:'50'}" [dataSource]="invitedadminsdatasource"
+    class="admins-table"
+    fusePerfectScrollbar
+    matSort>
+
+    <!-- Image Column -->
+    <ng-container matColumnDef="image">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell *matCellDef="let admin">
+            <img alt=""
+                 class="admins-img">
+        </mat-cell>
+    </ng-container>
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="Name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
+        <mat-cell *matCellDef="let admin">
+            <p class="text-truncate">{{admin.name}}</p>
+        </mat-cell>
+    </ng-container>
+
+
+    <ng-container matColumnDef="Email">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Email
+        </mat-header-cell>
+        <mat-cell *matCellDef="let admin">
+            <p class="price text-truncate">
+                {{admin.email}}
+            </p>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="Phone">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Phone
+        </mat-header-cell>
+        <mat-cell *matCellDef="let admin">
+            <p class="price text-truncate">
+                {{admin.phone}}
+            </p>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="Address">
+        <mat-header-cell *matHeaderCellDef>Address
+        </mat-header-cell>
+        <mat-cell *matCellDef="let admin">
+
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="Level">
+        <mat-header-cell *matHeaderCellDef>Level
+        </mat-header-cell>
+        <mat-cell *matCellDef="let admin">
+            <p class="price text-truncate">
+                {{categorytext(admin.categoyid)}}
+            </p>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="Status">
+        <mat-header-cell *matHeaderCellDef>Status
+        </mat-header-cell>
+        <mat-cell *matCellDef="let admin">
+            <mat-chip-list>
+                <mat-chip color="primary" selected>Pending</mat-chip>
+            </mat-chip-list>
+        </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="Action">
+        <mat-header-cell *matHeaderCellDef>Action
+        </mat-header-cell>
+        <mat-cell *matCellDef="let admin">
+            <button (click)='cancelinvite($event, admin)' class="sendbutton" color="warn" mat-raised-button matRipple>
+                Cancel Invite
+                <mat-icon aria-label="Example icon-button with a heart icon">cancel</mat-icon>
+            </button>
+        </mat-cell>
+    </ng-container>
+
+    <mat-row (click)="ondeselect()" *matRowDef="let admin; columns: adminheaders;"
+             [@animate]="{value:'*',params:{y:'100%'}}" class="product"
+             matRipple>
+    </mat-row>
+
+</mat-table>

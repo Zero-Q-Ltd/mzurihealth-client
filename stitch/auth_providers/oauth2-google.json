@@ -1,0 +1,53 @@
+{
+    "id": "5cd9736dbc3d029f3eaa8ab7",
+    "name": "oauth2-google",
+    "type": "oauth2-google",
+    "config": {
+        "clientId": "126269493100-l9gdj07nmodqta42vfbdr4qbdt89a7kn.apps.googleusercontent.com"
+    },
+    "secret_config": {
+        "clientSecret": "google"
+    },
+    "disabled": false,
+    "metadata_fields": [
+        {
+            "required": false,
+            "name": "name"
+        },
+        {
+            "required": false,
+            "name": "first_name"
+        },
+        {
+            "required": false,
+            "name": "last_name"
+        },
+        {
+            "required": false,
+            "name": "picture"
+        },
+        {
+            "required": false,
+            "name": "gender"
+        },
+        {
+            "required": false,
+            "name": "birthday"
+        },
+        {
+            "required": false,
+            "name": "min_age"
+        },
+        {
+            "required": false,
+            "name": "max_age"
+        },
+        {
+            "required": false,
+            "name": "email"
+        }
+    ],
+    "redirect_uris": [
+        "http://localhost:4200/admin"
+    ]
+}

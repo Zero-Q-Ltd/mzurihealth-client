@@ -1,0 +1,74 @@
+<div>
+    <!-- SIDEBAR HEADER -->
+    <div class="header accent p-12" fxLayout="column" fxLayoutAlign="space-between">
+
+        <div class="toolbar" fxLayout="row" fxLayoutAlign="end center">
+            <div fxFlex="50" fxLayoutAlign="end">
+                <button (click)="clearselection()" mat-icon-button mat-raised-button matTooltip="Clear">
+                    <mat-icon>clear</mat-icon>
+                </button>
+            </div>
+            <div fxFlex="50" fxLayoutAlign="end">
+                <button (click)="reset()" mat-icon-button mat-raised-button matTooltip="Reset">
+                    <mat-icon>clear_all</mat-icon>
+                </button>
+            </div>
+            <div fxFlex="50" fxLayoutAlign="end">
+                <button (click)="saveprocedureconfig()" aria-label="Save" mat-icon-button
+                        mat-raised-button matTooltip="Save">
+                    <mat-icon>save</mat-icon>
+                </button>
+            </div>
+        </div>
+        <div>
+            <div class="h3 "><strong
+                class="proceduretext w-100">{{selectecustomprocedure.rawprocedure.name | titlecase}}</strong></div>
+            <div class="h4 secondary-text">
+                <span>Creation Date</span>
+                <span>: {{selectecustomprocedure.customprocedure.metadata.date?.toDate().toDateString() || getdate()}}</span>
+            </div>
+        </div>
+    </div>
+    <!-- / SIDEBAR HEADER -->
+
+    <!-- SIDEBAR CONTENT -->
+    <div class="content limitheight p-24" fusePerfectScrollbar>
+        <div [@animate]="{value:'*',params:{delay:'200ms'}}" class="file-details">
+            <div [@animate]="{value:'*',params:{delay:'200ms'}}"
+                 class="input-group col-sm-10">
+                <mat-form-field appearance="outline" fxFlex="100">
+                    <mat-label>Regular Price</mat-label>
+                    <input [formControl]="regularpricecontrol" [required]="true" matInput
+                           type="number">
+                    <mat-icon class="disabled-text" matSuffix>attach_money</mat-icon>
+                </mat-form-field>
+            </div>
+            <div class="offline-switch">
+                <mat-slide-toggle [(ngModel)]="selectecustomprocedure.customprocedure.customInsurancePrice"
+                                  labelPosition="before">Custom Prices for Insurance
+                </mat-slide-toggle>
+            </div>
+            <div *ngIf="selectecustomprocedure.customprocedure.customInsurancePrice "
+                 [@animate]="{value:'*',params:{delay:'200ms'}}"
+                 class="input-group col-sm-10">
+                <mat-form-field appearance="outline" fxFlex="100">
+                    <mat-label>Filter Insurance Companies</mat-label>
+                    <input (keyup)="filterinsurance($event.target.value)" matInput>
+                    <mat-icon class="disabled-text" matSuffix>search</mat-icon>
+                </mat-form-field>
+            </div>
+            <div *ngIf="selectecustomprocedure.customprocedure.customInsurancePrice " [@animateStagger]="{value:'50'}">
+                <span *ngFor='let insurance of filteredinsurance | keyvalue' [@animate]="{value:'*',params:{y:'100%'}}">
+                    <mat-form-field appearance="outline" fxFlex="100">
+                        <mat-label>{{insurance.value.name}}</mat-label>
+                        <input [(ngModel)]='selectecustomprocedure.customprocedure.insurancePrices[insurance.key]'
+                               matInput
+                               type="number">
+                        <mat-icon class="disabled-text" matSuffix>attach_money</mat-icon>
+                    </mat-form-field>
+                </span>
+            </div>
+        </div>
+    </div>
+    <!-- / SIDEBAR CONTENT -->
+</div>

@@ -1,0 +1,19 @@
+<div class="dialog-content-wrapper">
+
+    <mat-toolbar class="mat-accent m-0" matDialogTitle>
+        <mat-toolbar-row>
+            <span class="title dialog-title">{{_data.article.title}}</span>
+        </mat-toolbar-row>
+    </mat-toolbar>
+
+    <div class="p-24 m-0" fusePerfectScrollbar mat-dialog-content>
+        <div [innerHTML]="_data.article.content"></div>
+    </div>
+
+    <div class="m-0 p-16" fxLayout="row" fxLayoutAlign="end center" mat-dialog-actions>
+        <button (click)="matDialogRef.close()" aria-label="Close" class="mat-accent" mat-button>
+            CLOSE
+        </button>
+    </div>
+
+</div>

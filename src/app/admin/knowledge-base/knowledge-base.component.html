@@ -1,0 +1,40 @@
+<div class="page-layout simple full-width" id="knowledgebase">
+
+    <!-- HEADER -->
+    <div class="header accent p-16 p-sm-24" fxLayout="column" fxLayoutAlign="center center">
+
+        <div class="hero-text mb-32">
+            <h1>How can we help?</h1>
+            <h3>Welcome to our knowledge base</h3>
+        </div>
+
+    </div>
+    <!-- / HEADER -->
+
+    <!-- CONTENT -->
+    <div class="content p-24">
+
+        <div fxLayout="row wrap" fxLayoutAlign="center">
+
+            <mat-nav-list *ngFor="let category of knowledgeBase" class="articles-list">
+
+                <h3 mat-subheader>{{category.title}}</h3>
+
+                <a (click)="readArticle(article)" *ngFor="let article of category.featuredArticles"
+                   mat-list-item>
+                    <mat-icon class="hint-text mr-8">insert_drive_file</mat-icon>
+                    {{ article.title }}
+                </a>
+
+                <a [routerLink]="category.path" class="see-all-link accent-fg" mat-list-item>
+                    See all articles ({{category.articlesCount}})
+                </a>
+
+            </mat-nav-list>
+
+        </div>
+
+    </div>
+    <!-- / CONTENT -->
+
+</div>

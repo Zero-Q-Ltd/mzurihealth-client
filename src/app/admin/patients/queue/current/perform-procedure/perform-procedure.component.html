@@ -1,0 +1,70 @@
+<h1 mat-dialog-title>Select Procedures</h1>
+<div mat-dialog-content>
+    <table mat-table [dataSource]="proceduresdataSource" style="width: 100%">
+
+        <!-- Checkbox Column -->
+        <ng-container matColumnDef="select">
+            <th mat-header-cell *matHeaderCellDef>
+                <mat-checkbox (change)="$event ? masterToggle() : null"
+                              [checked]="selection.hasValue() && isAllSelected()"
+                              [indeterminate]="selection.hasValue() && !isAllSelected()"
+                              [aria-label]="checkboxLabel()">
+                </mat-checkbox>
+            </th>
+            <td mat-cell *matCellDef="let row">
+                <mat-checkbox (click)="$event.stopPropagation()"
+                              (change)="$event ? selection.toggle(row) : null"
+                              [checked]="selection.isSelected(row)"
+                              [aria-label]="checkboxLabel(row)">
+                </mat-checkbox>
+            </td>
+        </ng-container>
+
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef> Name</th>
+            <td mat-cell *matCellDef="let procedure"
+                (click)="selection.toggle(procedure)"> {{procedure.rawprocedure.name}} </td>
+        </ng-container>
+
+        <!-- Weight Column -->
+        <ng-container matColumnDef="results">
+            <th mat-header-cell *matHeaderCellDef> Results</th>
+            <td mat-cell *matCellDef="let procedure ; let i = index">
+                <mat-form-field appearance="outline" class="pr-4 " fxFlex="100">
+                    <mat-label>General Results</mat-label>
+                    <input matInput required [disabled]="!selection.isSelected(procedure)"
+                           [(ngModel)]="procedureResults[i].results">
+                    <mat-icon class="secondary-text" matSuffix>title</mat-icon>
+                    <mat-error>Results required!</mat-error>
+                </mat-form-field>
+            </td>
+        </ng-container>
+
+        <!-- Symbol Column -->
+        <ng-container matColumnDef="notes">
+            <th mat-header-cell *matHeaderCellDef> Notes</th>
+            <td mat-cell *matCellDef="let procedure ; let i = index">
+                <mat-form-field appearance="outline" class="pr-4 " fxFlex="100">
+                    <mat-label>Notes</mat-label>
+                    <input matInput required [disabled]="!selection.isSelected(procedure)"
+                           [(ngModel)]="procedureResults[i].tempnote">
+                    <mat-icon class="secondary-text" matSuffix>title</mat-icon>
+                </mat-form-field>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;">
+        </tr>
+    </table>
+
+</div>
+<div mat-dialog-actions>
+    <button mat-raised-button (click)="onNoClick()">Cancel</button>
+    <button color="accent" mat-raised-button
+            [mat-dialog-close]="{selection : selection ,res : procedureResults }"
+            cdkFocusInitial>SAVE
+    </button>
+</div>

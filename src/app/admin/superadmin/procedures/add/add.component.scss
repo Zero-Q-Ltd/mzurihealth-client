@@ -1,0 +1,15 @@
+@import "src/@fuse/scss/fuse";
+
+procedure-add {
+    width: 100%;
+
+    .mat-table {
+        background: transparent;
+        box-shadow: none;
+
+        .mat-row {
+            position: relative;
+            cursor: pointer;
+        }
+    }
+}

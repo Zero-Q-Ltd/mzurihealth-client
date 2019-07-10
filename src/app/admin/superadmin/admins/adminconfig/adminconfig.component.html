@@ -1,0 +1,36 @@
+<div>
+    <!-- SIDEBAR HEADER -->
+    <div class="header accent p-12" fxLayout="column" fxLayoutAlign="space-between">
+
+        <div class="toolbar" fxLayout="row" fxLayoutAlign="end center">
+            <div fxFlex="50" fxLayoutAlign="end">
+                <button (click)="clearselection()" mat-icon-button mat-raised-button matTooltip="Clear">
+                    <mat-icon>clear</mat-icon>
+                </button>
+            </div>
+            <div fxFlex="50" fxLayoutAlign="end">
+                <button (click)="saveadminconfig()" aria-label="More" mat-icon-button
+                        mat-raised-button matTooltip="Save">
+                    <mat-icon>save</mat-icon>
+                </button>
+            </div>
+        </div>
+
+        <div>
+            <div class="h3"><strong>{{clickedadmin.data.displayName| titlecase}}</strong></div>
+            <div class="h4 secondary-text">Level :
+                <span *ngFor="let text of categoryarray()">
+                    {{text}}
+                </span>
+
+            </div>
+        </div>
+    </div>
+    <!-- / SIDEBAR HEADER -->
+
+    <!-- SIDEBAR CONTENT -->
+    <div class="content p-24" fusePerfectScrollbar>
+        Coming soon...
+    </div>
+    <!-- / SIDEBAR CONTENT -->
+</div>

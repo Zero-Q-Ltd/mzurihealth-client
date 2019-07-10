@@ -1,0 +1,164 @@
+{
+    "admincategories": [
+        {
+            "name": "Doctors",
+            "description": "",
+            "level": 1,
+            "subcategories": {
+                "0": {
+                    "name": "senior consultant",
+                    "description": "specialist doctors who see patients at specific times ",
+                    "level": 1,
+                    "parent": null
+                },
+                "1": {
+                    "name": "registrars",
+                    "description": "senior doctors who supervise residents, interns and students",
+                    "level": 2,
+                    "parent": null
+                },
+                "2": {
+                    "name": "resident",
+                    "description": "look after patients on the ward and are in training for specialisation",
+                    "level": 3,
+                    "parent": null
+                },
+                "3": {
+                    "name": "intern",
+                    "description": " have completed their studies and are now finishing their final year in hospital",
+                    "level": 4,
+                    "parent": null
+                },
+                "4": {
+                    "name": "student doctor",
+                    "level": 5,
+                    "description": "undergraduate medical students",
+                    "parent": null
+                }
+            }
+        },
+        {
+            "name": "Nurses",
+            "description": "",
+            "level": 2,
+            "subcategories": {
+                "0": {
+                    "name": "unit manager",
+                    "description": "runs the ward",
+                    "level": 1,
+                    "parent": null
+                },
+                "1": {
+                    "name": "associate unit manager",
+                    "level": 2,
+                    "description": "helps the nurse unit manager to run the ward and acts as the manager when the nurse unit manager is off site",
+                    "parent": null
+                },
+                "2": {
+                    "name": "practitioner",
+                    "level": 3,
+                    "description": "highly skilled nurses with an advanced level of training",
+                    "parent": null
+                },
+                "3": {
+                    "name": "specialist nurse",
+                    "level": 4,
+                    "description": "such as clinical nurse specialists, clinical nurse consultants, clinical nurse educators, triage nurses, emergency department nurses",
+                    "parent": null
+                },
+                "4": {
+                    "name": "registered nurses",
+                    "level": 5,
+                    "description": "provide a high level of day-to-day care and perform some minor procedures",
+                    "parent": null
+                },
+                "5": {
+                    "name": "enrolled nurse",
+                    "level": 6,
+                    "description": "provide basic medical care under the supervision of more senior nurses",
+                    "parent": null
+                }
+            }
+        },
+        {
+            "name": "Allied health professionals",
+            "description": "",
+            "level": 3,
+            "subcategories": {
+                "0": {
+                    "name": "dietitian",
+                    "description": "",
+                    "level": 1,
+                    "parent": null
+                },
+                "1": {
+                    "name": "occupational therapist",
+                    "description": "",
+                    "level": 2,
+                    "parent": null
+                },
+                "2": {
+                    "name": "pharmacist",
+                    "description": "",
+                    "level": 3,
+                    "parent": null
+                },
+                "3": {
+                    "name": "physiotherapist",
+                    "description": "",
+                    "level": 4,
+                    "parent": null
+                },
+                "4": {
+                    "name": "podiatrist",
+                    "description": "",
+                    "level": 5,
+                    "parent": null
+                },
+                "5": {
+                    "name": "speech pathologist",
+                    "description": "",
+                    "level": 6,
+                    "parent": null
+                }
+            }
+        },
+        {
+            "name": "Other hospital staff",
+            "description": "",
+            "level": 4,
+            "subcategories": {
+                "0": {
+                    "name": "clinical assistant",
+                    "level": 1,
+                    "description": "take care of ward housekeeping",
+                    "parent": null
+                },
+                "1": {
+                    "name": "patient services assistant",
+                    "description": "serve meals and drinks",
+                    "level": 2,
+                    "parent": null
+                },
+                "2": {
+                    "name": "porter",
+                    "description": "take care of patient lifting and transport",
+                    "level": 3,
+                    "parent": null
+                },
+                "3": {
+                    "name": "volunteer",
+                    "description": "help with fundraising and ward visits",
+                    "level": 4,
+                    "parent": null
+                },
+                "4": {
+                    "name": "ward clerk",
+                    "description": "staff the ward reception desks",
+                    "level": 5,
+                    "parent": null
+                }
+            }
+        }
+    ]
+}

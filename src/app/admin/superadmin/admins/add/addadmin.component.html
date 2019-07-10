@@ -1,0 +1,78 @@
+<mat-accordion>
+    <mat-expansion-panel class="m-12 expansion-headers-align">
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                Add new hospital admin
+            </mat-panel-title>
+            <mat-panel-description>
+                Click to expand
+                <mat-icon>account_circle</mat-icon>
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <form [formGroup]="adminsform" class="mb-8" fxFlex="1 0 auto"
+              fxLayout="column" fxLayoutAlign="start" name="form">
+
+            <!--<div class="h2 mb-24">New Patient</div>-->
+
+            <!--First name, second name-->
+            <div fxFlex="1 0 auto" fxLayout="row" fxLayoutAlign="start center">
+
+                <mat-form-field appearance="outline" class="pl-4" fxFlex="33">
+                    <mat-label>Name</mat-label>
+                    <input formControlName="name" matInput required>
+                    <mat-icon class="secondary-text" matSuffix>account_box</mat-icon>
+                    <mat-error>First Name is required!</mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="pl-4" fxFlex="34">
+                    <mat-label>Email</mat-label>
+                    <input formControlName="email" matInput required>
+                    <mat-icon class="secondary-text" matSuffix>email</mat-icon>
+                    <mat-error>Email is required!</mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="pl-4" fxFlex="33">
+                    <mat-label>Phone</mat-label>
+                    <input formControlName="phone" matInput required>
+                    <mat-icon class="secondary-text" matSuffix>local_phone</mat-icon>
+                    <mat-error>Last Name is required!</mat-error>
+                </mat-form-field>
+
+
+            </div>
+            <div fxFlex="1 0 auto" fxLayout="row" fxLayoutAlign="start center">
+                <mat-form-field #rolefield appearance="outline" class="pl-4" fxFlex="33">
+                    <mat-label>Role</mat-label>
+                    <mat-select formControlName="role" required>
+                        <mat-option *ngFor="let category of admincategories"
+                                    [disabled]="userdata.config.level>category.level"
+                                    [value]="category">
+                            {{category.name |titlecase}}
+                        </mat-option>
+                    </mat-select>
+                    <mat-icon class="secondary-text" matSuffix>work</mat-icon>
+                    <mat-error>Category is required!</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="pl-4" fxFlex="34">
+                    <mat-label>Level</mat-label>
+                    <mat-select formControlName="level" required>
+                        <mat-option *ngFor="let subcategories of chosencategory.subcategories | keyvalue"
+                                    [value]="subcategories">
+                            {{subcategories.value.level}}:
+                            {{subcategories.value.name}}
+                        </mat-option>
+                    </mat-select>
+                    <mat-icon class="secondary-text" matSuffix>publish</mat-icon>
+                    <mat-error>Level is required!</mat-error>
+                </mat-form-field>
+                <button (click)='sendinvite()' class="sendbutton ml-4 p-8" color="accent" fxFlex="33" mat-raised-button
+                        matRipple>
+                    Send Invite
+                    <mat-icon aria-label="Example icon-button with a heart icon">send</mat-icon>
+                </button>
+
+            </div>
+        </form>
+    </mat-expansion-panel>
+</mat-accordion>

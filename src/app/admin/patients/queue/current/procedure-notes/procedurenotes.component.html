@@ -1,0 +1,19 @@
+<form (ngSubmit)="addnote()" [formGroup]="newnoteform" class="p-24" fxLayout="column">
+
+    <mat-form-field appearance="outline">
+        <mat-label>Note</mat-label>
+        <textarea formControlName="note" matInput required></textarea>
+    </mat-form-field>
+    <button class="py-4" color="accent" mat-raised-button>Save Note</button>
+</form>
+
+<div *ngFor="let note of procedurenores" class="p-24" fxLayout="column">
+    <blockquote>
+        <p>
+            {{note.note}}
+        </p>
+        <footer>
+            {{note.admin.name}}
+        </footer>
+    </blockquote>
+</div>

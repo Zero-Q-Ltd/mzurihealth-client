@@ -1,0 +1,52 @@
+<mat-form-field appearance="outline" class="m-6 w-100-p">
+    <input (keyup)="applyFilter($event.target.value)" matInput>
+    <mat-icon class="disabled-text" matSuffix>search</mat-icon>
+    <mat-label>Filter</mat-label>
+</mat-form-field>
+
+<mat-table [dataSource]="hospitalprocedures" class="mat-elevation-z8 " mat-table>
+
+    <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef> Name</mat-header-cell>
+        <mat-cell *matCellDef="let element"><span class="text-truncate">{{element.rawprocedure.name | titlecase}}</span>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="category">
+        <mat-header-cell *matHeaderCellDef>Sub Category</mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{getcategory(element.rawprocedure.category) | titlecase}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="regprice">
+        <mat-header-cell *matHeaderCellDef> Regular Price</mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.customprocedure.regularprice}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="minprice">
+        <mat-header-cell *matHeaderCellDef> Min Price</mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.rawprocedure.pricing.min}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="maxprice">
+        <mat-header-cell *matHeaderCellDef> Max Price</mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.rawprocedure.pricing.max}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="action">
+        <mat-header-cell *matHeaderCellDef> Action</mat-header-cell>
+        <mat-cell *matCellDef="let element">
+            <button (click)='disableeprocedure($event,element.customprocedure)' class="sendbutton" color="warn"
+                    mat-raised-button matRipple>
+                Disable!
+                <mat-icon>cancel</mat-icon>
+            </button>
+        </mat-cell>
+    </ng-container>
+
+
+    <mat-header-row *matHeaderRowDef="procedureheaders"></mat-header-row>
+    <mat-row (click)="onSelect(row)" *matRowDef="let row; columns: procedureheaders;"
+             [@animate]="{value:'*',params:{y:'100%'}}"
+             [ngClass]="{'selected' : row == selectedprocedure}" matRipple></mat-row>
+</mat-table>
+<mat-paginator [length]="hospitalprocedures.data.length"
+               [pageSizeOptions]="[10, 25, 50, 100]"
+               [pageSize]="10">
+</mat-paginator>

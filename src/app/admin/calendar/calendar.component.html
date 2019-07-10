@@ -1,0 +1,124 @@
+<div class="page-layout simple fullwidth" id="calendar">
+
+    <!-- HEADER -->
+    <div [ngClass]="viewDate | date:'MMM'" class="header p-16 p-sm-24">
+
+        <div class="header-content" fxLayout="column" fxLayoutAlign="space-between">
+
+            <div class="header-top" fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-between center">
+
+                <div class="logo mb-16 mb-sm-0" fxLayout="row" fxLayoutAlign="start center">
+                    <mat-icon [@animate]="{value:'*',params:{delay:'50ms',scale:'0.2'}}" class="logo-icon">
+                        today
+                    </mat-icon>
+                    <span [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}" class="logo-text">
+                        Calendar
+                    </span>
+                </div>
+
+                <!-- TOOLBAR -->
+                <div class="toolbar" fxLayout="row" fxLayoutAlign="start center">
+
+                    <button aria-label="Search" mat-icon-button matTooltip="Search">
+                        <mat-icon>search</mat-icon>
+                    </button>
+
+                    <button (viewDateChange)="selectedDay = {date:$event}"
+                            [(viewDate)]="viewDate"
+                            aria-label="Today"
+                            mat-icon-button
+                            matTooltip="Today" mwlCalendarToday>
+                        <mat-icon>today</mat-icon>
+                    </button>
+
+                    <button (click)="view='day'" aria-label="Day" mat-icon-button matTooltip="Day">
+                        <mat-icon>view_day</mat-icon>
+                    </button>
+
+                    <button (click)="view='week'" aria-label="Week" mat-icon-button matTooltip="Week">
+                        <mat-icon>view_week</mat-icon>
+                    </button>
+
+                    <button (click)="view='month'" aria-label="Month" mat-icon-button matTooltip="Month">
+                        <mat-icon>view_module</mat-icon>
+                    </button>
+                </div>
+            </div>
+            <!-- / TOOLBAR -->
+
+            <!-- HEADER BOTTOM -->
+            <div [@animate]="{value:'*',params:{delay:'150ms'}}" class="header-bottom" fxLayout="row"
+                 fxLayoutAlign="center center">
+
+                <button (viewDateChange)="selectedDay = {date:$event}" [(viewDate)]="viewDate"
+                        [view]="view"
+                        aria-label="Previous"
+                        class="arrow"
+                        mat-icon-button
+                        mwlCalendarPreviousView>
+                    <mat-icon>chevron_left</mat-icon>
+                </button>
+
+                <div class="title">
+                    {{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}
+                </div>
+
+                <button (viewDateChange)="selectedDay = {date:$event}" [(viewDate)]="viewDate"
+                        [view]="view"
+                        aria-label="Next"
+                        class="arrow"
+                        mat-icon-button
+                        mwlCalendarNextView>
+                    <mat-icon>chevron_right</mat-icon>
+                </button>
+            </div>
+            <!-- / HEADER BOTTOM -->
+        </div>
+
+        <!-- ADD EVENT BUTTON -->
+        <button (click)="addEvent()" [@animate]="{value:'*',params:{delay:'300ms',scale:'0.2'}}" aria-label="Add event" class="add-event-button mat-accent"
+                mat-fab>
+            <mat-icon>add</mat-icon>
+        </button>
+        <!-- / ADD EVENT BUTTON -->
+    </div>
+    <!-- / HEADER -->
+
+    <!-- CONTENT -->
+    <div [@animate]="{value:'*',params:{delay:'200ms',y:'50px'}}" class="content" fusePerfectScrollbar>
+        <div [ngSwitch]="view">
+            <mwl-calendar-month-view
+                (beforeViewRender)="beforeMonthViewRender($event)"
+                (dayClicked)="dayClicked($event.day)"
+                (eventClicked)="editEvent('edit', $event.event)"
+                (eventTimesChanged)="eventTimesChanged($event)"
+                *ngSwitchCase="'month'"
+                [activeDayIsOpen]="activeDayIsOpen"
+                [events]="events"
+                [refresh]="refresh"
+                [viewDate]="viewDate">
+            </mwl-calendar-month-view>
+            <mwl-calendar-week-view
+                (dayClicked)="dayClicked($event.day)"
+                (eventClicked)="editEvent('edit', $event.event)"
+                (eventTimesChanged)="eventTimesChanged($event)"
+                (viewDateChange)="selectedDay = {date:$event}"
+                *ngSwitchCase="'week'"
+                [events]="events"
+                [refresh]="refresh"
+                [viewDate]="viewDate">
+            </mwl-calendar-week-view>
+            <mwl-calendar-day-view
+                (dayClicked)="dayClicked($event.day)"
+                (eventClicked)="editEvent('edit', $event.event)"
+                (eventTimesChanged)="eventTimesChanged($event)"
+                (viewDateChange)="selectedDay = {date:$event}"
+                *ngSwitchCase="'day'"
+                [events]="events"
+                [refresh]="refresh"
+                [viewDate]="viewDate">
+            </mwl-calendar-day-view>
+        </div>
+    </div>
+    <!-- / CONTENT -->
+</div>

@@ -1,0 +1,152 @@
+<div [@animateStagger]="{value:'50'}"
+     class="flex-flow-container"
+     fxFlex="1 1 100%"
+     fxLayout="row wrap"
+     fxLayoutAlign="center">
+
+    <mat-expansion-panel class="m-12 expansion-headers-align" fxFlex="1 1 100%">
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                Location
+            </mat-panel-title>
+            <mat-panel-description>
+                Click to expand
+                <mat-icon>
+                    location_on
+                </mat-icon>
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+        <ng-template matExpansionPanelContent>
+            <agm-map (mapClick)="mapClicked($event)"
+                     [latitude]="defaultlat"
+                     [longitude]="defaultlng"
+                     [zoomControl]="false"
+                     [zoom]="zoom">
+                <agm-marker [latitude]="temphospital.location.latitude"
+                            [longitude]="temphospital.location.longitude"
+                            [markerDraggable]=true>
+                </agm-marker>
+            </agm-map>
+        </ng-template>
+    </mat-expansion-panel>
+
+    <div class="p-8" fxFlex="1 1 100%">
+        <mat-form-field appearance="outline" class="pl-4" fxFlex="100">
+            <mat-label>Hospital Name</mat-label>
+            <input [(ngModel)]="temphospital.name" matInput required>
+            <mat-icon class="secondary-text" matSuffix>account_circle</mat-icon>
+            <mat-error>Name is required!</mat-error>
+        </mat-form-field>
+
+    </div>
+    <span class="pl-24" fxFlex="1 1 100%">Contact Details</span>
+
+    <div class="p-8" fxFlex="1 1 100%">
+        <mat-form-field appearance="outline" class="pl-4" fxFlex="33">
+            <mat-label>Phone</mat-label>
+            <input [(ngModel)]="temphospital.contactDetails.phone" matInput required>
+            <mat-icon class="secondary-text" matSuffix>account_circle</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="pl-4" fxFlex="34">
+            <mat-label>Email</mat-label>
+            <input [(ngModel)]="temphospital.contactDetails.email" matInput required>
+            <mat-icon class="secondary-text" matSuffix>account_circle</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="px-4" fxFlex="33">
+            <mat-label>Address</mat-label>
+            <input [(ngModel)]="temphospital.contactDetails.address" matInput required>
+            <mat-icon class="secondary-text" matSuffix>account_circle</mat-icon>
+        </mat-form-field>
+    </div>
+    <span class="pl-24" fxFlex="1 1 100%">Contact Person</span>
+    <div class="p-8" fxFlex="1 1 100%">
+        <mat-form-field appearance="outline" class="pl-4" fxFlex="20">
+            <mat-label>Name</mat-label>
+            <input [(ngModel)]="temphospital.contactperson.name" matInput required>
+            <mat-icon class="secondary-text" matSuffix>account_circle</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="pl-4" fxFlex="20">
+            <mat-label>Phone</mat-label>
+            <input [(ngModel)]="temphospital.contactperson.phone" matInput required>
+            <mat-icon class="secondary-text" matSuffix>account_circle</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="pl-4" fxFlex="20">
+            <mat-label>Email</mat-label>
+            <input [(ngModel)]="temphospital.contactperson.email" matInput required>
+            <mat-icon class="secondary-text" matSuffix>account_circle</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="pl-4" fxFlex="20">
+            <mat-label>Position</mat-label>
+            <input [(ngModel)]="temphospital.contactperson.position" matInput required>
+            <mat-icon class="secondary-text" matSuffix>account_circle</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="px-4" fxFlex="20">
+            <mat-label>Address</mat-label>
+            <input [(ngModel)]="temphospital.contactperson.address" matInput required>
+            <mat-icon class="secondary-text" matSuffix>account_circle</mat-icon>
+        </mat-form-field>
+    </div>
+    <span class="pl-24" fxFlex="1 1 100%">Payment Options</span>
+    <div *ngFor="let paymentchannel of temphospital.paymentMethods ; let i = index"
+         [@animate]="{value:'*',params:{y:'100%'}}"
+         class="px-8" fxFlex="1 1 100%">
+        <mat-form-field appearance="outline" class="pl-4" fxFlex="24">
+            <mat-label>Channel</mat-label>
+            <mat-select [(ngModel)]="temphospital.paymentMethods[i].paymentChannelId" required>
+                <mat-option *ngFor="let channel of customizablepaymentchannels" [value]="channel.id">
+                    {{channel.name |titlecase}}
+                </mat-option>
+            </mat-select>
+            <mat-icon class="secondary-text" matSuffix>
+                monetization_on
+            </mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="pl-4" fxFlex="24">
+            <mat-label>Method</mat-label>
+            <mat-select [(ngModel)]="temphospital.paymentMethods[i].paymentMethodId" required>
+                <mat-option
+                    *ngFor="let paymentmethod of getpaymentchannel(paymentchannel.paymentChannelId)?.methods | keyvalue"
+                    [value]="paymentmethod.key">
+                    {{paymentmethod.value.name |titlecase}}
+                </mat-option>
+            </mat-select>
+            <mat-icon class="secondary-text" matSuffix>apps</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="pl-4" fxFlex="24">
+            <mat-label>Account Number</mat-label>
+            <input [(ngModel)]="temphospital.paymentMethods[i].accountNumber" matInput required>
+            <mat-icon class="secondary-text" matSuffix>account_balance_wallet</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="pl-4" fxFlex="24">
+            <mat-label>Extra Info</mat-label>
+            <input [(ngModel)]="temphospital.paymentMethods[i].extraInfo" matInput required>
+            <mat-icon class="secondary-text" matSuffix>description</mat-icon>
+        </mat-form-field>
+        <div class="pl-8" fxFlex="2">
+            <button (click)="deletepayment(i)" class="deletebutton" color="warn" mat-mini-fab>
+                <mat-icon aria-label="Example icon-button with a heart icon">delete</mat-icon>
+            </button>
+        </div>
+    </div>
+    <div class="pl-24" fxFlex="1 1 100%">
+        <button (click)="addpaymentarray()" color="primary" mat-mini-fab>
+            <mat-icon aria-label="Example icon-button with a heart icon">add</mat-icon>
+        </button>
+    </div>
+    <div class="p-24">
+        <div>
+            <button (click)="savehospitalchanges()" class="p-8" color="accent"
+                    mat-raised-button>SAVE CONFIGURATION
+            </button>
+        </div>
+    </div>
+</div>

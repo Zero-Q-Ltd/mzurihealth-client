@@ -1,17 +1,18 @@
-import {Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
-import {Subject} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
+import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
-import {FuseConfigService} from '@fuse/services/config.service';
-import {navigation} from 'app/admin/navigation/navigation';
+import { FuseConfigService } from '@fuse/services/config.service';
+import { navigation } from '../../../navigation/navigation';
 
 @Component({
-    selector: 'vertical-layout-2',
-    templateUrl: './layout-2.component.html',
-    styleUrls: ['./layout-2.component.scss'],
+    selector     : 'vertical-layout-2',
+    templateUrl  : './layout-2.component.html',
+    styleUrls    : ['./layout-2.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class VerticalLayout2Component implements OnInit, OnDestroy {
+export class VerticalLayout2Component implements OnInit, OnDestroy
+{
     fuseConfig: any;
     navigation: any;
 
@@ -25,7 +26,8 @@ export class VerticalLayout2Component implements OnInit, OnDestroy {
      */
     constructor(
         private _fuseConfigService: FuseConfigService
-    ) {
+    )
+    {
         // Set the defaults
         this.navigation = navigation;
 
@@ -40,7 +42,8 @@ export class VerticalLayout2Component implements OnInit, OnDestroy {
     /**
      * On init
      */
-    ngOnInit(): void {
+    ngOnInit(): void
+    {
         // Subscribe to config changes
         this._fuseConfigService.config
             .pipe(takeUntil(this._unsubscribeAll))
@@ -52,7 +55,8 @@ export class VerticalLayout2Component implements OnInit, OnDestroy {
     /**
      * On destroy
      */
-    ngOnDestroy(): void {
+    ngOnDestroy(): void
+    {
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next();
         this._unsubscribeAll.complete();

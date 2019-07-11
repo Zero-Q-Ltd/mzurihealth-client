@@ -1,18 +1,18 @@
-import {Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
-import {Subject} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
-import {TranslateService} from '@ngx-translate/core';
+import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
 import * as _ from 'lodash';
 
-import {FuseConfigService} from '@fuse/services/config.service';
-import {FuseSidebarService} from '@fuse/components/sidebar/sidebar.service';
+import { FuseConfigService } from '@fuse/services/config.service';
+import { FuseSidebarService } from '@fuse/components/sidebar/sidebar.service';
 
-import {navigation} from 'app/admin/navigation/navigation';
-import {emptyhospital, Hospital} from '../../../../models/hospital/Hospital';
-import {emptyadmin, HospitalAdmin} from '../../../../models/user/HospitalAdmin';
-import {AdminService} from '../../../services/admin.service';
-import {HospitalService} from '../../../services/hospital.service';
-import {Router} from '@angular/router';
+import { navigation } from '../../../navigation/navigation';
+import { Hospital, emptyhospital } from 'app/models/hospital/Hospital';
+import { HospitalAdmin, emptyadmin } from 'app/models/user/HospitalAdmin';
+import { AdminService } from 'app/admin/services/admin.service';
+import { HospitalService } from 'app/admin/services/hospital.service';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'toolbar',
@@ -30,6 +30,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
     selectedLanguage: any;
     userStatusOptions: any[];
 
+
     previousUrl: string;
     url: string;
     authstate: boolean;
@@ -45,10 +46,6 @@ export class ToolbarComponent implements OnInit, OnDestroy {
      * @param {FuseConfigService} _fuseConfigService
      * @param {FuseSidebarService} _fuseSidebarService
      * @param {TranslateService} _translateService
-     * @param adminservice
-     * @param hospitalservice
-     * @param afAuth
-     * @param router
      */
     constructor(
         private _fuseConfigService: FuseConfigService,
@@ -61,29 +58,29 @@ export class ToolbarComponent implements OnInit, OnDestroy {
         // Set the defaults
         this.userStatusOptions = [
             {
-                'title': 'Online',
-                'icon': 'icon-checkbox-marked-circle',
-                'color': '#4CAF50'
+                title: 'Online',
+                icon: 'icon-checkbox-marked-circle',
+                color: '#4CAF50'
             },
             {
-                'title': 'Away',
-                'icon': 'icon-clock',
-                'color': '#FFC107'
+                title: 'Away',
+                icon: 'icon-clock',
+                color: '#FFC107'
             },
             {
-                'title': 'Do not Disturb',
-                'icon': 'icon-minus-circle',
-                'color': '#F44336'
+                title: 'Do not Disturb',
+                icon: 'icon-minus-circle',
+                color: '#F44336'
             },
             {
-                'title': 'Invisible',
-                'icon': 'icon-checkbox-blank-circle-outline',
-                'color': '#BDBDBD'
+                title: 'Invisible',
+                icon: 'icon-checkbox-blank-circle-outline',
+                color: '#BDBDBD'
             },
             {
-                'title': 'Offline',
-                'icon': 'icon-checkbox-blank-circle-outline',
-                'color': '#616161'
+                title: 'Offline',
+                icon: 'icon-checkbox-blank-circle-outline',
+                color: '#616161'
             }
         ];
 
@@ -94,9 +91,9 @@ export class ToolbarComponent implements OnInit, OnDestroy {
                 flag: 'us'
             },
             {
-                id: 'sw',
-                title: 'Swahili',
-                flag: 'ke'
+                id: 'tr',
+                title: 'Turkish',
+                flag: 'tr'
             }
         ];
 
@@ -104,6 +101,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
 
         // Set the private defaults
         this._unsubscribeAll = new Subject();
+
 
         /**
          * custom code
@@ -118,16 +116,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
                 this.activehospital = hospital;
             }
         });
-    }
 
-    onLogoutClick() {
-        // this.stitch.auth.logout().then(() => {
-        //     this.router.navigateByUrl('');
-        // });
-    }
-
-    setuserstatus(status) {
-        this.adminservice.setstatus(status);
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -148,7 +137,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
             });
 
         // Set the selected language from default languages
-        this.selectedLanguage = _.find(this.languages, {'id': this._translateService.currentLang});
+        this.selectedLanguage = _.find(this.languages, { id: this._translateService.currentLang });
     }
 
     /**
@@ -183,10 +172,6 @@ export class ToolbarComponent implements OnInit, OnDestroy {
         console.log(value);
     }
 
-    logout(): void {
-        this.adminservice.logout();
-    }
-
     /**
      * Set the language
      *
@@ -197,6 +182,6 @@ export class ToolbarComponent implements OnInit, OnDestroy {
         this.selectedLanguage = lang;
 
         // Use the selected language for translations
-        this._translateService.use(lang._id);
+        this._translateService.use(lang.id);
     }
 }

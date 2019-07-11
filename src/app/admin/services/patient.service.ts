@@ -12,8 +12,8 @@ import {debounceTime, map, switchMap} from 'rxjs/operators';
 import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs';
 import 'rxjs/add/observable/empty';
 import {PaymentChannel} from '../../models/payment/PaymentChannel';
-import {BSON} from 'bson';
 
+let ObjectID = require('bson-objectid');
 
 @Injectable({
     providedIn: 'root'
@@ -110,7 +110,7 @@ export class PatientService {
         /**
          * patient document ID
          * **/
-        const patientID = new BSON.ObjectID();
+        const patientID = ObjectID();
 
 
         const modifiedData = {

@@ -1,22 +1,20 @@
-import {NgModule} from '@angular/core';
-import {RouterModule} from '@angular/router';
+import { NgModule } from '@angular/core';
+import { RouterModule } from '@angular/router';
 
-import {FuseSidebarModule} from '@fuse/components';
-import {FuseSharedModule} from '@fuse/shared.module';
-
-import {ContentModule} from 'app/admin/layout/components/content/content.module';
-import {FooterModule} from 'app/admin/layout/components/footer/footer.module';
-import {NavbarModule} from 'app/admin/layout/components/navbar/navbar.module';
-import {QuickPanelModule} from 'app/admin/layout/components/quick-panel/quick-panel.module';
-import {ToolbarModule} from 'app/admin/layout/components/toolbar/toolbar.module';
-
-import {VerticalLayout2Component} from 'app/admin/layout/vertical/layout-2/layout-2.component';
+import { FuseSidebarModule } from '@fuse/components';
+import { FuseSharedModule } from '@fuse/shared.module';
+import { VerticalLayout2Component } from './layout-2.component';
+import { ContentModule } from '../../components/content/content.module';
+import { FooterModule } from '../../components/footer/footer.module';
+import { NavbarModule } from '../../components/navbar/navbar.module';
+import { QuickPanelModule } from '../../components/quick-panel/quick-panel.module';
+import { ToolbarModule } from '../../components/toolbar/toolbar.module';
 
 @NgModule({
     declarations: [
         VerticalLayout2Component
     ],
-    imports: [
+    imports     : [
         RouterModule,
 
         FuseSharedModule,
@@ -28,9 +26,10 @@ import {VerticalLayout2Component} from 'app/admin/layout/vertical/layout-2/layou
         QuickPanelModule,
         ToolbarModule
     ],
-    exports: [
+    exports     : [
         VerticalLayout2Component
     ]
 })
-export class VerticalLayout2Module {
+export class VerticalLayout2Module
+{
 }

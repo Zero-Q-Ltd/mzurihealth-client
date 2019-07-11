@@ -23,8 +23,8 @@ export class MainComponent implements OnInit, AfterViewInit {
     confirmDialogRef: MatDialogRef<FuseConfirmDialogComponent>;
     hospitaladmins: Array<HospitalAdmin>;
 
-    @ViewChild(MatPaginator) paginator: MatPaginator;
-    @ViewChild(MatSort) sort: MatSort;
+    @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
+    @ViewChild(MatSort, { static: false }) sort: MatSort;
 
 
     constructor(private queue: QueueService,

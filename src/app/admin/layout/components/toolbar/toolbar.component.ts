@@ -1,27 +1,23 @@
-import {Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
-import {Subject} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
-import {TranslateService} from '@ngx-translate/core';
+import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
 import * as _ from 'lodash';
 
-import {FuseConfigService} from '@fuse/services/config.service';
-import {FuseSidebarService} from '@fuse/components/sidebar/sidebar.service';
+import { FuseConfigService } from '@fuse/services/config.service';
+import { FuseSidebarService } from '@fuse/components/sidebar/sidebar.service';
 
-import {navigation} from 'app/admin/navigation/navigation';
-import {emptyhospital, Hospital} from '../../../../models/hospital/Hospital';
-import {emptyadmin, HospitalAdmin} from '../../../../models/user/HospitalAdmin';
-import {AdminService} from '../../../services/admin.service';
-import {HospitalService} from '../../../services/hospital.service';
-import {Router} from '@angular/router';
+import { navigation } from '../../../navigation/navigation';
 
 @Component({
-    selector: 'toolbar',
-    templateUrl: './toolbar.component.html',
-    styleUrls: ['./toolbar.component.scss'],
+    selector     : 'toolbar',
+    templateUrl  : './toolbar.component.html',
+    styleUrls    : ['./toolbar.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
 
-export class ToolbarComponent implements OnInit, OnDestroy {
+export class ToolbarComponent implements OnInit, OnDestroy
+{
     horizontalNavbar: boolean;
     rightNavbar: boolean;
     hiddenNavbar: boolean;
@@ -29,12 +25,6 @@ export class ToolbarComponent implements OnInit, OnDestroy {
     navigation: any;
     selectedLanguage: any;
     userStatusOptions: any[];
-
-    previousUrl: string;
-    url: string;
-    authstate: boolean;
-    activehospital: Hospital = Object.assign({}, emptyhospital);
-    userdata: HospitalAdmin = Object.assign({}, emptyadmin);
 
     // Private
     private _unsubscribeAll: Subject<any>;
@@ -45,58 +35,52 @@ export class ToolbarComponent implements OnInit, OnDestroy {
      * @param {FuseConfigService} _fuseConfigService
      * @param {FuseSidebarService} _fuseSidebarService
      * @param {TranslateService} _translateService
-     * @param adminservice
-     * @param hospitalservice
-     * @param afAuth
-     * @param router
      */
     constructor(
         private _fuseConfigService: FuseConfigService,
         private _fuseSidebarService: FuseSidebarService,
-        private _translateService: TranslateService,
-        private adminservice: AdminService,
-        private hospitalservice: HospitalService,
-        private router: Router,
-    ) {
+        private _translateService: TranslateService
+    )
+    {
         // Set the defaults
         this.userStatusOptions = [
             {
-                'title': 'Online',
-                'icon': 'icon-checkbox-marked-circle',
-                'color': '#4CAF50'
+                title: 'Online',
+                icon : 'icon-checkbox-marked-circle',
+                color: '#4CAF50'
             },
             {
-                'title': 'Away',
-                'icon': 'icon-clock',
-                'color': '#FFC107'
+                title: 'Away',
+                icon : 'icon-clock',
+                color: '#FFC107'
             },
             {
-                'title': 'Do not Disturb',
-                'icon': 'icon-minus-circle',
-                'color': '#F44336'
+                title: 'Do not Disturb',
+                icon : 'icon-minus-circle',
+                color: '#F44336'
             },
             {
-                'title': 'Invisible',
-                'icon': 'icon-checkbox-blank-circle-outline',
-                'color': '#BDBDBD'
+                title: 'Invisible',
+                icon : 'icon-checkbox-blank-circle-outline',
+                color: '#BDBDBD'
             },
             {
-                'title': 'Offline',
-                'icon': 'icon-checkbox-blank-circle-outline',
-                'color': '#616161'
+                title: 'Offline',
+                icon : 'icon-checkbox-blank-circle-outline',
+                color: '#616161'
             }
         ];
 
         this.languages = [
             {
-                id: 'en',
+                id   : 'en',
                 title: 'English',
-                flag: 'us'
+                flag : 'us'
             },
             {
-                id: 'sw',
-                title: 'Swahili',
-                flag: 'ke'
+                id   : 'tr',
+                title: 'Turkish',
+                flag : 'tr'
             }
         ];
 
@@ -104,30 +88,6 @@ export class ToolbarComponent implements OnInit, OnDestroy {
 
         // Set the private defaults
         this._unsubscribeAll = new Subject();
-
-        /**
-         * custom code
-         */
-        adminservice.observableuserdata.subscribe((admin: HospitalAdmin) => {
-            if (admin._id) {
-                this.userdata = admin;
-            }
-        });
-        this.hospitalservice.activehospital.subscribe(hospital => {
-            if (hospital._id) {
-                this.activehospital = hospital;
-            }
-        });
-    }
-
-    onLogoutClick() {
-        // this.stitch.auth.logout().then(() => {
-        //     this.router.navigateByUrl('');
-        // });
-    }
-
-    setuserstatus(status) {
-        this.adminservice.setstatus(status);
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -137,7 +97,8 @@ export class ToolbarComponent implements OnInit, OnDestroy {
     /**
      * On init
      */
-    ngOnInit(): void {
+    ngOnInit(): void
+    {
         // Subscribe to the config changes
         this._fuseConfigService.config
             .pipe(takeUntil(this._unsubscribeAll))
@@ -148,13 +109,14 @@ export class ToolbarComponent implements OnInit, OnDestroy {
             });
 
         // Set the selected language from default languages
-        this.selectedLanguage = _.find(this.languages, {'id': this._translateService.currentLang});
+        this.selectedLanguage = _.find(this.languages, {id: this._translateService.currentLang});
     }
 
     /**
      * On destroy
      */
-    ngOnDestroy(): void {
+    ngOnDestroy(): void
+    {
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next();
         this._unsubscribeAll.complete();
@@ -169,7 +131,8 @@ export class ToolbarComponent implements OnInit, OnDestroy {
      *
      * @param key
      */
-    toggleSidebarOpen(key): void {
+    toggleSidebarOpen(key): void
+    {
         this._fuseSidebarService.getSidebar(key).toggleOpen();
     }
 
@@ -178,13 +141,10 @@ export class ToolbarComponent implements OnInit, OnDestroy {
      *
      * @param value
      */
-    search(value): void {
+    search(value): void
+    {
         // Do your search here...
         console.log(value);
-    }
-
-    logout(): void {
-        this.adminservice.logout();
     }
 
     /**
@@ -192,11 +152,12 @@ export class ToolbarComponent implements OnInit, OnDestroy {
      *
      * @param lang
      */
-    setLanguage(lang): void {
+    setLanguage(lang): void
+    {
         // Set the selected language for the toolbar
         this.selectedLanguage = lang;
 
         // Use the selected language for translations
-        this._translateService.use(lang._id);
+        this._translateService.use(lang.id);
     }
 }

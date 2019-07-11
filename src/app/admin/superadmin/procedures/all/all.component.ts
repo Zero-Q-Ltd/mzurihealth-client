@@ -23,8 +23,8 @@ export class AllComponent implements OnInit, AfterViewInit {
     selectedprocedure: CustomProcedure = {...emptycustomprocedure};
     confirmDialogRef: MatDialogRef<FuseConfirmDialogComponent>;
     disableripple: boolean;
-    @ViewChild(MatPaginator) paginator: MatPaginator;
-    @ViewChild(MatSort) sort: MatSort;
+    @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
+    @ViewChild(MatSort, { static: false }) sort: MatSort;
 
     constructor(private procedureservice: ProceduresService,
                 private communicationservice: LocalcommunicationService,

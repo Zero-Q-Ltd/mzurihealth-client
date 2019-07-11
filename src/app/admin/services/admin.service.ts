@@ -29,12 +29,11 @@ export class AdminService {
     admincategories: BehaviorSubject<Array<AdminCategory>> = new BehaviorSubject<Array<AdminCategory>>([]);
     // We use the gql tag to parse our query string into a query document
     CurrentUserForProfile = gql`
-        query Patient {
-            currentUser {
-                login
-                avatar_url
-            }
-        }
+    mutation {
+  createAdmin(input :  {email:  "kisinga@zero-q.com"}){
+    _id
+  }
+}
     `;
     private querySubscription: Subscription;
 
@@ -44,8 +43,7 @@ export class AdminService {
     ) {
         console.log('sending query');
 
-        this.apollo.watchQuery<Patient>({query: this.CurrentUserForProfile})
-            .valueChanges
+        this.apollo.mutate<Patient>({ mutation: this.CurrentUserForProfile })
             .subscribe(({ data, loading }) => {
                 console.log(data);
             });

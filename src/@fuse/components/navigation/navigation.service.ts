@@ -244,7 +244,7 @@ export class FuseNavigationService
     }
 
     /**
-     * Get navigation item by _id from the
+     * Get navigation item by id from the
      * current navigation
      *
      * @param id
@@ -260,7 +260,7 @@ export class FuseNavigationService
 
         for ( const item of navigation )
         {
-            if (item._id === id)
+            if ( item.id === id )
             {
                 return item;
             }
@@ -281,7 +281,7 @@ export class FuseNavigationService
 
     /**
      * Get the parent of the navigation item
-     * with the _id
+     * with the id
      *
      * @param id
      * @param {any} navigation
@@ -297,7 +297,7 @@ export class FuseNavigationService
 
         for ( const item of navigation )
         {
-            if (item._id === id)
+            if ( item.id === id )
             {
                 return parent;
             }
@@ -370,7 +370,7 @@ export class FuseNavigationService
     }
 
     /**
-     * Update navigation item with the given _id
+     * Update navigation item with the given id
      *
      * @param id
      * @param properties
@@ -380,7 +380,7 @@ export class FuseNavigationService
         // Get the navigation item
         const navigationItem = this.getNavigationItem(id);
 
-        // If there is no navigation with the give _id, return
+        // If there is no navigation with the give id, return
         if ( !navigationItem )
         {
             return;
@@ -394,7 +394,7 @@ export class FuseNavigationService
     }
 
     /**
-     * Remove navigation item with the given _id
+     * Remove navigation item with the given id
      *
      * @param id
      */

@@ -80,7 +80,7 @@
 // -----------------------------------------------------------------------------------------------------
 // @ Page Layouts
 // -----------------------------------------------------------------------------------------------------
-$carded-header-height: 135px !default;
+$carded-header-height: 200px !default;
 $carded-toolbar-height: 64px !default;
 $header-height: 120px !default;
 
@@ -173,6 +173,7 @@ $carded-header-height-without-toolbar: $carded-header-height - $carded-toolbar-h
 
                             > .mat-tab-group {
                                 overflow: hidden;
+                                width: 100%;
 
                                 .mat-tab-header {
 

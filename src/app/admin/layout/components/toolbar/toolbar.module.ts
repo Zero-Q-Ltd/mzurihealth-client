@@ -23,7 +23,9 @@ import { ToolbarComponent } from './toolbar.component';
 
         FuseSharedModule,
         FuseSearchBarModule,
-        FuseShortcutsModule
+        FuseShortcutsModule,
+
+        RouterModule,
     ],
     exports     : [
         ToolbarComponent

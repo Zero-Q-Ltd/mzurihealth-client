@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { FuseNavigationModule } from '@fuse/components';
 import { FuseSharedModule } from '@fuse/shared.module';
 import { NavbarVerticalStyle1Component } from './style-1.component';
+import { RouterModule } from '@angular/router';
 
 
 @NgModule({
@@ -16,7 +17,8 @@ import { NavbarVerticalStyle1Component } from './style-1.component';
         MatIconModule,
 
         FuseSharedModule,
-        FuseNavigationModule
+        FuseNavigationModule,
+        RouterModule
     ],
     exports     : [
         NavbarVerticalStyle1Component

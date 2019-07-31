@@ -29,9 +29,9 @@ export class AdminService {
     admincategories: BehaviorSubject<Array<AdminCategory>> = new BehaviorSubject<Array<AdminCategory>>([]);
     // We use the gql tag to parse our query string into a query document
     CurrentUserForProfile = gql`
-    mutation {
-  createAdmin(input :  {email:  "kisinga@zero-q.com"}){
-    _id
+mutation {
+  createAdmin(input :  {email:  "tester@gmail.com"}){
+    status
   }
 }
     `;

@@ -8,7 +8,7 @@ import { FuseNavigationService } from '@fuse/components/navigation/navigation.se
 import { FusePerfectScrollbarDirective } from '@fuse/directives/fuse-perfect-scrollbar/fuse-perfect-scrollbar.directive';
 import { FuseSidebarService } from '@fuse/components/sidebar/sidebar.service';
 
-//Custom imports
+// Custom imports
 import { emptyhospital, Hospital } from '../../../../../../models/hospital/Hospital';
 import { emptyadmin, HospitalAdmin } from '../../../../../../models/user/HospitalAdmin';
 import { AdminService } from '../../../../../services/admin.service';

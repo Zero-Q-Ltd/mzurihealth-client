@@ -1,13 +1,16 @@
 import {emptymetadata, Metadata} from '../universal';
+import {
+    BSON
+} from 'mongodb-stitch-browser-sdk';
 
 export interface Patientnote {
     title: string;
     note: string;
     admin: {
-        id: string,
+        _id: BSON.ObjectId,
         name: string
     };
-    id: string;
+    _id: BSON.ObjectId;
     patientId: string;
     metadata: Metadata;
     /**
@@ -20,10 +23,10 @@ export const emptynote: Patientnote = {
     title: null,
     note: null,
     patientId: null,
-    id: null,
+    _id: null,
     metadata: emptymetadata,
     admin: {
-        id: null,
+        _id: null,
         name: null
     },
     helpful: 0

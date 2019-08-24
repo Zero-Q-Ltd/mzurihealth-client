@@ -130,7 +130,7 @@ export class TodayComponent implements OnInit {
 
                 const mappedData: Array<Procedureperformed> = selection.selected.map(value => {
                     const ff = res.filter(value1 => {
-                        return value1.originalProcedureId === value.rawProcedure.id;
+                        return value1.originalProcedureId === value.rawProcedure._id;
                     })[0];
                     ff.results = ff.results || '';
                     ff.name = value.rawProcedure.name;
@@ -145,12 +145,12 @@ export class TodayComponent implements OnInit {
                         hasInsurance: false,
                         methods: []
                     };
-                    ff.originalProcedureId = value.rawProcedure.id;
-                    ff.customProcedureId = value.customProcedure.id;
+                    ff.originalProcedureId = value.rawProcedure._id;
+                    ff.customProcedureId = value.customProcedure._id;
                     if (ff.tempnote && ff.tempnote !== '') {
                         ff.notes[0] = {
                             admin: {
-                                id: this.adminservice.userdata._id,
+                                _id: this.adminservice.userdata._id,
                                 name: this.adminservice.userdata.data.displayName
                             },
                             note: ff.tempnote
@@ -163,7 +163,7 @@ export class TodayComponent implements OnInit {
                     return ff;
                 });
                 console.log(mappedData);
-                this.patientvisitservice.addprocedures(this.currentvisit.id, mappedData);
+                this.patientvisitservice.addprocedures(this.currentvisit._id, mappedData);
             }
         });
     }
@@ -179,7 +179,7 @@ export class TodayComponent implements OnInit {
         this.confirmDialogRef.componentInstance.confirmMessage = 'Are you sure you want to delete this procedure?';
         this.confirmDialogRef.afterClosed().subscribe(result => {
             if (result) {
-                this.patientvisitservice.updateprocedures(this.currentvisit.id, this.currentvisit.procedures);
+                this.patientvisitservice.updateprocedures(this.currentvisit._id, this.currentvisit.procedures);
             }
         });
     }
@@ -193,7 +193,7 @@ export class TodayComponent implements OnInit {
         dialogRef.afterClosed().subscribe((result: Array<ProcedureNotes>) => {
             if (result) {
                 this.currentvisit.procedures[index].notes = result;
-                this.patientvisitservice.updateprocedures(this.currentvisit.id, this.currentvisit.procedures);
+                this.patientvisitservice.updateprocedures(this.currentvisit._id, this.currentvisit.procedures);
             }
         });
 
@@ -311,7 +311,7 @@ export class TodayComponent implements OnInit {
     getcategory(category: RawProcedureCategory): string {
         if (category && category.subCategoryId) {
             return this.procedurecategories.find(cat => {
-                return cat.id === category.id;
+                return cat._id === category._id;
             }).subcategories[category.subCategoryId].name;
         } else {
             return '';
@@ -345,7 +345,7 @@ export class TodayComponent implements OnInit {
         } else {
 
         }
-        this.patientvisitservice.awaitpayment(this.currentpatient.queuedata.id).then(() => {
+        this.patientvisitservice.awaitpayment(this.currentpatient.queuedata._id).then(() => {
             /**
              * important to change from the currently active tab as it will become inactive
              */
@@ -437,7 +437,7 @@ export class TodayComponent implements OnInit {
     }
 
     saveprescription(): void {
-        this.patientvisitservice.setprescription(this.currentvisit.id, this.currentvisit.prescription).then(() => {
+        this.patientvisitservice.setprescription(this.currentvisit._id, this.currentvisit.prescription).then(() => {
             this.notifications.notify({
                 placement: {
                     vertical: 'top',
@@ -456,7 +456,7 @@ export class TodayComponent implements OnInit {
             this.expand = false;
             const procedure: Procedureperformed = Object.assign({}, {...emptyproceduresperformed}, this.procedureperformed.getRawValue());
             const originaldata: MergedProcedureModel = this.procedureselection.getRawValue().selection;
-            this.patientvisitservice.addprocedure(this.currentvisit.id, originaldata, procedure).then(() => {
+            this.patientvisitservice.addprocedure(this.currentvisit._id, originaldata, procedure).then(() => {
                 this.notifications.notify({
                     placement: {
                         vertical: 'top',

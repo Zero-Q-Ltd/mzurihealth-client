@@ -10,6 +10,9 @@ import {MatDialog, MatDialogRef} from '@angular/material';
 import {emptypaymentmethod} from '../../../models/payment/CustomPaymentMethod.model';
 import {LocalcommunicationService} from '../localcommunication.service';
 import {fuseAnimations} from '../../../../@fuse/animations';
+import {
+    BSON
+} from 'mongodb-stitch-browser-sdk';
 
 declare let google: any;
 
@@ -131,11 +134,11 @@ export class HospconfigComponent implements OnInit {
     }
 
     getpaymentchannel(_id: BSON.ObjectId): PaymentChannel | null {
-        if (!id) {
+        if (!_id) {
             return null;
         }
         const paymentchannel = this.customizablepaymentchannels.find(channel => {
-            return channel.id === id;
+            return channel._id === _id;
         });
         return paymentchannel;
     }

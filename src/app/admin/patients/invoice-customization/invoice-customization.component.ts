@@ -79,7 +79,7 @@ export class InvoiceCustomizationComponent implements OnInit {
                         /**
                          * Calculate the totals with the first pre-selected channel
                          */
-                        this.setchannel(this.allpaymentchannels.filter(channel => channel.id === value.queuedata.payment.singlePayment.channelId)[0]);
+                        this.setchannel(this.allpaymentchannels.filter(channel => channel._id === value.queuedata.payment.singlePayment.channelId)[0]);
                     }
                 }
             });
@@ -93,10 +93,10 @@ export class InvoiceCustomizationComponent implements OnInit {
              * check if the procedure contains a custom price for insurance
              */
             if (!!this.procedureservice.hospitalprocedures.value.find(value => {
-                return value.customProcedure.id === customprocedureid && value.customProcedure.customInsurancePrice && !!value.customProcedure.insurancePrices[insuranceid];
+                return value.customProcedure._id === customprocedureid && value.customProcedure.customInsurancePrice && !!value.customProcedure.insurancePrices[insuranceid];
             })) {
                 return this.procedureservice.hospitalprocedures.value.find(value => {
-                    return value.customProcedure.id === customprocedureid && !!value.customProcedure.insurancePrices[insuranceid];
+                    return value.customProcedure._id === customprocedureid && !!value.customProcedure.insurancePrices[insuranceid];
                 }).customProcedure.insurancePrices[insuranceid];
 
             } else {
@@ -104,7 +104,7 @@ export class InvoiceCustomizationComponent implements OnInit {
                  * return the normal price
                  */
                 return this.procedureservice.hospitalprocedures.value.find(value => {
-                    return value.customProcedure.id === customprocedureid;
+                    return value.customProcedure._id === customprocedureid;
                 }).customProcedure.regularPrice;
             }
         } else {
@@ -112,7 +112,7 @@ export class InvoiceCustomizationComponent implements OnInit {
              * return the normal price
              */
             return this.procedureservice.hospitalprocedures.value.find(value => {
-                return value.customProcedure.id === customprocedureid;
+                return value.customProcedure._id === customprocedureid;
             }).customProcedure.regularPrice;
         }
     }
@@ -152,7 +152,7 @@ export class InvoiceCustomizationComponent implements OnInit {
     setchannel(channel: PaymentChannel): void {
         this.patientdata.queuedata.payment.singlePayment = {
             amount: 0,
-            channelId: channel.id,
+            channelId: channel._id,
             methodId: '',
             transactionId: ''
         };
@@ -171,7 +171,7 @@ export class InvoiceCustomizationComponent implements OnInit {
                 amount: amount,
                 methods: [{
                     amount: amount,
-                    channelid: channel.id,
+                    channelid: channel._id,
                     methidid: '',
                     transactionid: ''
                 }],
@@ -190,7 +190,7 @@ export class InvoiceCustomizationComponent implements OnInit {
 
     getmethodname(channelid: string, methodid: string): string {
         return this.allpaymentchannels.find(value => {
-            return value.id === channelid;
+            return value._id === channelid;
         }).methods[methodid].name;
     }
 

@@ -2,6 +2,9 @@ import {Customfields, emptymetadata, Metadata} from '../universal';
 import {HospFile} from '../hospital/file';
 import {Condition} from '../procedure/MedicalConditions.model';
 import {Allegy} from '../procedure/Allergy.model';
+import {
+    BSON
+} from 'mongodb-stitch-browser-sdk';
 
 export interface Patient {
     personalInfo: {
@@ -59,7 +62,7 @@ export interface Patient {
 }
 
 export interface Insurance {
-    id: string;
+    _id: BSON.ObjectId;
     insuranceNo: string;
 }
 

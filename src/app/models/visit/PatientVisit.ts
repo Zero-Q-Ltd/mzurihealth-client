@@ -1,5 +1,8 @@
 import {emptymetadata, Metadata} from '../universal';
 import {Procedureperformed} from '../procedure/Procedureperformed';
+import {
+    BSON
+} from 'mongodb-stitch-browser-sdk';
 
 export interface PatientVisit {
     procedures: Array<Procedureperformed>;
@@ -27,13 +30,13 @@ export interface PatientVisit {
         status: boolean,
         hasInsurance: boolean,
         singlePayment?: {
-            channelId: string;
+            channelId: BSON.ObjectId;
             amount: number;
             methodId: string;
             transactionId: string
         }
     };
-    id: string;
+    _id: BSON.ObjectId;
     invoiceId: number;
     checkin: Checkin;
 }
@@ -78,6 +81,6 @@ export const emptypatientvisit: PatientVisit = {
     hospitalid: null,
     prescription: null,
     metadata: emptymetadata,
-    id: null
+    _id: null
 };
 

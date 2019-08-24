@@ -146,8 +146,8 @@ export class PushqueueComponent implements OnInit {
                         this.insuranceAvailable = true;
                         this.addInsurance();
 
-                        const mergedData = Object.assign({}, this.allInsurance[insuranceData.id],
-                            {id: insuranceData.id, insuranceno: insuranceData.insuranceNo});
+                        const mergedData = Object.assign({}, this.allInsurance[insuranceData._id],
+                            {id: insuranceData._id, insuranceno: insuranceData.insuranceNo});
 
                         this.insurance.controls[index].get('insuranceControl').patchValue(mergedData.id, {emitEvent: false});
                         this.insurance.controls[index].get('insurancenumber').patchValue(mergedData.insuranceno, {emitEvent: false});

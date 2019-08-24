@@ -101,7 +101,7 @@ export class PatientService {
         };
 
         const tempInsurance = insurance.map((value, index: number) => {
-            return {id: value.id, insuranceno: value.insuranceNo};
+            return {id: value._id, insuranceno: value.insuranceNo};
         });
 
         // todays date
@@ -252,7 +252,7 @@ export class PatientService {
                 status: false,
                 total: 0,
                 singlepayment: {
-                    channelid: type.id,
+                    channelid: type._id,
                     amount: 0,
                     methidid: type.name === 'insurance' ? selected.insuranceControl : null,
                     transactionid: null

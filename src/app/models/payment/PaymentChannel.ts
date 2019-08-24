@@ -1,5 +1,9 @@
+import {
+    BSON
+} from 'mongodb-stitch-browser-sdk';
+
 export interface PaymentChannel {
-    id: string;
+    _id: BSON.ObjectId;
     name: string;
     /**
      * specifies whether this method can be merged with another for the same procedure
@@ -24,7 +28,7 @@ export interface Paymentmethods {
 
 export const emptypaymentChannel: PaymentChannel = {
     name: null,
-    id: null,
+    _id: null,
     methods: {},
     mergeability: {
         self: false,

@@ -1,8 +1,11 @@
 import {emptymetadata, Metadata} from '../universal';
 import {RawProcedureCategory} from './RawProcedure';
+import {
+    BSON
+} from 'mongodb-stitch-browser-sdk';
 
 export interface Proceduresperformed {
-    id: string;
+    _id: BSON.ObjectId;
     procedures: Array<Procedureperformed>;
 }
 
@@ -13,7 +16,7 @@ export interface Procedureperformed {
      * temporary storage for notes, useful for bulk addition of notes where the behavious of dynamic
      * arrays for ngmodel is unpredictable
      */
-    tempnote?: string
+    tempnote?: string;
     notes: Array<ProcedureNotes>;
     adminid: string;
     name: string;
@@ -52,7 +55,7 @@ export const emptyprocedureperformed: Procedureperformed = {
 };
 
 export const emptyproceduresperformed: Proceduresperformed = {
-    id: null,
+    _id: null,
     procedures: []
 };
 
@@ -60,7 +63,7 @@ export interface ProcedureNotes {
 
     note: string;
     admin: {
-        id: string,
+        _id: BSON.ObjectId,
         name: string
     };
 

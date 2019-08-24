@@ -1,8 +1,11 @@
 import {emptymetadata, Metadata} from '../universal';
+import {
+    BSON
+} from 'mongodb-stitch-browser-sdk';
 
 export interface CustomProcedure {
     creatorid: string;
-    id: string;
+    _id: BSON.ObjectId;
     regularPrice: number;
     parentProcedureId: string;
     hospitalId: string;
@@ -16,7 +19,7 @@ export interface CustomProcedure {
 
 export const emptycustomprocedure: CustomProcedure = {
     creatorid: null,
-    id: null,
+    _id: null,
     status: null,
     regularPrice: 0,
     insurancePrices: {},

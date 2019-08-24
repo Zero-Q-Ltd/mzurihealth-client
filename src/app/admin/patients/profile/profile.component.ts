@@ -108,7 +108,7 @@ export class ProfileComponent implements OnInit {
                 console.log(value.insurance);
 
                 value.insurance.forEach(i => {
-                    if (i.id !== '') {
+                    if (i._id !== '') {
                         this.insurance.push(this.replicateInsurance(i));
                     }
                     this.insurancechanges();
@@ -178,7 +178,7 @@ export class ProfileComponent implements OnInit {
     replicateInsurance(insurancedata: Insurance): FormGroup {
 
         const insurancex = new FormControl({
-            value: insurancedata.id,
+            value: insurancedata._id,
             disabled: false
         });
         const insurancenumber = new FormControl({

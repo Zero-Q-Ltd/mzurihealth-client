@@ -60,8 +60,8 @@ export class PatientvisitService {
             hasInsurance: false,
             methods: []
         };
-        per.originalProcedureId = procedure.rawProcedure.id;
-        per.customProcedureId = procedure.customProcedure.id;
+        per.originalProcedureId = procedure.rawProcedure._id;
+        per.customProcedureId = procedure.customProcedure._id;
         // return this.db.collection('hospitalvisits').doc(visitid).update({
         //     procedures: firestore.FieldValue.arrayUnion(per)
         // });

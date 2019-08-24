@@ -4,6 +4,9 @@ import {BehaviorSubject} from 'rxjs';
 import {emptynote, Patientnote} from '../../models/patient/Patientnote';
 import {AdminService} from './admin.service';
 import * as moment from 'moment';
+import {
+    BSON
+} from 'mongodb-stitch-browser-sdk';
 
 @Injectable({
     providedIn: 'root'
@@ -36,7 +39,7 @@ export class PatientnotesService {
 
     addnote(note: Patientnote): any {
         note.admin = {
-            id: this.admiservice.userdata._id,
+            _id: this.admiservice.userdata._id,
             name: this.admiservice.userdata.data.displayName
         };
         note.patientId = this.patientid;

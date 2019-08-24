@@ -49,10 +49,10 @@ export class AddComponent implements OnInit, AfterViewInit {
         this.proceduresform.get('category').valueChanges.subscribe((category: ProcedureCategory) => {
             this.loadingprocedures = true;
             this.categoryprocedures.data = [];
-            this.procedureservice.fetchproceduresincategory(category.id).get().then(rawprocedures => {
+            this.procedureservice.fetchproceduresincategory(category._id).get().then(rawprocedures => {
                 this.categoryprocedures.data = rawprocedures.docs.map(rawcat => {
                     const cat = rawcat.data() as RawProcedure;
-                    cat.id = rawcat.id;
+                    cat._id = rawcat.id;
                     return cat;
                 });
                 this.loadingprocedures = false;
@@ -72,7 +72,7 @@ export class AddComponent implements OnInit, AfterViewInit {
     getcategory(category: RawProcedureCategory): any {
         if (category.subCategoryId) {
             return this.procedurecategories.find(cat => {
-                return cat.id === category.id;
+                return cat._id === category._id;
             }).subcategories[category.subCategoryId].name;
         } else {
             return '';
@@ -87,7 +87,7 @@ export class AddComponent implements OnInit, AfterViewInit {
     onSelect(selected: RawProcedure): void {
 
         if (this.procedureservice.hospitalprocedures.value.find(merged => {
-            return merged.rawProcedure.id === selected.id;
+            return merged.rawProcedure._id === selected._id;
         })) {
             this.notificationservice.notify({
                 placement: {

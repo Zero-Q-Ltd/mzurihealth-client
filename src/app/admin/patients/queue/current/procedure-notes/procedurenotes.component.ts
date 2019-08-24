@@ -43,7 +43,7 @@ export class ProcedurenotesComponent implements OnInit {
                         note: value.procedures[this.procedureid].notes,
                         admin: {
                             name: 'unknown',
-                            id: null
+                            _id: null
                         }
                     };
                 } else {

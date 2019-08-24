@@ -169,7 +169,7 @@ export class GeneralDetailsComponent implements OnInit {
 
     replicateInsurance(insurancedata: Insurance): FormGroup {
         const insurancex = new FormControl({
-            value: insurancedata.id,
+            value: insurancedata._id,
             disabled: false
         });
         const insurancenumber = new FormControl({

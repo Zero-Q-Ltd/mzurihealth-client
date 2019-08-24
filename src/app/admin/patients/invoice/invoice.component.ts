@@ -59,7 +59,7 @@ export class InvoiceComponent implements OnInit, OnDestroy {
 
     getmethodname(channelid: string, methodid: string): string {
         return this.allpaymentchannels.find(value => {
-            return value.id === channelid;
+            return value._id === channelid;
         }).methods[methodid].name;
     }
 

@@ -22,7 +22,7 @@ export class PatientnotesService {
         });
     }
 
-    fetchpatientnotes(id: string): void {
+    fetchpatientnotes(_id: BSON.ObjectId): void {
         // this.stitch.db.collection('patientnotes')
         //     .where('patientId', '==', id)
         //     .limit(100)

@@ -1,7 +1,6 @@
 {
   "name": "Mzurihealth",
   "version": "2.1.3",
-  "license": "https://themeforest.net/licenses/terms/regular",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -64,6 +63,7 @@
     "hammerjs": "2.0.8",
     "lodash": "^4.17.13",
     "moment": "2.24.0",
+    "mongodb-stitch-browser-sdk": "4.5.0",
     "ng2-charts": "^2.3.0",
     "ngrx-store-freeze": "0.2.4",
     "ngx-color-picker": "^8.0.1",

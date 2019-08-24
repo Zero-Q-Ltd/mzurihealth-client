@@ -7,6 +7,7 @@ import {FuseSplashScreenService} from '../../../../@fuse/services/splash-screen.
 import {AdminService} from '../../services/admin.service';
 import {HospitalAdmin} from '../../../models/user/HospitalAdmin';
 import {Router} from '@angular/router';
+import { StitchService } from 'app/admin/services/stitch/stitch.service';
 
 @Component({
     selector: 'login-2',
@@ -35,6 +36,7 @@ export class Login2Component implements OnInit {
         private _fuseSplashScreenService: FuseSplashScreenService,
         private adminservice: AdminService,
         private router: Router,
+        private stitch: StitchService
     ) {
         // Configure the layout
         this._fuseConfigService.config = {
@@ -61,7 +63,7 @@ export class Login2Component implements OnInit {
     }
 
     loginWithGoogle(): void {
-
+        this.stitch.loginWithGoogle();
     }
 
     // -----------------------------------------------------------------------------------------------------

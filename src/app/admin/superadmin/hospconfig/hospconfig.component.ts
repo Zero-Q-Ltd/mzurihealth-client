@@ -130,7 +130,7 @@ export class HospconfigComponent implements OnInit {
         this.temphospital.paymentMethods.push({...emptypaymentmethod});
     }
 
-    getpaymentchannel(id: string): PaymentChannel | null {
+    getpaymentchannel(_id: BSON.ObjectId): PaymentChannel | null {
         if (!id) {
             return null;
         }

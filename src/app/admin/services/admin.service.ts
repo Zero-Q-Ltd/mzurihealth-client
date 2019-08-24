@@ -5,10 +5,19 @@ import { emptyadmin, HospitalAdmin } from '../../models/user/HospitalAdmin';
 import { NotificationService } from '../../shared/services/notifications.service';
 import { AdminCategory } from '../../models/user/AdminCategory';
 import { AdminInvite } from '../../models/user/AdminInvite';
-import { Apollo } from 'apollo-angular';
-import gql from 'graphql-tag';
-import { Subscription } from 'apollo-client/util/Observable';
-import { Patient } from 'app/models/patient/Patient';
+import { StitchService } from './stitch/stitch.service';
+import {
+    AnonymousCredential,
+    GoogleRedirectCredential,
+    RemoteMongoClient,
+    RemoteMongoDatabase,
+    Stitch,
+    StitchAppClient,
+    StitchAppClientConfiguration,
+    StitchAuth,
+    StitchUser,
+    BSON, StreamListener,
+} from 'mongodb-stitch-browser-sdk';
 
 @Injectable({
     providedIn: 'root'
@@ -27,36 +36,53 @@ export class AdminService {
     firstlogin = false;
     validuser: boolean;
     admincategories: BehaviorSubject<Array<AdminCategory>> = new BehaviorSubject<Array<AdminCategory>>([]);
-    // We use the gql tag to parse our query string into a query document
-    CurrentUserForProfile = gql`
-mutation {
-  createAdmin(input :  {email:  "tester@gmail.com"}){
-    status
-  }
-}
-    `;
-    private querySubscription: Subscription;
+    /**
+       * this keeps a local copy of all the subscriptions within this service
+       */
+    subscriptions: Map<string, any> = new Map<string, any>();
 
     constructor(private router: Router,
         private notificationservice: NotificationService,
-        private apollo: Apollo
-    ) {
-        console.log('sending query');
-
-        this.apollo.mutate<Patient>({ mutation: this.CurrentUserForProfile })
-            .subscribe(({ data, loading }) => {
-                console.log(data);
-            });
+        private stitch: StitchService) {
+        this.stitch.user.subscribe(value => {
+            this.getuser(value);
+        });
+        this.observableuserdata.subscribe(value => {
+            this.userdata = value;
+        });
     }
 
     // The the status of the activeadmin
     setstatus(availability: number): void {
         const config = this.userdata.config;
         config.availability = availability;
-
     }
 
+    getuser = async (user: StitchUser) => {
+        this.stitch.db.collection<HospitalAdmin>('hospitaladmins')
+            .findOne({ _id: new BSON.ObjectId(user.id) })
+            .then(async userdata => {
+                this.observableuserdata.next(userdata);
+                console.log(userdata);
+                const stream = await this.stitch.db.collection<HospitalAdmin>('hospitaladmins')
+                    .watch({ _id: new BSON.ObjectId(user.id) });
+                stream.onNext(data => {
+                    console.log(data.fullDocument);
+                    this.observableuserdata.next(data.fullDocument);
+                });
+                stream.onError(error => {
+                    console.log(error);
+                });
+            });
+    };
+
     getadmincategories(): void {
+        this.stitch.db.collection<AdminCategory>('admincategories')
+            .find()
+            .asArray()
+            .then(values => {
+                this.admincategories.next(values)
+            })
         // this.db.firestore.collection('admincategories').onSnapshot(allcategorydata => {
         //     this.admincategories.next(allcategorydata.docs.map(categorydata => {
         //         const category = categorydata.data() as AdminCategory;
@@ -102,7 +128,7 @@ mutation {
         this.router.navigate(['/admin/authentication/login']);
     }
 
-    checkinvite(): void {
+    checkinvite(user: StitchUser): void {
         // const invitequery = this.db.firestore.collection('admininvites')
         // .where('email', '==', user.email)
         // .limit(1)
@@ -169,5 +195,11 @@ mutation {
         //     this.db.firestore.collection('admininvites').add(userdata);
         // });
 
+    }
+
+    unsubscribeAll() : void {
+        this.subscriptions.forEach(value => {
+            value();
+        });
     }
 }

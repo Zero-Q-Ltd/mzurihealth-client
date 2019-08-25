@@ -65,7 +65,7 @@ export class AdminService {
                 this.observableuserdata.next(userdata);
                 console.log(userdata);
                 const stream = await this.stitch.db.collection<HospitalAdmin>('hospitaladmins')
-                    .watch({ _id: new BSON.ObjectId(user.id) });
+                    .watch([new BSON.ObjectId(user.id)]);
                 stream.onNext(data => {
                     console.log(data.fullDocument);
                     this.observableuserdata.next(data.fullDocument);
@@ -74,38 +74,31 @@ export class AdminService {
                     console.log(error);
                 });
             });
-    };
+    }
 
     getadmincategories(): void {
         this.stitch.db.collection<AdminCategory>('admincategories')
             .find()
             .asArray()
             .then(values => {
-                this.admincategories.next(values)
-            })
-        // this.db.firestore.collection('admincategories').onSnapshot(allcategorydata => {
-        //     this.admincategories.next(allcategorydata.docs.map(categorydata => {
-        //         const category = categorydata.data() as AdminCategory;
-        //         category._id = categorydata._id;
-        //         return category;
-        //     }));
-        // });
+                this.admincategories.next(values);
+            });
     }
 
-    disableadmin(adminid: string): any {
+    disableadmin(adminid: BSON.ObjectId): Promise<any> {
+        return this.stitch.db.collection('hospitaladmins').findOneAndUpdate({ _id: adminid }, { status: false });
         // return this.db.firestore.collection('hospitaladmins').doc(adminid).update({status: false});
     }
 
-    enableadmin(adminid: string): any {
+    enableadmin(adminid: BSON.ObjectId): Promise<any> {
+        return this.stitch.db.collection('hospitaladmins').findOneAndUpdate({ _id: adminid }, { status: false });
         // return this.db.firestore.collection('hospitaladmins').doc(adminid).update({status: true});
     }
 
-    deleteinvite(inviteid: string): any {
-        // return this.db.firestore.collection('admininvites').doc(inviteid).delete();
-    }
+    deleteinvite(inviteid: BSON.ObjectId): Promise<any> {
+        return this.stitch.db.collection('admininvites').findOneAndDelete({ _id: inviteid });
 
-    signout(): void {
-        // this.afAuth.auth.signOut();
+        // return this.db.firestore.collection('admininvites').doc(inviteid).delete();
     }
 
     initusertypes(): void {
@@ -121,11 +114,6 @@ export class AdminService {
         //     batch.set(this.db.firestore.collection('admincategories').doc(this.db.createId()), category);
         //     return await batch.commit();
         // });
-    }
-
-    logout(): void {
-        // this.afAuth.auth.signOut();
-        this.router.navigate(['/admin/authentication/login']);
     }
 
     checkinvite(user: StitchUser): void {
@@ -197,7 +185,7 @@ export class AdminService {
 
     }
 
-    unsubscribeAll() : void {
+    unsubscribeAll(): void {
         this.subscriptions.forEach(value => {
             value();
         });

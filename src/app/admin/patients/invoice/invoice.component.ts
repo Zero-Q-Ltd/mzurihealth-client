@@ -2,7 +2,7 @@ import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {Subject} from 'rxjs';
 import {HospitalService} from '../../services/hospital.service';
 import {Hospital} from '../../../models/hospital/Hospital';
-import {PatientvisitService} from '../../services/patientvisit.service';
+import {VisitService} from '../../services/visit.service';
 import {emptymergedQueueModel, MergedPatientQueueModel} from '../../../models/visit/MergedPatientQueueModel';
 import {QueueService} from '../../services/queue.service';
 import {MAT_DIALOG_DATA} from '@angular/material';
@@ -24,7 +24,7 @@ export class InvoiceComponent implements OnInit, OnDestroy {
     constructor(private hospitalservice: HospitalService,
                 private queue: QueueService,
                 private paymentmethodService: PaymentmethodService,
-                private patientvisit: PatientvisitService,
+                private patientvisit: VisitService,
                 @Inject(MAT_DIALOG_DATA) public patientid: string) {
         // Set the private defaults
         this._unsubscribeAll = new Subject();

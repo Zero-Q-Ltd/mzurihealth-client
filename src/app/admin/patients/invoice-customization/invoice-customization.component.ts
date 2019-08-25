@@ -1,6 +1,6 @@
 import {Component, Inject, OnInit, ViewEncapsulation} from '@angular/core';
 import {QueueService} from '../../services/queue.service';
-import {PatientvisitService} from '../../services/patientvisit.service';
+import {VisitService} from '../../services/visit.service';
 import {emptymergedQueueModel, MergedPatientQueueModel} from '../../../models/visit/MergedPatientQueueModel';
 import {emptyprocedureperformed, Procedureperformed} from '../../../models/procedure/Procedureperformed';
 import {PaymentmethodService} from '../../services/paymentmethod.service';
@@ -40,7 +40,7 @@ export class InvoiceCustomizationComponent implements OnInit {
 
     constructor(private queue: QueueService,
                 private hospital: HospitalService,
-                private visitservice: PatientvisitService,
+                private visitservice: VisitService,
                 private paymentmethodService: PaymentmethodService,
                 private hospitalservice: HospitalService,
                 public _matDialog: MatDialog,

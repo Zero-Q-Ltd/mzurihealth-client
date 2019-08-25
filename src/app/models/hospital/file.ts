@@ -4,18 +4,22 @@ import {
 
 export interface HospFile {
     _id: BSON.ObjectId;
+    hospitalId: BSON.ObjectId;
     date: Date;
     lastVisit: Date;
     no: string;
     idno: number;
     visitCount: number;
+    patientId: BSON.ObjectId;
 }
 
 export const emptyfile: HospFile = {
     _id: null,
+    hospitalId : null,
     date: null,
     lastVisit: null,
     no: '0',
     idno: null,
-    visitCount: 0
+    visitCount: 0,
+    patientId : null
 };

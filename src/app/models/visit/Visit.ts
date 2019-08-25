@@ -4,7 +4,7 @@ import {
     BSON
 } from 'mongodb-stitch-browser-sdk';
 
-export interface PatientVisit {
+export interface Visit {
     procedures: Array<Procedureperformed>;
     totalcost: number;
     visitDescription: string;
@@ -53,7 +53,7 @@ export interface Checkin {
     status: 0 | 1 | 2 | 3 | 4;
 }
 
-export const emptypatientvisit: PatientVisit = {
+export const emptypatientvisit: Visit = {
     procedures: [],
     totalcost: 0,
     visitDescription: null,

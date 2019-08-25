@@ -4,7 +4,7 @@ import {HospitalAdmin} from '../../../../../models/user/HospitalAdmin';
 import {HospitalService} from '../../../../services/hospital.service';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {PatientService} from '../../../../services/patient.service';
-import {PatientvisitService} from '../../../../services/patientvisit.service';
+import {VisitService} from '../../../../services/visit.service';
 import {RawProcedure, RawProcedureCategory} from '../../../../../models/procedure/RawProcedure';
 import {CustomProcedure} from '../../../../../models/procedure/CustomProcedure';
 import {ProceduresService} from '../../../../services/procedures.service';
@@ -20,7 +20,7 @@ import {MergedPatientQueueModel} from '../../../../../models/visit/MergedPatient
 import {AdminSelectionComponent} from '../../admin-selection/admin-selection.component';
 import {MatDialog, MatDialogRef, MatTableDataSource} from '@angular/material';
 import {LocalcommunicationService} from '../localcommunication.service';
-import {emptypatientvisit, PatientVisit} from '../../../../../models/visit/PatientVisit';
+import {emptypatientvisit, Visit} from '../../../../../models/visit/Visit';
 import {NotificationService} from '../../../../../shared/services/notifications.service';
 import {PerformProcedureComponent} from '../perform-procedure/perform-procedure.component';
 import {SelectionModel} from '@angular/cdk/collections';
@@ -53,7 +53,7 @@ export class TodayComponent implements OnInit {
     dialogRef: MatDialogRef<any>;
     imeanzilishwa: BehaviorSubject<boolean> = new BehaviorSubject(false);
     hospitaladmins: Array<HospitalAdmin> = [];
-    currentvisit: PatientVisit = {...emptypatientvisit};
+    currentvisit: Visit = {...emptypatientvisit};
     proceduresdatasource: MatTableDataSource<Procedureperformed> = new MatTableDataSource([]);
     procedurecolumns = ['name', 'practitioner', 'results', 'notes', 'action'];
     confirmDialogRef: MatDialogRef<FuseConfirmDialogComponent>;
@@ -64,7 +64,7 @@ export class TodayComponent implements OnInit {
                 private procedureservice: ProceduresService,
                 private queue: QueueService,
                 public _matDialog: MatDialog,
-                private patientvisitservice: PatientvisitService,
+                private patientvisitservice: VisitService,
                 private communication: LocalcommunicationService,
                 private adminservice: AdminService,
                 private notifications: NotificationService) {

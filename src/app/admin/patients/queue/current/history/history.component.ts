@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {PatientvisitService} from '../../../../services/patientvisit.service';
-import {PatientVisit} from '../../../../../models/visit/PatientVisit';
+import {VisitService} from '../../../../services/visit.service';
+import {Visit} from '../../../../../models/visit/Visit';
 import {HospitalAdmin} from '../../../../../models/user/HospitalAdmin';
 import {HospitalService} from '../../../../services/hospital.service';
 
@@ -10,10 +10,10 @@ import {HospitalService} from '../../../../services/hospital.service';
     styleUrls: ['./history.component.scss']
 })
 export class HistoryComponent implements OnInit {
-    patientvisits: Array<PatientVisit>;
+    patientvisits: Array<Visit>;
     hospitaladmins: Array<HospitalAdmin>;
 
-    constructor(private patientvisitService: PatientvisitService,
+    constructor(private patientvisitService: VisitService,
                 private  hospitalservice: HospitalService,) {
         patientvisitService.visithistory.subscribe(visits => {
             this.patientvisits = visits;

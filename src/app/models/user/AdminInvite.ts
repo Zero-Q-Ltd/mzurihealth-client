@@ -9,8 +9,8 @@ export interface AdminInvite {
     phone: string;
     categoyId: string;
     level: number;
-    inviterId: string;
-    hospitalId: string;
+    inviterId: BSON.ObjectId;
+    hospitalId: BSON.ObjectId;
     metadata: Metadata;
     _id: BSON.ObjectId;
 }

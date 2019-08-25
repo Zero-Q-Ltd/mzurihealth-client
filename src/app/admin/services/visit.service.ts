@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {QueueService} from './queue.service';
 import {HospitalService} from './hospital.service';
-import {emptypatientvisit, PatientVisit} from '../../models/visit/PatientVisit';
+import {emptypatientvisit, Visit} from '../../models/visit/Visit';
 import {BehaviorSubject} from 'rxjs';
 import {Procedureperformed} from '../../models/procedure/Procedureperformed';
 import {MergedProcedureModel} from '../../models/procedure/MergedProcedure.model';
@@ -11,11 +11,11 @@ import * as moment from 'moment';
 @Injectable({
     providedIn: 'root'
 })
-export class PatientvisitService {
+export class VisitService {
     patientid: string;
     hospitalid: string;
-    visithistory: BehaviorSubject<Array<PatientVisit>> = new BehaviorSubject<Array<PatientVisit>>([]);
-    currentvisit: BehaviorSubject<PatientVisit> = new BehaviorSubject<PatientVisit>({...emptypatientvisit});
+    visithistory: BehaviorSubject<Array<Visit>> = new BehaviorSubject<Array<Visit>>([]);
+    currentvisit: BehaviorSubject<Visit> = new BehaviorSubject<Visit>({...emptypatientvisit});
     adminid: string;
 
     constructor(private queue: QueueService,
@@ -103,7 +103,7 @@ export class PatientvisitService {
         //     });
     }
 
-    editpatientvisit(visit: PatientVisit) {
+    editpatientvisit(visit: Visit) {
         // return this.db.collection('hospitalvisits').doc(visit.id).update(visit);
     }
 
@@ -118,7 +118,7 @@ export class PatientvisitService {
 
     }
 
-    payandexit(visit: PatientVisit) {
+    payandexit(visit: Visit) {
         visit.checkin = {
             status: 4,
             admin: null,

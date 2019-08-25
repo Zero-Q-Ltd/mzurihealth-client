@@ -69,8 +69,8 @@ export class AddComponent implements OnInit {
                 /**
                  * set the form data and disable it
                  * */
-                this.patientsForm.controls['personaLinfo']
-                    .get('fileno').patchValue(this.patientfileno.no);
+                // this.patientsForm.controls['personaLinfo']
+                //     .get('fileno').patchValue(this.patientfileno.no);
 
                 // this.patientsForm.controls['personaLinfo']
                 //     .get('fileno').disable({onlySelf: true});
@@ -143,9 +143,9 @@ export class AddComponent implements OnInit {
     insurancechanges(): void {
 
         this.insurance.controls.forEach(x => {
-            x.get('_id').valueChanges.subscribe(g => {
+            x.get('id').valueChanges.subscribe(g => {
                 if (g) {
-                    if (x.get('_id').value.toString().length > -1) {
+                    if (x.get('id').value.toString().length > -1) {
                         x.get('insurancenumber').enable({emitEvent: false});
                     } else {
                         x.get('insurancenumber').disable({emitEvent: false});
@@ -163,8 +163,8 @@ export class AddComponent implements OnInit {
     removeInsurance(index: number): void {
         if (index === 0) {
             // clear the insurance input
-            this.insurance.at(index).get('_id').patchValue(undefined);
-            this.insurance.at(index).get('_id').markAsUntouched();
+            this.insurance.at(index).get('id').patchValue(undefined);
+            this.insurance.at(index).get('id').markAsUntouched();
             this.insurance.at(index).get('insurancenumber').patchValue(undefined);
             this.insurance.at(index).get('insurancenumber').disable();
             return;
@@ -208,7 +208,8 @@ export class AddComponent implements OnInit {
 
         const fileno = new FormControl('',
             Validators.required,
-            FilenumberValidator.validate(this.patientservice));
+            // FilenumberValidator.validate(this.patientservice)
+            );
 
 
         this.personalinfo = new FormGroup({

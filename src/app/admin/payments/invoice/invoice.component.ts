@@ -6,7 +6,7 @@ import {Hospital} from '../../../models/hospital/Hospital';
 import {HospitalService} from '../../services/hospital.service';
 import {QueueService} from '../../services/queue.service';
 import {PaymentmethodService} from '../../services/paymentmethod.service';
-import {PatientvisitService} from '../../services/patientvisit.service';
+import {VisitService} from '../../services/visit.service';
 import {MAT_DIALOG_DATA} from '@angular/material';
 
 @Component({
@@ -23,7 +23,7 @@ export class InvoiceComponent implements OnInit, OnDestroy {
     constructor(private hospitalservice: HospitalService,
                 private queue: QueueService,
                 private paymentmethodService: PaymentmethodService,
-                private patientvisit: PatientvisitService,
+                private patientvisit: VisitService,
                 @Inject(MAT_DIALOG_DATA) public patientdata: MergedPatientQueueModel) {
         // Set the private defaults
         this._unsubscribeAll = new Subject();

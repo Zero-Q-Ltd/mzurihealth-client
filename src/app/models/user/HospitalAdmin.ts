@@ -1,5 +1,7 @@
 import {emptymetadata, Metadata} from '../universal';
-import {BSON} from 'bson';
+import {
+    BSON
+} from 'mongodb-stitch-browser-sdk';
 
 export interface HospitalAdmin {
     _id: BSON.ObjectId;
@@ -11,7 +13,7 @@ export interface HospitalAdmin {
         displayName: string,
     };
     config: {
-        hospitalId: string
+        hospitalId: BSON.ObjectId
         categoryId: string
         level: number
         availability: number // Whether on break , away or available

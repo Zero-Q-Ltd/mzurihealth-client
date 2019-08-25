@@ -20,11 +20,7 @@ import {FrontendModule} from './frontend/frontend.module';
 import {AgmCoreModule} from '@agm/core';
 import {CommonModule} from '@angular/common';
 import {NotificationComponent} from './shared/components/notification/notification.component';
-import {Angulartics2Module} from 'angulartics2';
-import {HttpLink, HttpLinkModule} from 'apollo-angular-link-http';
-import {Apollo, ApolloModule} from 'apollo-angular';
-import {InMemoryCache} from 'apollo-cache-inmemory';
-
+import {Angulartics2Module} from 'angulartics2'
 
 @NgModule({
     declarations: [
@@ -51,8 +47,6 @@ import {InMemoryCache} from 'apollo-cache-inmemory';
         Error404Module,
         Error500Module,
         FrontendModule,
-        ApolloModule,
-        HttpLinkModule,
         /* Angulartics2Module.forRoot(<Angulartics2Settings>{
              pageTracking: {clearHash: true, clearQueryParams: true},
              ga: {transport: 'beacon'},
@@ -69,21 +63,6 @@ import {InMemoryCache} from 'apollo-cache-inmemory';
     ]
 })
 export class AppModule {
-    constructor(apollo: Apollo, httpLink: HttpLink) {
-        const link = httpLink.create({uri: 'http://localhost:4242/api'});
-        const cache = new InMemoryCache();
-
-        apollo.create({
-            link,
-            cache
-        });
-
-        /**
-         * TODO: For use later when we start doing auth
-         */
-            // const middleware = setContext(() => ({
-            //     headers: new HttpHeaders().set('Authorization', localStorage.getItem('token') || null)
-            // }));
-        const state = cache.extract();
+    constructor() {
     }
 }

@@ -1,9 +1,9 @@
 import {emptypatient, Patient} from '../patient/Patient';
-import {emptypatientvisit, PatientVisit} from './PatientVisit';
+import {emptypatientvisit, Visit} from './Visit';
 
 export interface MergedPatientQueueModel {
     patientdata: Patient;
-    queuedata: PatientVisit;
+    queuedata: Visit;
 }
 
 export const emptymergedQueueModel: MergedPatientQueueModel = {

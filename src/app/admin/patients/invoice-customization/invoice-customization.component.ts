@@ -70,7 +70,7 @@ export class InvoiceCustomizationComponent implements OnInit {
         /**
          * Subscribe so that other admin changes are immediately reflected
          */
-        this.queue.mainpatientqueue.subscribe(queuedata => {
+        this.queue.mainpatients.subscribe(queuedata => {
             queuedata.filter(value => {
                 if (value.patientdata._id === this.patient) {
                     this.patientdata = value;

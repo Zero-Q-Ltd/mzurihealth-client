@@ -55,7 +55,7 @@ export class AllComponent implements OnInit, AfterViewInit {
                 this.activehospital = hospital;
             }
         });
-        this.queueService.mainpatientqueue.subscribe();
+        this.queueService.mainpatients.subscribe();
 
         this.paymentethods.allinsurance.subscribe(insurance => {
             this.allInsurance = insurance;
@@ -88,7 +88,7 @@ export class AllComponent implements OnInit, AfterViewInit {
 
     addToQueue(patient: Patient): void {
 
-        const fil = this.queueService.mainpatientqueue.value.filter(value => {
+        const fil = this.queueService.mainpatients.value.filter(value => {
             return value.patientdata._id === patient._id;
         });
 
@@ -157,7 +157,7 @@ export class AllComponent implements OnInit, AfterViewInit {
 
     deletepatient(patient: Patient): void {
         event.stopPropagation();
-        const fil = this.queueService.mainpatientqueue.value.filter(value => {
+        const fil = this.queueService.mainpatients.value.filter(value => {
             return value.patientdata._id === patient._id;
         });
 

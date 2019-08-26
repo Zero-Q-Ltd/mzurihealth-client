@@ -340,8 +340,8 @@ export class TodayComponent implements OnInit {
         /**
          * first check if there's a next patient
          */
-        if (this.queue.mypatientqueue.value[1]) {
-            this.queue.acceptpatient(this.queue.mypatientqueue.value[1].queuedata);
+        if (this.queue.mypatients.value[1]) {
+            this.queue.acceptpatient(this.queue.mypatients.value[1].queuedata);
         } else {
 
         }

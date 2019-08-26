@@ -28,3 +28,8 @@ export interface QueueRefs {
     patientId: BSON.ObjectId;
     visitId: BSON.ObjectId;
 }
+export const emptyqueue: Queue = {
+    _id: new BSON.ObjectId(),
+    hospitalId: null,
+    queue: []
+};

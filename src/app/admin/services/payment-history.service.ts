@@ -4,11 +4,15 @@ import {MergedPatientQueueModel} from '../../models/visit/MergedPatientQueueMode
 import {HospitalService} from './hospital.service';
 import * as moment from 'moment';
 
+import {
+    BSON, RemoteInsertOneResult
+} from 'mongodb-stitch-browser-sdk';
+
 @Injectable({
     providedIn: 'root'
 })
 export class PaymentHistoryService {
-    activehospitalid: string;
+    activehospitalid: BSON.ObjectId;
     paymentshistory: BehaviorSubject<Array<MergedPatientQueueModel>> = new BehaviorSubject([]);
 
     constructor(private hospitalservice: HospitalService) {

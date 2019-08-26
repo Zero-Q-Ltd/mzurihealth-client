@@ -24,8 +24,8 @@ export class MineComponent implements OnInit {
 
     constructor(private queue: QueueService,
                 public _matDialog: MatDialog) {
-        queue.mypatientqueue.subscribe(value => {
-            this.patientsdatasource.data = value.sort((a, b) => {
+        queue.mypatients.subscribe(value => {
+            this.patientsdatasource.data = value.entries()[1].sort((a, b) => {
                 return a.queuedata.metadata.lastEdit.getMilliseconds() - b.queuedata.metadata.lastEdit.getMilliseconds();
             });
         });

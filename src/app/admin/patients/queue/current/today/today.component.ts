@@ -332,12 +332,12 @@ export class TodayComponent implements OnInit {
             console.log(res);
             if (res) {
                 console.log(res);
-                this.queue.assignadmin(this.currentpatient.queuedata, res._id).then(() => {
-                    /**
-                     * important to change from the currently active tab as it will become inactive
-                     */
-                    this.communication.ontabchanged.next(1);
-                });
+                // this.queue.assignadmin(this.currentpatient.queuedata, res._id).then(() => {
+                //     /**
+                //      * important to change from the currently active tab as it will become inactive
+                //      */
+                //     this.communication.ontabchanged.next(1);
+                // });
             }
         });
     }
@@ -351,12 +351,12 @@ export class TodayComponent implements OnInit {
         } else {
 
         }
-        this.patientvisitservice.awaitpayment(this.currentpatient.queuedata._id).then(() => {
-            /**
-             * important to change from the currently active tab as it will become inactive
-             */
-            this.communication.ontabchanged.next(1);
-        });
+        // this.patientvisitservice.awaitpayment(this.currentpatient.queuedata._id).then(() => {
+        //     /**
+        //      * important to change from the currently active tab as it will become inactive
+        //      */
+        //     this.communication.ontabchanged.next(1);
+        // });
     }
 
     exitpatientandbreak(): void {

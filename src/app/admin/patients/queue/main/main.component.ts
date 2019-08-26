@@ -31,7 +31,7 @@ export class MainComponent implements OnInit, AfterViewInit {
                 private  hospitalservice: HospitalService,
                 public _matDialog: MatDialog) {
         queue.mainpatientsqueue.subscribe(value => {
-            this.patientsdatasource.data = value.entries()[1];
+            // this.patientsdatasource.data = value.entries()[1];
         });
         hospitalservice.hospitaladmins.subscribe(admins => {
             this.hospitaladmins = admins;
@@ -69,7 +69,7 @@ export class MainComponent implements OnInit, AfterViewInit {
         this.dialogRef.afterClosed().subscribe((res: HospitalAdmin) => {
             console.log(res);
             if (res) {
-                this.queue.assignadmin(data.queuedata, res._id);
+                // this.queue.assignadmin(data.queuedata, res._id);
             }
         });
     }

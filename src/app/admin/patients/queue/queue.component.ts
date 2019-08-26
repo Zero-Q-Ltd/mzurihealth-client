@@ -23,7 +23,9 @@ export class QueueComponent implements OnInit {
     mainQueue = 0;
     myQueue = 0;
 
-    constructor(private _fuseSidebarService: FuseSidebarService, private communication: LocalcommunicationService, private queueservice: QueueService) {
+    constructor(private _fuseSidebarService: FuseSidebarService, 
+        private communication: LocalcommunicationService, 
+        private queueservice: QueueService) {
         this.communication.ontabchanged.subscribe(tabindex => {
             this.activetabindex = tabindex;
         });
@@ -36,6 +38,7 @@ export class QueueComponent implements OnInit {
         this.queueservice.currentpatient.subscribe(current => {
             this.currentpatient = !current.patientdata._id;
         });
+        this.queueservice.getqueue()
     }
 
     ngOnInit(): void {

@@ -67,9 +67,9 @@
 
         <!-- SIDEBAR CONTENT -->
         <mat-accordion fusePerfectScrollbar>
-            <mat-expansion-panel [disabled]="!patient.patientdata.medicalInfo.metadata.lastEdit">
+            <mat-expansion-panel [disabled]="!patient.patientdata.medicalInfo.metadata.edited">
                 <mat-expansion-panel-header>
-                    Vitals ({{patient.patientdata.medicalInfo.metadata.lastEdit || 'Empty'}})
+                    <!-- Vitals ({{patient.patientdata.medicalInfo.metadata.lastEdit || 'Empty'}}) -->
                 </mat-expansion-panel-header>
                 <ng-template matExpansionPanelContent>
 

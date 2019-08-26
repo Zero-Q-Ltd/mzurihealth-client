@@ -71,18 +71,18 @@ export class InvoiceCustomizationComponent implements OnInit {
          * Subscribe so that other admin changes are immediately reflected
          */
         this.queue.mainpatientsqueue.subscribe(queuedata => {
-            queuedata.filter(value => {
-                if (value.patientdata._id === this.patient) {
-                    this.patientdata = value;
-                    this.proceduresdatasouce.data = value.queuedata.procedures;
-                    if (this.allpaymentchannels.length > 0) {
-                        /**
-                         * Calculate the totals with the first pre-selected channel
-                         */
-                        this.setchannel(this.allpaymentchannels.filter(channel => channel._id === value.queuedata.payment.singlePayment.channelId)[0]);
-                    }
-                }
-            });
+            // queuedata.filter(value => {
+            //     if (value.patientdata._id === this.patient) {
+            //         this.patientdata = value;
+            //         this.proceduresdatasouce.data = value.queuedata.procedures;
+            //         if (this.allpaymentchannels.length > 0) {
+            //             /**
+            //              * Calculate the totals with the first pre-selected channel
+            //              */
+            //             this.setchannel(this.allpaymentchannels.filter(channel => channel._id === value.queuedata.payment.singlePayment.channelId)[0]);
+            //         }
+            //     }
+            // });
         });
     }
 
@@ -146,42 +146,42 @@ export class InvoiceCustomizationComponent implements OnInit {
                 alertType: 'info',
                 body: 'Coming soon...'
             });
-            this.patientdata.queuedata.payment.splitPayment = false;
+            // this.patientdata.queuedata.payment.splitPayment = false;
         }, 800);
 
     }
 
     setchannel(channel: PaymentChannel): void {
-        this.patientdata.queuedata.payment.singlePayment = {
-            amount: 0,
-            channelId: channel._id,
-            methodId: '',
-            transactionId: ''
-        };
-        const isinsurance = channel.name === 'insurance';
-        if (!isinsurance) {
-            this.patientdata.queuedata.payment.hasInsurance = null;
-        }else {
-            /**
-             * @TODO: find a way of selecting the insurance
-             */
-        }
-        let total = 0;
-        this.patientdata.queuedata.procedures.map(value => {
-            const amount = this.getpaymentamount(value.customProcedureId);
-            value.payment = {
-                amount: amount,
-                methods: [{
-                    amount: amount,
-                    channelid: channel._id,
-                    methidid: '',
-                    transactionid: ''
-                }],
-                hasInsurance: isinsurance
-            };
-            total += amount;
-        });
-        this.patientdata.queuedata.payment.total = total;
+        // this.patientdata.queuedata.payment.singlePayment = {
+        //     amount: 0,
+        //     channelId: channel._id,
+        //     methodId: '',
+        //     transactionId: ''
+        // };
+        // const isinsurance = channel.name === 'insurance';
+        // if (!isinsurance) {
+        //     this.patientdata.queuedata.payment.hasInsurance = null;
+        // }else {
+        //     /**
+        //      * @TODO: find a way of selecting the insurance
+        //      */
+        // }
+        // let total = 0;
+        // this.patientdata.queuedata.procedures.map(value => {
+        //     const amount = this.getpaymentamount(value.customProcedureId);
+        //     value.payment = {
+        //         amount: amount,
+        //         methods: [{
+        //             amount: amount,
+        //             channelid: channel._id,
+        //             methidid: '',
+        //             transactionid: ''
+        //         }],
+        //         hasInsurance: isinsurance
+        //     };
+        //     total += amount;
+        // });
+        // this.patientdata.queuedata.payment.total = total;
     }
 
     getcativechannelmethods(channelid: string): Array<PaymentMethod> {
@@ -204,25 +204,25 @@ export class InvoiceCustomizationComponent implements OnInit {
 
 
     selectinsurance(insurance): void {
-        this.selectedinsurance = insurance;
-        this.patientdata.queuedata.payment.hasInsurance = true;
-        let total = 0;
-        this.patientdata.queuedata.procedures.map(value => {
-            const amount = this.getpaymentamount(value.customProcedureId, insurance._id);
-            value.payment = {
-                amount: amount,
-                methods: [{
-                    amount: amount,
-                    channelid: '',
-                    methidid: insurance._id,
-                    transactionid: ''
-                }],
-                hasInsurance: true
-            };
-            total += amount;
-        });
-        this.patientdata.queuedata.payment.total = total;
-        this.patientdata.queuedata.payment.singlePayment.amount = total;
+        // this.selectedinsurance = insurance;
+        // this.patientdata.queuedata.payment.hasInsurance = true;
+        // let total = 0;
+        // this.patientdata.queuedata.procedures.map(value => {
+        //     const amount = this.getpaymentamount(value.customProcedureId, insurance._id);
+        //     value.payment = {
+        //         amount: amount,
+        //         methods: [{
+        //             amount: amount,
+        //             channelid: '',
+        //             methidid: insurance._id,
+        //             transactionid: ''
+        //         }],
+        //         hasInsurance: true
+        //     };
+        //     total += amount;
+        // });
+        // this.patientdata.queuedata.payment.total = total;
+        // this.patientdata.queuedata.payment.singlePayment.amount = total;
     }
 
 
@@ -266,7 +266,7 @@ export class InvoiceCustomizationComponent implements OnInit {
             this.confirmDialogRef.componentInstance.confirmMessage = 'Are you sure you want to pay for the Invoice and exit the patient??';
             this.confirmDialogRef.afterClosed().subscribe(result => {
                 if (result) {
-                    this.visitservice.payandexit(this.patientdata.queuedata);
+                    // this.visitservice.payandexit(this.patientdata.queuedata);
                     this.thisdialogRef.close();
                 }
             });

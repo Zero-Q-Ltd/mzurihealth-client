@@ -20,7 +20,9 @@ import {FrontendModule} from './frontend/frontend.module';
 import {AgmCoreModule} from '@agm/core';
 import {CommonModule} from '@angular/common';
 import {NotificationComponent} from './shared/components/notification/notification.component';
-import {Angulartics2Module} from 'angulartics2'
+import {Angulartics2Module} from 'angulartics2';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment'
 
 @NgModule({
     declarations: [
@@ -53,6 +55,7 @@ import {Angulartics2Module} from 'angulartics2'
              developerMode: !environment.gaTrackingId, // developerMode disables tracking
          }),*/
         Angulartics2Module.forRoot(),
+        ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
 
     ],
 

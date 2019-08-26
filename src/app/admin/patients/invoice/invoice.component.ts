@@ -35,11 +35,11 @@ export class InvoiceComponent implements OnInit, OnDestroy {
          * Subscribe so that other admin changes are immediately reflected
          */
         queue.mainpatientsqueue.subscribe(queuedata => {
-            queuedata.filter(value => {
-                if (value.patientdata._id === this.patientid) {
-                    this.patientdata = value;
-                }
-            });
+            // queuedata.filter(value => {
+            //     if (value.patientdata._id === this.patientid) {
+            //         this.patientdata = value;
+            //     }
+            // });
         });
         this.paymentmethodService.allpaymentchannels.subscribe(channels => {
             this.allpaymentchannels = channels;

@@ -41,7 +41,7 @@ export class MineComponent implements OnInit {
 
     acceptpatient(data: MergedPatientQueueModel): void {
         event.stopPropagation();
-        this.queue.acceptpatient(data.queuedata);
+        // this.queue.acceptpatient(data.queuedata);
 
         // this.confirmDialogRef = this._matDialog.open(FuseConfirmDialogComponent, {
         //     disableClose: false
@@ -81,7 +81,7 @@ export class MineComponent implements OnInit {
                 this.dialogRef.afterClosed().subscribe((res: HospitalAdmin) => {
                     console.log(res);
                     if (res) {
-                        this.queue.assignadmin(data.queuedata, res._id);
+                        // this.queue.assignadmin(data.queuedata, res._id);
                     }
                 });
             }

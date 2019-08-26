@@ -71,7 +71,7 @@
     </mat-paginator>
     <!--End of Payment Procedures Section-->
     <!--Payment Channels Div Starts Here-->
-    <div *ngIf="patientdata.queuedata.payment.splitPayment">
+    <!-- <div *ngIf="patientdata.queuedata.payment.splitPayment">
         <div *ngIf="clickedprocedure.customProcedureId">
             <table class="simple">
                 <thead>
@@ -160,15 +160,15 @@
             </tr>
             </tbody>
         </table>
-    </div>
+    </div> -->
     <!--End of Payment Channels Section-->
 
     <br>
     <div>
-        <mat-slide-toggle (toggleChange)="togglechange()" [(ngModel)]="patientdata.queuedata.payment.splitPayment"
+        <!-- <mat-slide-toggle (toggleChange)="togglechange()" [(ngModel)]="patientdata.queuedata.payment.splitPayment"
                           class="p-24"
                           labelPosition="before" mattooltip="Coming soon...">Split Payment Per procedure
-        </mat-slide-toggle>
+        </mat-slide-toggle> -->
         <mat-slide-toggle (toggleChange)="togglemultipayment()" [(ngModel)]="multipayment" labelPosition="before"
                           mattooltip="Coming soon...">
             Multiple Payments

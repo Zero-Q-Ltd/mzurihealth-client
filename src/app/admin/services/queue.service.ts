@@ -43,7 +43,7 @@ export class QueueService {
         this.hospitalservice.activehospital.subscribe(hospital => {
             if (hospital._id) {
                 this.activehospitalid = hospital._id;
-                this.getqueue();
+                // this.getqueue();
                 this.getpatientsinqueue();
             }
         });
@@ -140,6 +140,7 @@ export class QueueService {
      * patient data and queue info can be made
      */
     getqueue() {
+        console.log('triggered');
         this.stitch.db.collection<Queue>('queues')
             .findOne({ hospitalId: this.activehospitalid })
             .then(async q => {

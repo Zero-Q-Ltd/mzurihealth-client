@@ -34,7 +34,7 @@ export class InvoiceComponent implements OnInit, OnDestroy {
         /**
          * Subscribe so that other admin changes are immediately reflected
          */
-        queue.mainpatients.subscribe(queuedata => {
+        queue.mainpatientsqueue.subscribe(queuedata => {
             queuedata.filter(value => {
                 if (value.patientdata._id === this.patientid) {
                     this.patientdata = value;

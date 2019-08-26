@@ -70,7 +70,7 @@ export class InvoiceCustomizationComponent implements OnInit {
         /**
          * Subscribe so that other admin changes are immediately reflected
          */
-        this.queue.mainpatients.subscribe(queuedata => {
+        this.queue.mainpatientsqueue.subscribe(queuedata => {
             queuedata.filter(value => {
                 if (value.patientdata._id === this.patient) {
                     this.patientdata = value;
@@ -126,10 +126,12 @@ export class InvoiceCustomizationComponent implements OnInit {
         this.dialogRef.afterClosed();
     }
 
+    /**
+     * @TODO Allow for customization of individual procedure payment methods
+     * @param procedure 
+     */
     selectprocedure(procedure): void {
-        if (this.patientdata.queuedata.payment.splitPayment) {
-            this.clickedprocedure = procedure;
-        }
+       
     }
 
     togglechange(): void {

@@ -308,7 +308,6 @@ export class PatientService {
          * **/
         const queueID = '';
 
-
         /**
          * steps
          * 1. hospitalvisits

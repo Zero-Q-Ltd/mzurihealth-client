@@ -9,6 +9,7 @@ import {HospitalAdmin} from '../../models/user/HospitalAdmin';
 import {AdminService} from './admin.service';
 import * as moment from 'moment';
 import {MergedProcedureModel} from '../../models/procedure/MergedProcedure.model';
+import { Meta } from 'app/models/universal';
 
 @Injectable({
     providedIn: 'root'
@@ -161,9 +162,16 @@ export class ProceduresService {
         customprocedure.hospitalId = this.activehospital._id;
         customprocedure.status = true;
         customprocedure.creatorid = this.userdata._id;
+        
+        const meta: Meta = {
+            date: moment().toDate(),
+            adminId: this.adminservice.userdata._id,
+            hospitalId: this.hospitalservice.activehospital.value._id
+        }; 
+
         customprocedure.metadata = {
-            lastEdit: moment().toDate(),
-            date: moment().toDate()
+            created: meta,
+            edited: meta,
         };
         /**
          * remove insurance prices set to 0
@@ -178,9 +186,15 @@ export class ProceduresService {
 
     editcustomprocedure(customprocedure: CustomProcedure): any {
         customprocedure.creatorid = this.userdata._id;
+
+        const meta: Meta = {
+            date: moment().toDate(),
+            adminId: this.adminservice.userdata._id,
+            hospitalId: this.hospitalservice.activehospital.value._id
+        }; 
+
         customprocedure.metadata = {
-            lastEdit: moment().toDate(),
-            date: customprocedure.metadata.date
+            edited: meta,
         };
         /**
          * remove insurance prices set to 0

@@ -28,6 +28,7 @@ import {AdminService} from '../../../../services/admin.service';
 import {ProcedurenotesComponent} from '../procedure-notes/procedurenotes.component';
 import {FuseConfirmDialogComponent} from '../../../../../../@fuse/components/confirm-dialog/confirm-dialog.component';
 import * as moment from 'moment';
+import { Meta } from 'app/models/universal';
 
 @Component({
     selector: 'patient-today',
@@ -135,9 +136,14 @@ export class TodayComponent implements OnInit {
                     ff.results = ff.results || '';
                     ff.name = value.rawProcedure.name;
                     ff.category = value.rawProcedure.category;
+                    const meta: Meta = {
+                        date: moment().toDate(),
+                        adminId: this.adminservice.userdata._id,
+                        hospitalId: this.hospitalservice.activehospital.value._id
+                    };
                     ff.metadata = {
-                        lastEdit: moment().toDate(),
-                        date: moment().toDate()
+                        created: meta,
+                        edited: meta,                        
                     };
                     ff.adminid = this.patientvisitservice.adminid;
                     ff.payment = {
@@ -203,13 +209,13 @@ export class TodayComponent implements OnInit {
      * initializes forms and from controls
      */
     initprocedureform(): void {
-        let results = new FormControl('', [Validators.required]);
-        let notes = new FormControl('', [Validators.required]);
+        const results = new FormControl('', [Validators.required]);
+        const notes = new FormControl('', [Validators.required]);
         this.procedureperformed = new FormGroup({
             results: results,
             notes: notes
         });
-        let selection = new FormControl('');
+        const selection = new FormControl('');
 
         this.procedureselection = new FormGroup({
             selection: selection,
@@ -222,12 +228,12 @@ export class TodayComponent implements OnInit {
      * @param mzio
      */
     igamizio(mzio): FormGroup {
-        let allergy = new FormControl({
+        const allergy = new FormControl({
             value: mzio.type,
             disabled: false
         });
 
-        let detail = new FormControl({
+        const detail = new FormControl({
             value: mzio.detail,
             disabled: false
         });
@@ -243,12 +249,12 @@ export class TodayComponent implements OnInit {
      * @param tatizo
      */
     igamatatizo(tatizo): FormGroup {
-        let allergy = new FormControl({
+        const allergy = new FormControl({
             value: tatizo.type,
             disabled: false
         });
 
-        let detail = new FormControl({
+        const detail = new FormControl({
             value: tatizo.detail,
             disabled: false
         });
@@ -260,9 +266,9 @@ export class TodayComponent implements OnInit {
     }
 
     createallergies(): FormGroup {
-        let allergy = new FormControl('');
+        const allergy = new FormControl('');
 
-        let detail = new FormControl({
+        const detail = new FormControl({
             value: '',
             disabled: true
         });
@@ -274,9 +280,9 @@ export class TodayComponent implements OnInit {
     }
 
     createmedconditions(): FormGroup {
-        let condition = new FormControl('');
+        const condition = new FormControl('');
 
-        let detail = new FormControl({
+        const detail = new FormControl({
             value: '',
             disabled: true
         });
@@ -368,7 +374,6 @@ export class TodayComponent implements OnInit {
         // @ts-ignore
         this.allergiesform.get('allergiesformArray').removeAt(index);
         this.allergychanges();
-
     }
 
     allergychanges(): void {
@@ -416,12 +421,12 @@ export class TodayComponent implements OnInit {
     }
 
     initvitalsformm(): void {
-        let height = new FormControl(this.currentpatient.patientdata.medicalInfo.vitals.height);
-        let weight = new FormControl(this.currentpatient.patientdata.medicalInfo.vitals.weight);
-        let pressure = new FormControl(this.currentpatient.patientdata.medicalInfo.vitals.pressure);
-        let heartrate = new FormControl(this.currentpatient.patientdata.medicalInfo.vitals.heartRate);
-        let sugar = new FormControl(this.currentpatient.patientdata.medicalInfo.vitals.sugar);
-        let respiration = new FormControl(this.currentpatient.patientdata.medicalInfo.vitals.respiration);
+        const height = new FormControl(this.currentpatient.patientdata.medicalInfo.vitals.height);
+        const weight = new FormControl(this.currentpatient.patientdata.medicalInfo.vitals.weight);
+        const pressure = new FormControl(this.currentpatient.patientdata.medicalInfo.vitals.pressure);
+        const heartrate = new FormControl(this.currentpatient.patientdata.medicalInfo.vitals.heartRate);
+        const sugar = new FormControl(this.currentpatient.patientdata.medicalInfo.vitals.sugar);
+        const respiration = new FormControl(this.currentpatient.patientdata.medicalInfo.vitals.respiration);
         this.vitalsform = new FormGroup({
             height: height,
             weight: weight,

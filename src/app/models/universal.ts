@@ -9,10 +9,14 @@ export interface Customfields {
 }
 
 export interface Metadata {
-    created: Meta;
+    /**
+     * Sometimes we may just want to modify the last edited date
+     */
+    created?: Meta;
     edited: Meta;
 }
-interface Meta {
+export interface Meta {
+    date: Date;
     adminId: BSON.ObjectId;
     hospitalId: BSON.ObjectId;
 }

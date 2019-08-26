@@ -55,7 +55,7 @@ export class AllComponent implements OnInit, AfterViewInit {
                 this.activehospital = hospital;
             }
         });
-        this.queueService.mainpatients.subscribe();
+        this.queueService.mainpatientsqueue.subscribe();
 
         this.paymentethods.allinsurance.subscribe(insurance => {
             this.allInsurance = insurance;
@@ -88,11 +88,9 @@ export class AllComponent implements OnInit, AfterViewInit {
 
     addToQueue(patient: Patient): void {
 
-        const fil = this.queueService.mainpatients.value.filter(value => {
-            return value.patientdata._id === patient._id;
-        });
+        const fil = this.queueService.mainpatientsqueue.value.get(patient._id);
 
-        if (fil.length !== 0) {
+        if (fil) {
             this.notificationservice.notify({
                 alertType: 'warning',
                 body: 'The patient is already in the queue',
@@ -157,11 +155,9 @@ export class AllComponent implements OnInit, AfterViewInit {
 
     deletepatient(patient: Patient): void {
         event.stopPropagation();
-        const fil = this.queueService.mainpatients.value.filter(value => {
-            return value.patientdata._id === patient._id;
-        });
+        const fil = this.queueService.mainpatientsqueue.value.get(patient._id);
 
-        if (fil.length !== 0) {
+        if (fil) {
             this.notificationservice.notify({
                 alertType: 'error',
                 body: 'You must first exit the patient from queue to delete them',

@@ -12,10 +12,8 @@ import { MergedProcedureModel } from '../../models/procedure/MergedProcedure.mod
 import * as moment from 'moment';
 import { StitchService } from './stitch/stitch.service';
 import { switchMap, takeUntil, skipWhile } from 'rxjs/operators';
-
-import {
-    BSON, RemoteInsertOneResult
-} from 'mongodb-stitch-browser-sdk';
+import { BSON } from 'bson'
+import { RemoteInsertOneResult } from 'mongodb-stitch-browser-sdk';
 import { HospFile } from 'app/models/hospital/file';
 import { Queue, QueueRefs, emptyqueue } from 'app/models/hospital/Queue';
 
@@ -30,9 +28,9 @@ export class QueueService {
      * otherwise encountered when sifting through the data, as there is a lot of fitering to do
      * and for big hospitals the number of patients in the mainqueue at any given time might be big
      */
-    mainpatients: BehaviorSubject<Map<BSON.ObjectId, Patient>> = new BehaviorSubject(new Map());
-    mypatients: BehaviorSubject<Map<BSON.ObjectId, Patient>> = new BehaviorSubject(new Map());
-    mypatientqueue: BehaviorSubject<Array<QueueRefs>> = new BehaviorSubject([]);
+    mainpatientsqueue: BehaviorSubject<Map<BSON.ObjectId, MergedPatientQueueModel>> = new BehaviorSubject(new Map());
+    mypatients: BehaviorSubject<Map<BSON.ObjectId, MergedPatientQueueModel>> = new BehaviorSubject(new Map());
+    mypatientqueue: BehaviorSubject<Array<MergedPatientQueueModel>> = new BehaviorSubject([]);
     currentpatient: BehaviorSubject<MergedPatientQueueModel> = new BehaviorSubject({ ...emptymergedQueueModel });
     adminid: BSON.ObjectId;
     fetchingpatientdata: BehaviorSubject<boolean> = new BehaviorSubject(false)
@@ -64,7 +62,7 @@ export class QueueService {
      */
     filterqueue(): void {
 
-        combineLatest([this.queue, this.mainpatients])
+        combineLatest([this.queue, this.mainpatientsqueue])
             /**
             * Only filter the data if its not already loading, because the queue may change and trigger,
             * but we want to filter once loading is complete
@@ -94,12 +92,12 @@ export class QueueService {
                     }
                     return equality;
                 }).map(q => {
-                    return this.mainpatients.value.get(q.patientId);
+                    return this.mainpatientsqueue.value.get(q.patientId);
                 });
-                const mypatientsmap: Map<BSON.ObjectId, Patient> =  new Map();
+                const mypatientsmap: Map<BSON.ObjectId, MergedPatientQueueModel> = new Map();
                 mypatients.map(q => {
-                    mypatientsmap.set(q._id, q);
-                })
+                    mypatientsmap.set(q.patientdata._id, q);
+                });
                 this.mypatients.next(mypatientsmap);
             });
     }
@@ -114,7 +112,11 @@ export class QueueService {
             status: 1,
             admin: adminid
         };
-        visit.metadata.lastEdit = moment().toDate();
+        visit.metadata.edited = {
+            date: moment().toDate(),
+            adminId: adminid,
+            hospitalId: this.activehospitalid
+        };
         console.log(visit);
         return true as any;
 
@@ -132,14 +134,6 @@ export class QueueService {
         // return batch.commit();
     }
 
-    getinsuanceprice(procedure: MergedProcedureModel): number {
-        // if (this.currentpatient.value.queuedata.paymentmethod) {
-        //     if (procedure.customProcedure.insurancePrices[this.currentpatient.value.queuedata.paymentmethod]) {
-        //
-        //     }
-        // }
-        return 0;
-    }
 
     /**
      * This simply creates  subscription to the hospital queue, from which secondary subscriptions to 
@@ -159,7 +153,7 @@ export class QueueService {
                 } else {
                     const queuewatcher = await this.stitch.db.collection<Queue>('queues')
                         .watch([q._id]);
-                    queuewatcher.onNext(k => h.next(k.fullDocument));
+                    queuewatcher.onNext(k => this.queue.next(k.fullDocument));
                 }
             });
     }
@@ -171,7 +165,7 @@ export class QueueService {
      * Every change in the queue data triggers a new database query..... Maybe this can be optimized???
      * ---------------------@Todo Suggestion maybe just query the changed queue element id's
      */
-    getpatientsinqueue() {
+    getpatientsinqueue(): void {
         this.queue.pipe(switchMap((queue) => {
             this.fetchingpatientdata.next(true)
             /**
@@ -191,16 +185,20 @@ export class QueueService {
                         _id: qq.patientId
                     });
                 return combineLatest([patientfile, patient], (f, p) => {
-                    return Object.assign(emptypatient, patient, { fileInfo: patientfile }) as Patient;
+                    const data: MergedPatientQueueModel = {
+                        patientdata: Object.assign(emptypatient, patient, { fileInfo: patientfile }),
+                        queuedata: qq
+                    };
+                    return data;
                 });
             }));
         })).subscribe(que => {
             this.fetchingpatientdata.next(true);
-            const patientmap: Map<BSON.ObjectId, Patient> = new Map();
+            const patientmap: Map<BSON.ObjectId, MergedPatientQueueModel> = new Map();
             que.map(q => {
                 patientmap.set(q._id, q);
             });
-            this.mainpatients.next(patientmap);
+            this.mainpatientsqueue.next(patientmap);
         });
     }
 

@@ -30,8 +30,8 @@ export class MainComponent implements OnInit, AfterViewInit {
     constructor(private queue: QueueService,
                 private  hospitalservice: HospitalService,
                 public _matDialog: MatDialog) {
-        queue.mainpatients.subscribe(value => {
-            this.patientsdatasource.data = value;
+        queue.mainpatientsqueue.subscribe(value => {
+            this.patientsdatasource.data = value.entries()[1];
         });
         hospitalservice.hospitaladmins.subscribe(admins => {
             this.hospitaladmins = admins;

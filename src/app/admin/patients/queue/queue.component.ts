@@ -27,7 +27,7 @@ export class QueueComponent implements OnInit {
         this.communication.ontabchanged.subscribe(tabindex => {
             this.activetabindex = tabindex;
         });
-        this.queueservice.mainpatients.subscribe(main => {
+        this.queueservice.mainpatientsqueue.subscribe(main => {
             this.mainQueue = main.size;
         });
         this.queueservice.mypatients.subscribe(mine => {

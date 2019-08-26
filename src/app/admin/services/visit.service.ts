@@ -7,6 +7,7 @@ import {Procedureperformed} from '../../models/procedure/Procedureperformed';
 import {MergedProcedureModel} from '../../models/procedure/MergedProcedure.model';
 import {AdminService} from './admin.service';
 import * as moment from 'moment';
+import { Meta } from 'app/models/universal';
 
 @Injectable({
     providedIn: 'root'
@@ -50,9 +51,16 @@ export class VisitService {
     addprocedure(visitid: string, procedure: MergedProcedureModel, per: Procedureperformed) {
         per.name = procedure.rawProcedure.name;
         per.category = procedure.rawProcedure.category;
+
+        const meta: Meta = {
+            date: moment().toDate(),
+            adminId: this.adminservice.userdata._id,
+            hospitalId: this.hospitalService.activehospital.value._id
+        };
+
         per.metadata = {
-            lastEdit: moment().toDate(),
-            date: moment().toDate()
+            created: meta,
+            edited: meta,
         };
         per.adminid = this.adminid;
         per.payment = {

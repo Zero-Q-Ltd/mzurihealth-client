@@ -1,3 +1,4 @@
+import { HospitalService } from './hospital.service';
 import {Injectable} from '@angular/core';
 import {QueueService} from './queue.service';
 import {BehaviorSubject} from 'rxjs';
@@ -7,6 +8,7 @@ import * as moment from 'moment';
 import {
     BSON
 } from 'mongodb-stitch-browser-sdk';
+import { Meta } from 'app/models/universal';
 
 @Injectable({
     providedIn: 'root'
@@ -16,7 +18,8 @@ export class PatientnotesService {
     patientid: string;
 
     constructor(private queueservice: QueueService,
-                private admiservice: AdminService) {
+        private hospitalservice: HospitalService,
+        private adminservice: AdminService) {
         queueservice.currentpatient.subscribe(value => {
             if (value.patientdata._id) {
                 this.patientid = value.patientdata._id;
@@ -39,13 +42,18 @@ export class PatientnotesService {
 
     addnote(note: Patientnote): any {
         note.admin = {
-            _id: this.admiservice.userdata._id,
-            name: this.admiservice.userdata.data.displayName
+            _id: this.adminservice.userdata._id,
+            name: this.adminservice.userdata.data.displayName
         };
         note.patientId = this.patientid;
+        const meta: Meta = {
+            date: moment().toDate(),
+            adminId: this.adminservice.userdata._id,
+            hospitalId: this.hospitalservice.activehospital.value._id
+        };
         note.metadata = {
-            lastEdit: moment().toDate(),
-            date: moment().toDate()
+           created: meta,
+           edited: meta,
         };
         // return this.db.collection('patientnotes').add(note);
 

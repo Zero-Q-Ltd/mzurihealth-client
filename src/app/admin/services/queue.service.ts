@@ -170,14 +170,28 @@ export class QueueService {
                 } else {
                     const queuewatcher = await this.stitch.db.collection<Queue>('queues')
                         .watch([q._id]);
+                    /**
+                     * Convert the stream events to Observable emissions
+                     */
                     const t = new Observable<Queue>(h => {
                         queuewatcher.onNext(k => h.next(k.fullDocument));
                     });
                     /**
                      * Fetch the patient data
                      * Magic code
+                     * Since we are not making database subscriptions, this is safe, otherwise we would need to use a switchmap
+                     * Using the fetched queue data, fetch patientdata associated with it
+                     * Every change in the queue data triggers a new database query..... Maybe this can be optimized???
+                     * ---------------------@Todo Suggestion maybe just query the changed queue element id's
                      */
                     t.pipe(switchMap((queue) => {
+                        /**
+                         * make every entry of the elements in the array create an independent Observable
+                         * Then, by using combinelatest, a value will only be emmitted when every Observable emits a value
+                         * There afterwards, whenever any of the observables changes, a new set of values is emitted
+                         * Although this is not the functionlity we are after... maybe this can be improved???
+                         * I don't see any side effects at this time anyway
+                         */
                         return combineLatest(...queue.queue.map(qq => {
                             const patientfile = this.stitch.db.collection<HospFile>('patientfiles')
                                 .findOne({
@@ -212,57 +226,5 @@ export class QueueService {
         return this.stitch.db.collection<Queue>('queues')
             .insertOne(newq);
     }
-    /**
-     *fetches patientvisit and merges it with hospital file info and patient info
-     */
-    private fetchqueue(): void {
 
-        //     this.db.collection('hospitalvisits', ref => ref
-        //         .where('hospitalId', '==', this.activehospitalid)
-        //         .where('checkin.status', '<', 4))
-        //         .snapshotChanges().pipe(
-        //         switchMap(f => {
-        //             return combineLatest(...f.map(t => {
-        //                 if (f.length === 0) {
-        //                     return of([]);
-        //                 }
-        //                 const visit: PatientVisit = Object.assign({...emptypatientvisit}, t.payload.doc.data(), {id: t.payload.doc.id});
-        //                 return this.db.collection('patients').doc(visit.patientId).snapshotChanges().pipe(
-        //                     switchMap(patientdata => {
-        //                         if (!patientdata.payload.exists) {
-        //                             // console.log(visit)
-        //                             return of({...emptymergedQueueModel});
-        //                         }
-        //                         const patient: Patient = Object.assign(emptypatient, patientdata.payload.data(), {_id: patientdata.payload.id});
-        //                         // console.log(patient)
-        //                         return of({patientdata: Object.assign({}, {...emptypatient}, patient), queuedata: visit});
-        //                     })
-        //                 );
-        //             }));
-        //         }),
-        //         switchMap((val1: Array<MergedPatientQueueModel>) => {
-        //             console.log(val1);
-        //             return combineLatest(...val1.map(t => {
-        //                 if (val1.length === 0 || !t.patientdata._id) {
-        //                     return of({...emptymergedQueueModel});
-        //                 }
-        //                 return this.db.collection('hospitals').doc(this.activehospitalid)
-        //                     .collection('filenumbers')
-        //                     .doc(t.patientdata._id)
-        //                     .snapshotChanges()
-        //                     .pipe().map(filedata => {
-        //                         const file: HospFile = Object.assign({...emptyfile}, filedata.payload.data(), {id: t.patientdata._id});
-        //                         t.patientdata.fileInfo = file;
-        //                         return t;
-        //                     });
-        //
-        //             }));
-        //
-        //         })
-        //     ).subscribe(mergedData => {
-        //         // console.log(mergedData);
-        //         this.mainpatientqueue.next(mergedData);
-        //     });
-        // }
-    }
 } 

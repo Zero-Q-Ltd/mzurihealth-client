@@ -22,7 +22,7 @@ export interface Patient {
     fileInfo?: HospFile;
     _id: string;
     /**
-     * Optional parent _id number for minors
+     * Optional parent id number for minors
      */
     parentid?: string;
 

@@ -1,3 +1,7 @@
+import {
+    BSON
+} from 'mongodb-stitch-browser-sdk';
+
 export interface Customfields {
     id: number;
     value: any;
@@ -5,11 +9,15 @@ export interface Customfields {
 }
 
 export interface Metadata {
-    date: Date;
-    lastEdit: Date;
+    created: Meta;
+    edited: Meta;
+}
+interface Meta {
+    adminId: BSON.ObjectId;
+    hospitalId: BSON.ObjectId;
 }
 
 export const emptymetadata: Metadata = {
-    date: null,
-    lastEdit: null
+    created: null,
+    edited: null,
 };

@@ -195,7 +195,9 @@ export class QueueService {
                                 return Object.assign(emptypatient, patient, { fileInfo: patientfile });
                             });
                         }));
-                    }));
+                    })).subscribe(que => {
+                        this.mainpatientqueue.next(que);
+                    });
                 }
             })
             .catch(e => {

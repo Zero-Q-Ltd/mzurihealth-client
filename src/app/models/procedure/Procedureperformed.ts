@@ -1,8 +1,6 @@
 import {emptymetadata, Metadata} from '../universal';
 import {RawProcedureCategory} from './RawProcedure';
-import {
-    BSON
-} from 'mongodb-stitch-browser-sdk';
+import {BSON} from 'mongodb-stitch-browser-sdk';
 
 export interface Proceduresperformed {
     _id: BSON.ObjectId;

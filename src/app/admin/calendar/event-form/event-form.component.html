@@ -24,28 +24,30 @@
 
                 <mat-form-field appearance="outline" class="pr-sm-8" fxFlex="50">
                     <mat-label>Primary color</mat-label>
-                    <input (colorPickerChange)="event.color.primary = $event; eventForm.patchValue({color:{primary:$event}})"
-                           [(colorPicker)]="event.color.primary"
-                           [cpPresetColors]="presetColors"
-                           [style.background]="event.color.primary"
-                           class="primary-color-input border-radius-4"
-                           cpWidth="290px"
-                           formControlName="primary"
-                           matInput
-                           name="primary color"/>
+                    <input
+                        (colorPickerChange)="event.color.primary = $event; eventForm.patchValue({color:{primary:$event}})"
+                        [(colorPicker)]="event.color.primary"
+                        [cpPresetColors]="presetColors"
+                        [style.background]="event.color.primary"
+                        class="primary-color-input border-radius-4"
+                        cpWidth="290px"
+                        formControlName="primary"
+                        matInput
+                        name="primary color"/>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="pl-sm-8" fxFlex="50">
                     <mat-label>Secondary color</mat-label>
-                    <input (colorPickerChange)="event.color.secondary = $event; eventForm.patchValue({color:{secondary:$event}})"
-                           [(colorPicker)]="event.color.secondary"
-                           [cpPresetColors]="presetColors"
-                           [style.background]="event.color.secondary"
-                           class="secondary-color-input border-radius-4"
-                           cpWidth="290px"
-                           formControlName="secondary"
-                           matInput
-                           name="secondary color"/>
+                    <input
+                        (colorPickerChange)="event.color.secondary = $event; eventForm.patchValue({color:{secondary:$event}})"
+                        [(colorPicker)]="event.color.secondary"
+                        [cpPresetColors]="presetColors"
+                        [style.background]="event.color.secondary"
+                        class="secondary-color-input border-radius-4"
+                        cpWidth="290px"
+                        formControlName="secondary"
+                        matInput
+                        name="secondary color"/>
                 </mat-form-field>
 
             </div>

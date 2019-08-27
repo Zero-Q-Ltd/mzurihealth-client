@@ -37,60 +37,60 @@
         <!-- CONTENT CARD -->
         <div class="content-card">
             <div>
-            <mat-expansion-panel class=" toolbar headers-align">
-                <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        <mat-icon> search</mat-icon>
-                    </mat-panel-title>
-                    <mat-panel-description>
-                        CLICK HERE TO SEARCH
-                    </mat-panel-description>
-                </mat-expansion-panel-header>
-                <div class="my-4">
-                    <form (ngSubmit)="submitSearchForm()" [formGroup]="searchForm" class=" " fxFlex="1 0 auto"
-                          fxLayoutAlign="start"
-                          name="form">
+                <mat-expansion-panel class=" toolbar headers-align">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            <mat-icon> search</mat-icon>
+                        </mat-panel-title>
+                        <mat-panel-description>
+                            CLICK HERE TO SEARCH
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+                    <div class="my-4">
+                        <form (ngSubmit)="submitSearchForm()" [formGroup]="searchForm" class=" " fxFlex="1 0 auto"
+                              fxLayoutAlign="start"
+                              name="form">
 
-                        <!--First name, second name-->
+                            <!--First name, second name-->
 
-                        <mat-form-field appearance="outline" class="pl-4 searchField1">
-                            <mat-label>Select search field</mat-label>
-                            <mat-select formControlName="field" required>
+                            <mat-form-field appearance="outline" class="pl-4 searchField1">
+                                <mat-label>Select search field</mat-label>
+                                <mat-select formControlName="field" required>
 
-                                <mat-option [value]="'no'">
-                                    File Number
-                                </mat-option>
+                                    <mat-option [value]="'no'">
+                                        File Number
+                                    </mat-option>
 
-                                <mat-option [value]="'idno'">
-                                    ID number
-                                </mat-option>
+                                    <mat-option [value]="'idno'">
+                                        ID number
+                                    </mat-option>
 
-                                <mat-option [value]="'phone'">
-                                    Mobile Number
-                                </mat-option>
+                                    <mat-option [value]="'phone'">
+                                        Mobile Number
+                                    </mat-option>
 
-                                <mat-option [value]="'name'">
-                                    Full Name
-                                </mat-option>
+                                    <mat-option [value]="'name'">
+                                        Full Name
+                                    </mat-option>
 
-                            </mat-select>
+                                </mat-select>
 
-                            <mat-icon class="secondary-text" matSuffix>insert_drive_file</mat-icon>
-                            <mat-error>Field is required!</mat-error>
-                        </mat-form-field>
+                                <mat-icon class="secondary-text" matSuffix>insert_drive_file</mat-icon>
+                                <mat-error>Field is required!</mat-error>
+                            </mat-form-field>
 
-                        <mat-form-field appearance="outline" class="pl-4 searchField">
-                            <mat-label>Field</mat-label>
-                            <input formControlName="fieldValue" matInput required>
-                            <mat-icon class="secondary-text" matSuffix>account_circle</mat-icon>
-                            <mat-error>This field is required!</mat-error>
-                        </mat-form-field>
-                        <button class="p-4 ml-4 searchBtn " color="accent" mat-button mat-raised-button>
-                            SEARCH
-                        </button>
-                    </form>
-                </div>
-            </mat-expansion-panel>
+                            <mat-form-field appearance="outline" class="pl-4 searchField">
+                                <mat-label>Field</mat-label>
+                                <input formControlName="fieldValue" matInput required>
+                                <mat-icon class="secondary-text" matSuffix>account_circle</mat-icon>
+                                <mat-error>This field is required!</mat-error>
+                            </mat-form-field>
+                            <button class="p-4 ml-4 searchBtn " color="accent" mat-button mat-raised-button>
+                                SEARCH
+                            </button>
+                        </form>
+                    </div>
+                </mat-expansion-panel>
             </div>
             <mat-table #table
                        [@animateStagger]="{value:'50'}" [dataSource]="patientsdatasource"

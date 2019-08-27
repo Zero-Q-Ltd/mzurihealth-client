@@ -1,6 +1,5 @@
-import {
-    BSON
-} from 'mongodb-stitch-browser-sdk';
+import {BSON} from 'mongodb-stitch-browser-sdk';
+
 export interface ProcedureCategory {
     name: string;
     code: string;

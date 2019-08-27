@@ -13,7 +13,6 @@ import {Router} from '@angular/router';
 import {Paymentmethods} from '../../../models/payment/PaymentChannel';
 import {PaymentmethodService} from '../../services/paymentmethod.service';
 import {NumberValidator} from '../../validators/number.validator';
-import {FilenumberValidator} from '../../validators/filenumber.validator';
 
 @Component({
     selector: 'app-add',
@@ -69,7 +68,7 @@ export class AddComponent implements OnInit {
                 /**
                  * set the form data and disable it
                  * */
-                this.patientsForm.controls['personaLinfo']
+                this.patientsForm.controls['personalinfo']
                     .get('fileno').patchValue(this.patientfileno.no);
 
                 // this.patientsForm.controls['personaLinfo']
@@ -209,7 +208,7 @@ export class AddComponent implements OnInit {
         const fileno = new FormControl('',
             Validators.required,
             // FilenumberValidator.validate(this.patientservice)
-            );
+        );
 
 
         this.personalinfo = new FormGroup({

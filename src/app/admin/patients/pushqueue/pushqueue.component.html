@@ -9,11 +9,13 @@
 
         <mat-toolbar-row class="toolbar-bottom py-16" fxLayout="column" fxLayoutAlign="center center">
             <p>
-                <img *ngIf="patient.personalInfo.gender == 1" [src]="patient.personalInfo.photoURL || 'assets/images/avatars/male.png'"
+                <img *ngIf="patient.personalInfo.gender == 1"
+                     [src]="patient.personalInfo.photoURL || 'assets/images/avatars/male.png'"
                      alt="male avatar"
                      class="avatar contact-avatar huge m-0"/>
 
-                <img *ngIf="patient.personalInfo.gender == 0" [src]="patient.personalInfo.photoURL || 'assets/images/avatars/female.png'"
+                <img *ngIf="patient.personalInfo.gender == 0"
+                     [src]="patient.personalInfo.photoURL || 'assets/images/avatars/female.png'"
                      alt="female avatar"
                      class="avatar contact-avatar huge m-0"/>
             </p>

@@ -1,6 +1,6 @@
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
-import {HttpClientModule, HttpHeaders} from '@angular/common/http';
+import {HttpClientModule} from '@angular/common/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatIconModule, MatSnackBarModule} from '@angular/material';
 import {TranslateModule} from '@ngx-translate/core';
@@ -21,8 +21,8 @@ import {AgmCoreModule} from '@agm/core';
 import {CommonModule} from '@angular/common';
 import {NotificationComponent} from './shared/components/notification/notification.component';
 import {Angulartics2Module} from 'angulartics2';
-import { ServiceWorkerModule } from '@angular/service-worker';
-import { environment } from '../environments/environment'
+import {ServiceWorkerModule} from '@angular/service-worker';
+import {environment} from '../environments/environment';
 
 @NgModule({
     declarations: [
@@ -55,7 +55,7 @@ import { environment } from '../environments/environment'
              developerMode: !environment.gaTrackingId, // developerMode disables tracking
          }),*/
         Angulartics2Module.forRoot(),
-        ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+        ServiceWorkerModule.register('ngsw-worker.js', {enabled: environment.production}),
 
     ],
 

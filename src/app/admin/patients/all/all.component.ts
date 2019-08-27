@@ -36,8 +36,8 @@ export class AllComponent implements OnInit, AfterViewInit {
     confirmDialogRef: MatDialogRef<FuseConfirmDialogComponent>;
     searchForm: FormGroup;
 
-    @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
-    @ViewChild(MatSort, { static: false }) sort: MatSort;
+    @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
+    @ViewChild(MatSort, {static: false}) sort: MatSort;
 
 
     constructor(private adminservice: AdminService,

@@ -1,4 +1,3 @@
-
 export interface Prescription {
     meds: Array<Med>;
     notes: string;

@@ -30,8 +30,8 @@ export class AllComponent implements OnInit {
     allInsurance: { [key: string]: Paymentmethods } = {};
     confirmDialogRef: MatDialogRef<FuseConfirmDialogComponent>;
     searchForm: FormGroup;
-    @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
-    @ViewChild(MatSort, { static: false }) sort: MatSort;
+    @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
+    @ViewChild(MatSort, {static: false}) sort: MatSort;
 
     constructor(public _matDialog: MatDialog,
                 private patientservice: PatientService,

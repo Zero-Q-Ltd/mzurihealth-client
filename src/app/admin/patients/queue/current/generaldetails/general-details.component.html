@@ -130,7 +130,8 @@
 
     <span class="pl-24" fxFlex="1 1 100%">Insurance Details</span>
     <!--insurance group-->
-    <section *ngFor="let item of patientsForm.get('insurance').controls; let i = index;" formArrayName="insurance" fxFlex="1 0 auto"
+    <section *ngFor="let item of patientsForm.get('insurance').controls; let i = index;" formArrayName="insurance"
+             fxFlex="1 0 auto"
              fxLayout="column">
 
         <!--Insurance company, Insurance Number-->

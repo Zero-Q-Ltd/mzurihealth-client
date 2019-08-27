@@ -7,7 +7,7 @@ import {FuseSplashScreenService} from '../../../../@fuse/services/splash-screen.
 import {AdminService} from '../../services/admin.service';
 import {HospitalAdmin} from '../../../models/user/HospitalAdmin';
 import {Router} from '@angular/router';
-import { StitchService } from 'app/admin/services/stitch/stitch.service';
+import {StitchService} from 'app/admin/services/stitch/stitch.service';
 
 @Component({
     selector: 'login-2',

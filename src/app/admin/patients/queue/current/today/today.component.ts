@@ -16,7 +16,7 @@ import {map, startWith} from 'rxjs/operators';
 import {allerytypearray} from '../../../../../models/procedure/Allergy.model';
 import {medicalconditionsarray} from '../../../../../models/procedure/MedicalConditions.model';
 import {QueueService} from '../../../../services/queue.service';
-import {MergedPatientQueueModel, CurrentPatient} from '../../../../../models/visit/MergedPatientQueueModel';
+import {CurrentPatient} from '../../../../../models/visit/MergedPatientQueueModel';
 import {AdminSelectionComponent} from '../../admin-selection/admin-selection.component';
 import {MatDialog, MatDialogRef, MatTableDataSource} from '@angular/material';
 import {LocalcommunicationService} from '../localcommunication.service';
@@ -28,7 +28,7 @@ import {AdminService} from '../../../../services/admin.service';
 import {ProcedurenotesComponent} from '../procedure-notes/procedurenotes.component';
 import {FuseConfirmDialogComponent} from '../../../../../../@fuse/components/confirm-dialog/confirm-dialog.component';
 import * as moment from 'moment';
-import { Meta } from 'app/models/universal';
+import {Meta} from 'app/models/universal';
 
 @Component({
     selector: 'patient-today',
@@ -143,7 +143,7 @@ export class TodayComponent implements OnInit {
                     };
                     ff.metadata = {
                         created: meta,
-                        edited: meta,                        
+                        edited: meta,
                     };
                     ff.adminid = this.patientvisitservice.adminid;
                     ff.payment = {

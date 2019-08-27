@@ -26,7 +26,7 @@
     </ng-container>
     <!-- / TOOLBAR: Below -->
 
-    <div id="container-1" class="container">
+    <div class="container" id="container-1">
 
         <!-- NAVBAR: Left -->
         <ng-container>
@@ -34,10 +34,10 @@
         </ng-container>
         <!-- / NAVBAR: Left -->
 
-        <div id="container-2" class="container">
+        <div class="container" id="container-2">
 
-            <div id="container-3" class="container" fusePerfectScrollbar
-                 [fusePerfectScrollbarOptions]="{suppressScrollX: true, updateOnRouteChange : true}">
+            <div [fusePerfectScrollbarOptions]="{suppressScrollX: true, updateOnRouteChange : true}" class="container" fusePerfectScrollbar
+                 id="container-3">
 
                 <!-- CONTENT -->
                 <content></content>
@@ -72,7 +72,7 @@
 <!-- / SIDE PANEL -->
 
 <!-- QUICK PANEL -->
-<fuse-sidebar name="quickPanel" position="right" class="quick-panel">
+<fuse-sidebar class="quick-panel" name="quickPanel" position="right">
     <quick-panel></quick-panel>
 </fuse-sidebar>
 <!-- / QUICK PANEL -->
@@ -99,18 +99,18 @@
 
 <!-- TOP NAVBAR -->
 <ng-template #topNavbar>
-    <navbar variant="horizontal-style-1"
+    <navbar *ngIf="!fuseConfig.layout.navbar.hidden"
             class="top-navbar" fxHide fxShow.gt-md
-            *ngIf="!fuseConfig.layout.navbar.hidden">
+            variant="horizontal-style-1">
     </navbar>
 </ng-template>
 <!-- / TOP NAVBAR -->
 
 <!-- LEFT NAVBAR -->
 <ng-template #leftNavbar>
-    <fuse-sidebar name="navbar" class="navbar-fuse-sidebar"
-                  [folded]="fuseConfig.layout.navbar.folded"
-                  *ngIf="!fuseConfig.layout.navbar.hidden">
+    <fuse-sidebar *ngIf="!fuseConfig.layout.navbar.hidden" [folded]="fuseConfig.layout.navbar.folded"
+                  class="navbar-fuse-sidebar"
+                  name="navbar">
         <navbar [variant]="fuseConfig.layout.navbar.variant" class="left-navbar"></navbar>
     </fuse-sidebar>
 </ng-template>

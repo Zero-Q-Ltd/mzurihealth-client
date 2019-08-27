@@ -1,14 +1,12 @@
-import { HospitalService } from './hospital.service';
+import {HospitalService} from './hospital.service';
 import {Injectable} from '@angular/core';
 import {QueueService} from './queue.service';
 import {BehaviorSubject} from 'rxjs';
-import {emptynote, Patientnote} from '../../models/patient/Patientnote';
+import {Patientnote} from '../../models/patient/Patientnote';
 import {AdminService} from './admin.service';
 import * as moment from 'moment';
-import {
-    BSON
-} from 'mongodb-stitch-browser-sdk';
-import { Meta } from 'app/models/universal';
+import {BSON} from 'mongodb-stitch-browser-sdk';
+import {Meta} from 'app/models/universal';
 
 @Injectable({
     providedIn: 'root'
@@ -18,8 +16,8 @@ export class PatientnotesService {
     patientid: string;
 
     constructor(private queueservice: QueueService,
-        private hospitalservice: HospitalService,
-        private adminservice: AdminService) {
+                private hospitalservice: HospitalService,
+                private adminservice: AdminService) {
         queueservice.currentpatient.subscribe(value => {
             if (value.patientdata._id) {
                 this.patientid = value.patientdata._id;
@@ -52,8 +50,8 @@ export class PatientnotesService {
             hospitalId: this.hospitalservice.activehospital.value._id
         };
         note.metadata = {
-           created: meta,
-           edited: meta,
+            created: meta,
+            edited: meta,
         };
         // return this.db.collection('patientnotes').add(note);
 

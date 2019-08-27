@@ -1,6 +1,4 @@
-import {
-    BSON
-} from 'mongodb-stitch-browser-sdk';
+import {BSON} from 'mongodb-stitch-browser-sdk';
 
 export interface HospFile {
     _id: BSON.ObjectId;
@@ -14,10 +12,10 @@ export interface HospFile {
 
 export const emptyfile: HospFile = {
     _id: null,
-    hospitalId : null,
+    hospitalId: null,
     date: null,
     lastVisit: null,
     no: '0',
     visitCount: 0,
-    patientId : null
+    patientId: null
 };

@@ -7,8 +7,8 @@ import {Procedureperformed} from '../../models/procedure/Procedureperformed';
 import {MergedProcedureModel} from '../../models/procedure/MergedProcedure.model';
 import {AdminService} from './admin.service';
 import * as moment from 'moment';
-import { Meta } from 'app/models/universal';
-import { Prescription } from 'app/models/visit/Prescription';
+import {Meta} from 'app/models/universal';
+import {Prescription} from 'app/models/visit/Prescription';
 
 @Injectable({
     providedIn: 'root'
@@ -143,7 +143,7 @@ export class VisitService {
         return true as any;
 
     }
-    
+
 
     terminatepatientvisit(visitid) {
         // return this.db.collection('hospitalvisits').doc(visitid).update({

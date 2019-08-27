@@ -4,9 +4,7 @@ import {MergedPatientQueueModel} from '../../models/visit/MergedPatientQueueMode
 import {HospitalService} from './hospital.service';
 import * as moment from 'moment';
 
-import {
-    BSON, RemoteInsertOneResult
-} from 'mongodb-stitch-browser-sdk';
+import {BSON} from 'mongodb-stitch-browser-sdk';
 
 @Injectable({
     providedIn: 'root'

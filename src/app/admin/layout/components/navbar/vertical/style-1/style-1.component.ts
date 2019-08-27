@@ -1,19 +1,17 @@
-import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
-import { Subject } from 'rxjs';
-import { delay, filter, take, takeUntil } from 'rxjs/operators';
+import {Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {NavigationEnd, Router} from '@angular/router';
+import {Subject} from 'rxjs';
+import {delay, filter, take, takeUntil} from 'rxjs/operators';
 
-import { FuseConfigService } from '@fuse/services/config.service';
-import { FuseNavigationService } from '@fuse/components/navigation/navigation.service';
-import { FusePerfectScrollbarDirective } from '@fuse/directives/fuse-perfect-scrollbar/fuse-perfect-scrollbar.directive';
-import { FuseSidebarService } from '@fuse/components/sidebar/sidebar.service';
-
+import {FuseConfigService} from '@fuse/services/config.service';
+import {FuseNavigationService} from '@fuse/components/navigation/navigation.service';
+import {FusePerfectScrollbarDirective} from '@fuse/directives/fuse-perfect-scrollbar/fuse-perfect-scrollbar.directive';
+import {FuseSidebarService} from '@fuse/components/sidebar/sidebar.service';
 // Custom imports
-import { emptyhospital, Hospital } from '../../../../../../models/hospital/Hospital';
-import { emptyadmin, HospitalAdmin } from '../../../../../../models/user/HospitalAdmin';
-import { AdminService } from '../../../../../services/admin.service';
-import { HospitalService } from '../../../../../services/hospital.service';
-import { RouterModule } from '@angular/router';
+import {emptyhospital, Hospital} from '../../../../../../models/hospital/Hospital';
+import {emptyadmin, HospitalAdmin} from '../../../../../../models/user/HospitalAdmin';
+import {AdminService} from '../../../../../services/admin.service';
+import {HospitalService} from '../../../../../services/hospital.service';
 
 @Component({
     selector: 'navbar-vertical-style-1',
@@ -51,8 +49,8 @@ export class NavbarVerticalStyle1Component implements OnInit, OnDestroy {
         // Set the private defaults
         this._unsubscribeAll = new Subject();
         /**
-      * custom code
-      */
+         * custom code
+         */
         adminservice.observableuserdata.subscribe((admin: HospitalAdmin) => {
             if (admin._id) {
                 this.userdata = admin;
@@ -70,7 +68,7 @@ export class NavbarVerticalStyle1Component implements OnInit, OnDestroy {
     // -----------------------------------------------------------------------------------------------------
 
     // Directive
-    @ViewChild(FusePerfectScrollbarDirective, { static: true })
+    @ViewChild(FusePerfectScrollbarDirective, {static: true})
     set directive(theDirective: FusePerfectScrollbarDirective) {
         if (!theDirective) {
             return;
@@ -95,10 +93,10 @@ export class NavbarVerticalStyle1Component implements OnInit, OnDestroy {
                 take(1)
             )
             .subscribe(() => {
-                setTimeout(() => {
-                    this._fusePerfectScrollbar.scrollToElement('navbar .nav-link.active', -120);
-                });
-            }
+                    setTimeout(() => {
+                        this._fusePerfectScrollbar.scrollToElement('navbar .nav-link.active', -120);
+                    });
+                }
             );
     }
 
@@ -116,10 +114,10 @@ export class NavbarVerticalStyle1Component implements OnInit, OnDestroy {
                 takeUntil(this._unsubscribeAll)
             )
             .subscribe(() => {
-                if (this._fuseSidebarService.getSidebar('navbar')) {
-                    this._fuseSidebarService.getSidebar('navbar').close();
+                    if (this._fuseSidebarService.getSidebar('navbar')) {
+                        this._fuseSidebarService.getSidebar('navbar').close();
+                    }
                 }
-            }
             );
 
         // Subscribe to the config changes

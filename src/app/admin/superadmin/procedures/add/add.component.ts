@@ -29,8 +29,8 @@ export class AddComponent implements OnInit, AfterViewInit {
     procedureheaders = ['name', 'category', 'minprice', 'maxprice'];
     categoryprocedures = new MatTableDataSource<RawProcedure>();
 
-    @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
-    @ViewChild(MatSort, { static: false }) sort: MatSort;
+    @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
+    @ViewChild(MatSort, {static: false}) sort: MatSort;
 
     constructor(private _formBuilder: FormBuilder,
                 private _fuseSidebarService: FuseSidebarService,

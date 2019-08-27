@@ -1,25 +1,21 @@
-import { Patient, emptypatient } from './../../models/patient/Patient';
-import { Injectable } from '@angular/core';
-import { HospitalService } from './hospital.service';
-import { AdminService } from './admin.service';
-import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
-import { HospitalAdmin } from '../../models/user/HospitalAdmin';
-import { PatientService } from './patient.service';
-import { Visit, emptypatientvisit } from '../../models/visit/Visit';
-import { emptymergedQueueModel, MergedPatientQueueModel as PatientQueue, CurrentPatient } from '../../models/visit/MergedPatientQueueModel';
-import { ProceduresService } from './procedures.service';
-import { MergedProcedureModel } from '../../models/procedure/MergedProcedure.model';
+import {emptypatient, Patient} from './../../models/patient/Patient';
+import {Injectable} from '@angular/core';
+import {HospitalService} from './hospital.service';
+import {AdminService} from './admin.service';
+import {BehaviorSubject, combineLatest} from 'rxjs';
+import {HospitalAdmin} from '../../models/user/HospitalAdmin';
+import {PatientService} from './patient.service';
+import {emptypatientvisit, Visit} from '../../models/visit/Visit';
+import {CurrentPatient, MergedPatientQueueModel as PatientQueue} from '../../models/visit/MergedPatientQueueModel';
+import {ProceduresService} from './procedures.service';
 import * as moment from 'moment';
-import { StitchService } from './stitch/stitch.service';
-import { switchMap, takeUntil, skipWhile } from 'rxjs/operators';
-import { RemoteInsertOneResult } from 'mongodb-stitch-browser-sdk';
-import { HospFile } from 'app/models/hospital/HospFile';
-import { Queue, emptyqueue } from 'app/models/hospital/Queue';
-import { PaymentChannel } from 'app/models/payment/PaymentChannel';
+import {StitchService} from './stitch/stitch.service';
+import {skipWhile} from 'rxjs/operators';
+import {BSON, RemoteInsertOneResult} from 'mongodb-stitch-browser-sdk';
+import {HospFile} from 'app/models/hospital/HospFile';
+import {emptyqueue, Queue} from 'app/models/hospital/Queue';
+import {PaymentChannel} from 'app/models/payment/PaymentChannel';
 
-import {
-    BSON
-} from 'mongodb-stitch-browser-sdk';
 @Injectable({
     providedIn: 'root'
 })
@@ -27,7 +23,7 @@ export class QueueService {
     activehospitalid: BSON.ObjectId;
     queue: BehaviorSubject<Queue> = new BehaviorSubject(emptyqueue);
     /**
-     * by using a map instead of a normal array we solve the n+1 problem that we would have 
+     * by using a map instead of a normal array we solve the n+1 problem that we would have
      * otherwise encountered when sifting through the data, as there is a lot of fitering to do
      * and for big hospitals the number of patients in the mainqueue at any given time might be big
      */
@@ -39,10 +35,10 @@ export class QueueService {
     fetchingpatientdata: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
     constructor(private hospitalservice: HospitalService,
-        private adminservice: AdminService,
-        private patientservice: PatientService,
-        private procedureservice: ProceduresService,
-        private stitch: StitchService) {
+                private adminservice: AdminService,
+                private patientservice: PatientService,
+                private procedureservice: ProceduresService,
+                private stitch: StitchService) {
         this.hospitalservice.activehospital.subscribe(hospital => {
             if (hospital._id) {
                 this.activehospitalid = hospital._id;
@@ -65,10 +61,10 @@ export class QueueService {
     filterqueue(): void {
 
         combineLatest([this.queue, this.mainpatientsqueue])
-            /**
-            * Only filter the data if its not already loading, because the queue may change and trigger,
-            * but we want to filter once loading is complete
-            */
+        /**
+         * Only filter the data if its not already loading, because the queue may change and trigger,
+         * but we want to filter once loading is complete
+         */
             .pipe(skipWhile(() => this.fetchingpatientdata.value))
             .subscribe(data => {
                 const qq = data[0].queue;
@@ -87,7 +83,7 @@ export class QueueService {
                         const dd = pp.get(queue.patientId);
                         /**
                          * @TODO Create a ~subscription~ to the patient visit
-                         * 
+                         *
                          */
                         // this.currentpatient.next();
                         // currentpatientfound = true;
@@ -138,13 +134,13 @@ export class QueueService {
 
 
     /**
-     * This simply creates  subscription to the hospital queue, from which secondary subscriptions to 
+     * This simply creates  subscription to the hospital queue, from which secondary subscriptions to
      * patient data and queue info can be made
      */
     getqueue() {
         console.log('triggered');
         this.stitch.db.collection<Queue>('queues')
-            .findOne({ hospitalId: this.activehospitalid })
+            .findOne({hospitalId: this.activehospitalid})
             .then(async q => {
                 /**
                  * Create  new queue object in case it doesnt exist for that hospital
@@ -165,7 +161,7 @@ export class QueueService {
                          * Every change in the queue data triggers a new database query..... Maybe this can be optimized???
                          * ---------------------@Todo Suggestion maybe just query the changed queue element id's
                          * this can be achieved by comparing the array lenths first to determine the added/removed id, or compare the arrays to get
-                         * the mutated array pos and fetch just that 
+                         * the mutated array pos and fetch just that
                          * Then update the whole variable
                          */
 
@@ -193,7 +189,7 @@ export class QueueService {
                                 });
                             return combineLatest([patientfile, patient], (f: HospFile, p: Patient) => {
                                 const data: PatientQueue = {
-                                    patientdata: Object.assign(emptypatient, p, { fileInfo: f }),
+                                    patientdata: Object.assign(emptypatient, p, {fileInfo: f}),
                                     queuedata: qq
                                 };
                                 return data;
@@ -211,20 +207,20 @@ export class QueueService {
             });
     }
 
-    addPatientToQueue({ type, description, insurance }: {
-            type: PaymentChannel,
-            description: string,
-            insurance: Array<{
-                insuranceControl: string;
-                insurancenumber: string;
-            }>
-        },
-        patient: Patient,
-        selected:
-            {
-                insuranceControl: string,
-                insurancenumber: string
-            }): Promise<void> {
+    addPatientToQueue({type, description, insurance}: {
+                          type: PaymentChannel,
+                          description: string,
+                          insurance: Array<{
+                              insuranceControl: string;
+                              insurancenumber: string;
+                          }>
+                      },
+                      patient: Patient,
+                      selected:
+                          {
+                              insuranceControl: string,
+                              insurancenumber: string
+                          }): Promise<void> {
 
         /**
          * steps
@@ -300,15 +296,16 @@ export class QueueService {
         return true as any;
 
     }
+
     /**
      * Inserts an empty queue to the database
      */
     private createq(): Promise<RemoteInsertOneResult> {
         return this.stitch.db.collection<Queue>('queues')
-            /**
-             * make sure to assign the correct hospitalID
-             */
-            .insertOne(Object.assign(emptyqueue, { hospitalId: this.activehospitalid }));
+        /**
+         * make sure to assign the correct hospitalID
+         */
+            .insertOne(Object.assign(emptyqueue, {hospitalId: this.activehospitalid}));
     }
 
 } 

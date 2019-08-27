@@ -128,10 +128,10 @@ export class InvoiceCustomizationComponent implements OnInit {
 
     /**
      * @TODO Allow for customization of individual procedure payment methods
-     * @param procedure 
+     * @param procedure
      */
     selectprocedure(procedure): void {
-       
+
     }
 
     togglechange(): void {

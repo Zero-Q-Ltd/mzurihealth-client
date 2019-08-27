@@ -1,4 +1,4 @@
-import {Insurance, PersonalInfo, NextofKin} from './Patient';
+import {Insurance, NextofKin, PersonalInfo} from './Patient';
 
 export interface AddPatientFormModel {
     personaLinfo: PersonalInfo;

@@ -1,6 +1,4 @@
-import {
-    BSON
-} from 'mongodb-stitch-browser-sdk';
+import {BSON} from 'mongodb-stitch-browser-sdk';
 
 export interface Customfields {
     id: number;
@@ -15,6 +13,7 @@ export interface Metadata {
     created?: Meta;
     edited: Meta;
 }
+
 export interface Meta {
     date: Date;
     adminId: BSON.ObjectId;

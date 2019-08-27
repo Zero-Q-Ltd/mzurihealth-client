@@ -9,7 +9,7 @@ import {HospitalAdmin} from '../../models/user/HospitalAdmin';
 import {AdminService} from './admin.service';
 import * as moment from 'moment';
 import {MergedProcedureModel} from '../../models/procedure/MergedProcedure.model';
-import { Meta } from 'app/models/universal';
+import {Meta} from 'app/models/universal';
 
 @Injectable({
     providedIn: 'root'
@@ -162,12 +162,12 @@ export class ProceduresService {
         customprocedure.hospitalId = this.activehospital._id;
         customprocedure.status = true;
         customprocedure.creatorid = this.userdata._id;
-        
+
         const meta: Meta = {
             date: moment().toDate(),
             adminId: this.adminservice.userdata._id,
             hospitalId: this.hospitalservice.activehospital.value._id
-        }; 
+        };
 
         customprocedure.metadata = {
             created: meta,
@@ -191,7 +191,7 @@ export class ProceduresService {
             date: moment().toDate(),
             adminId: this.adminservice.userdata._id,
             hospitalId: this.hospitalservice.activehospital.value._id
-        }; 
+        };
 
         customprocedure.metadata = {
             edited: meta,

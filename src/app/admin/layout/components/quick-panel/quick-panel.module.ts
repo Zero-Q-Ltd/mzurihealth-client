@@ -1,17 +1,17 @@
-import { NgModule } from '@angular/core';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatListModule } from '@angular/material/list';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import {NgModule} from '@angular/core';
+import {MatDividerModule} from '@angular/material/divider';
+import {MatListModule} from '@angular/material/list';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
-import { FuseSharedModule } from '@fuse/shared.module';
-import { QuickPanelComponent } from './quick-panel.component';
+import {FuseSharedModule} from '@fuse/shared.module';
+import {QuickPanelComponent} from './quick-panel.component';
 
 
 @NgModule({
     declarations: [
         QuickPanelComponent
     ],
-    imports     : [
+    imports: [
         MatDividerModule,
         MatListModule,
         MatSlideToggleModule,
@@ -22,6 +22,5 @@ import { QuickPanelComponent } from './quick-panel.component';
         QuickPanelComponent
     ]
 })
-export class QuickPanelModule
-{
+export class QuickPanelModule {
 }

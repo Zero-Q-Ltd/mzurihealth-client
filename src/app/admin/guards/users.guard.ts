@@ -3,12 +3,12 @@ import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from '
 import {Observable} from 'rxjs';
 import 'rxjs/add/operator/map';
 import {AdminService} from '../services/admin.service';
-import { StitchService } from '../services/stitch/stitch.service';
+import {StitchService} from '../services/stitch/stitch.service';
 
 @Injectable()
 export class UsersGuard implements CanActivate {
     constructor(private adminservice: AdminService, private router: Router,
-        private stitch: StitchService) {
+                private stitch: StitchService) {
 
     }
 
@@ -24,7 +24,7 @@ export class UsersGuard implements CanActivate {
                         } else {
                             return true;
                         }
-        
+
                     } else {
                         this.router.navigate(['admin/authentication/signin']);
                         return false;

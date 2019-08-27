@@ -1,7 +1,8 @@
 <mat-dialog-content>
     <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
 
-    <form (ngSubmit)="submitPatientsForm()" *ngIf="!loading" [formGroup]="patientsForm" class=" p-8 m-24" fxFlex="1 0 auto"
+    <form (ngSubmit)="submitPatientsForm()" *ngIf="!loading" [formGroup]="patientsForm" class=" p-8 m-24"
+          fxFlex="1 0 auto"
           fxLayout="column" fxLayoutAlign="start" name="form">
 
         <!--<div class="h2 mb-24">New Patient</div>-->
@@ -130,7 +131,8 @@
 
         <span class="pl-24" fxFlex="1 1 100%">Insurance Details</span>
         <!--insurance group-->
-        <section *ngFor="let item of patientsForm.get('insurance').controls; let i = index;" formArrayName="insurance" fxFlex="1 0 auto"
+        <section *ngFor="let item of patientsForm.get('insurance').controls; let i = index;" formArrayName="insurance"
+                 fxFlex="1 0 auto"
                  fxLayout="column">
 
             <!--Insurance company, Insurance Number-->

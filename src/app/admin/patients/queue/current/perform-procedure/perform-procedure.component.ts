@@ -17,29 +17,6 @@ export class PerformProcedureComponent implements OnInit {
     selection = new SelectionModel<MergedProcedureModel>(true, []);
     procedureResults: Array<Procedureperformed> = [];
 
-
-    /** Whether the number of selected elements matches the total number of rows. */
-    isAllSelected(): boolean {
-        const numSelected = this.selection.selected.length;
-        const numRows = this.proceduresdataSource.data.length;
-        return numSelected === numRows;
-    }
-
-    /** Selects all rows if they are not all selected; otherwise clear selection. */
-    masterToggle(): void {
-        this.isAllSelected() ?
-            this.selection.clear() :
-            this.proceduresdataSource.data.forEach(row => this.selection.select(row));
-    }
-
-    /** The label for the checkbox on the passed row */
-    checkboxLabel(row?: MergedProcedureModel): string {
-        if (!row) {
-            return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
-        }
-        return `${this.selection.isSelected(row) ? 'deselect' : 'select'} `;
-    }
-
     constructor(public dialogRef: MatDialogRef<PerformProcedureComponent>,
                 private procedureservice: ProceduresService,
                 private adminservice: AdminService,
@@ -67,6 +44,28 @@ export class PerformProcedureComponent implements OnInit {
             this.proceduresdataSource.data = mergedprocedures;
 
         });
+    }
+
+    /** Whether the number of selected elements matches the total number of rows. */
+    isAllSelected(): boolean {
+        const numSelected = this.selection.selected.length;
+        const numRows = this.proceduresdataSource.data.length;
+        return numSelected === numRows;
+    }
+
+    /** Selects all rows if they are not all selected; otherwise clear selection. */
+    masterToggle(): void {
+        this.isAllSelected() ?
+            this.selection.clear() :
+            this.proceduresdataSource.data.forEach(row => this.selection.select(row));
+    }
+
+    /** The label for the checkbox on the passed row */
+    checkboxLabel(row?: MergedProcedureModel): string {
+        if (!row) {
+            return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
+        }
+        return `${this.selection.isSelected(row) ? 'deselect' : 'select'} `;
     }
 
     onNoClick(): void {

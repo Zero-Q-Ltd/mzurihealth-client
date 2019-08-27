@@ -14,8 +14,8 @@
     </ng-container>
     <!-- / TOOLBAR: Above fixed -->
 
-    <div id="container-1" class="container" fusePerfectScrollbar
-         [fusePerfectScrollbarOptions]="{suppressScrollX: true, updateOnRouteChange : true}">
+    <div [fusePerfectScrollbarOptions]="{suppressScrollX: true, updateOnRouteChange : true}" class="container" fusePerfectScrollbar
+         id="container-1">
 
         <!-- TOOLBAR: Above static -->
         <ng-container *ngIf="fuseConfig.layout.toolbar.position === 'above-static'">
@@ -23,7 +23,7 @@
         </ng-container>
         <!-- / TOOLBAR: Above static -->
 
-        <div id="container-2" class="container">
+        <div class="container" id="container-2">
 
             <!-- NAVBAR: Left -->
             <ng-container *ngIf="fuseConfig.layout.navbar.position === 'left'">
@@ -31,7 +31,7 @@
             </ng-container>
             <!-- / NAVBAR: Left -->
 
-            <div id="container-3" class="container">
+            <div class="container" id="container-3">
 
                 <!-- TOOLBAR: Below -->
                 <ng-container *ngIf="fuseConfig.layout.toolbar.position === 'below'">
@@ -84,7 +84,7 @@
 <!-- / SIDE PANEL -->
 
 <!-- QUICK PANEL -->
-<fuse-sidebar name="quickPanel" position="right" class="quick-panel">
+<fuse-sidebar class="quick-panel" name="quickPanel" position="right">
     <quick-panel></quick-panel>
 </fuse-sidebar>
 <!-- / QUICK PANEL -->
@@ -111,10 +111,10 @@
 
 <!-- LEFT NAVBAR -->
 <ng-template #leftNavbar>
-    <fuse-sidebar name="navbar" class="navbar-fuse-sidebar"
-                  [folded]="fuseConfig.layout.navbar.folded"
+    <fuse-sidebar *ngIf="!fuseConfig.layout.navbar.hidden" [folded]="fuseConfig.layout.navbar.folded"
+                  class="navbar-fuse-sidebar"
                   lockedOpen="gt-md"
-                  *ngIf="!fuseConfig.layout.navbar.hidden">
+                  name="navbar">
         <navbar [variant]="fuseConfig.layout.navbar.variant" class="left-navbar"></navbar>
     </fuse-sidebar>
 </ng-template>
@@ -122,10 +122,10 @@
 
 <!-- RIGHT NAVBAR -->
 <ng-template #rightNavbar>
-    <fuse-sidebar name="navbar" position="right" class="navbar-fuse-sidebar"
-                  [folded]="fuseConfig.layout.navbar.folded"
+    <fuse-sidebar *ngIf="!fuseConfig.layout.navbar.hidden" [folded]="fuseConfig.layout.navbar.folded" class="navbar-fuse-sidebar"
                   lockedOpen="gt-md"
-                  *ngIf="!fuseConfig.layout.navbar.hidden">
+                  name="navbar"
+                  position="right">
         <navbar [variant]="fuseConfig.layout.navbar.variant" class="right-navbar"></navbar>
     </fuse-sidebar>
 </ng-template>

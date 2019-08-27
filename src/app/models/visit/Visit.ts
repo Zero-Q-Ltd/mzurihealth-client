@@ -1,9 +1,7 @@
 import {emptymetadata, Metadata} from '../universal';
 import {Procedureperformed} from '../procedure/Procedureperformed';
-import {
-    BSON
-} from 'mongodb-stitch-browser-sdk';
-import { Prescription } from './Prescription';
+import {BSON} from 'mongodb-stitch-browser-sdk';
+import {Prescription} from './Prescription';
 
 export interface Visit {
     procedures: Array<Procedureperformed>;

@@ -1,20 +1,20 @@
-import { NgModule } from '@angular/core';
-import { MatSidenavModule } from '@angular/material/sidenav';
+import {NgModule} from '@angular/core';
+import {MatSidenavModule} from '@angular/material/sidenav';
 
-import { FuseSidebarModule, FuseThemeOptionsModule } from '@fuse/components';
-import { FuseSharedModule } from '@fuse/shared.module';
-import { HorizontalLayout1Component } from './layout-1.component';
-import { ContentModule } from '../../components/content/content.module';
-import { FooterModule } from '../../components/footer/footer.module';
-import { NavbarModule } from '../../components/navbar/navbar.module';
-import { QuickPanelModule } from '../../components/quick-panel/quick-panel.module';
-import { ToolbarModule } from '../../components/toolbar/toolbar.module';
+import {FuseSidebarModule, FuseThemeOptionsModule} from '@fuse/components';
+import {FuseSharedModule} from '@fuse/shared.module';
+import {HorizontalLayout1Component} from './layout-1.component';
+import {ContentModule} from '../../components/content/content.module';
+import {FooterModule} from '../../components/footer/footer.module';
+import {NavbarModule} from '../../components/navbar/navbar.module';
+import {QuickPanelModule} from '../../components/quick-panel/quick-panel.module';
+import {ToolbarModule} from '../../components/toolbar/toolbar.module';
 
 @NgModule({
     declarations: [
         HorizontalLayout1Component
     ],
-    imports     : [
+    imports: [
         MatSidenavModule,
 
         FuseSharedModule,
@@ -27,10 +27,9 @@ import { ToolbarModule } from '../../components/toolbar/toolbar.module';
         QuickPanelModule,
         ToolbarModule
     ],
-    exports     : [
+    exports: [
         HorizontalLayout1Component
     ]
 })
-export class HorizontalLayout1Module
-{
+export class HorizontalLayout1Module {
 }

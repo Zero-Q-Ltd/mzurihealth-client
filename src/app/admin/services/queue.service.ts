@@ -33,7 +33,7 @@ export class QueueService {
     mypatientqueue: BehaviorSubject<Array<MergedPatientQueueModel>> = new BehaviorSubject([]);
     currentpatient: BehaviorSubject<MergedPatientQueueModel> = new BehaviorSubject({ ...emptymergedQueueModel });
     adminid: BSON.ObjectId;
-    fetchingpatientdata: BehaviorSubject<boolean> = new BehaviorSubject(false)
+    fetchingpatientdata: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
     constructor(private hospitalservice: HospitalService,
         private adminservice: AdminService,
@@ -154,53 +154,63 @@ export class QueueService {
                 } else {
                     const queuewatcher = await this.stitch.db.collection<Queue>('queues')
                         .watch([q._id]);
-                    queuewatcher.onNext(k => this.queue.next(k.fullDocument));
+                    queuewatcher.onNext(k => {
+
+                        /**
+                         * Fetch the patient data
+                         * Magic code
+                         * Using the fetched queue data, fetch patientdata associated with it
+                         * Every change in the queue data triggers a new database query..... Maybe this can be optimized???
+                         * ---------------------@Todo Suggestion maybe just query the changed queue element id's
+                         * this can be achieved by comparing the array lenths first to determine the added/removed id, or compare the arrays to get
+                         * the mutated array pos and fetch just that 
+                         * Then update the whole variable
+                         */
+
+                        /**
+                         * keep a local copy of the queue
+                         */
+                        this.queue.next(k.fullDocument);
+
+                        this.fetchingpatientdata.next(true);
+                        /**
+                         * make every entry of the elements in the array create an independent Observable
+                         * Then, by using combinelatest, a value will only be emmitted when every Observable emits a value
+                         * There afterwards, whenever any of the observables changes, a new set of values is emitted
+                         * Although this is not the functionlity we are after... maybe this can be improved???
+                         * I don't see any side effects at this time anyway
+                         */
+                        return combineLatest(...k.fullDocument.queue.map(qq => {
+                            const patientfile = this.stitch.db.collection<HospFile>('patientfiles')
+                                .findOne({
+                                    _id: qq.fileId
+                                });
+                            const patient = this.stitch.db.collection<Patient>('patients')
+                                .findOne({
+                                    _id: qq.patientId
+                                });
+                            return combineLatest([patientfile, patient], (f, p) => {
+                                const data: MergedPatientQueueModel = {
+                                    patientdata: Object.assign(emptypatient, patient, { fileInfo: patientfile }),
+                                    queuedata: qq
+                                };
+                                return data;
+                            });
+                        })).subscribe(que => {
+                            this.fetchingpatientdata.next(true);
+                            const patientmap: Map<BSON.ObjectId, MergedPatientQueueModel> = new Map();
+                            que.map(q => {
+                                patientmap.set(q._id, q);
+                            });
+                            this.mainpatientsqueue.next(patientmap);
+                        });
+                    });
                 }
             });
     }
 
-    /**
-     * Fetch the patient data
-     * Magic code
-     * Using the fetched queue data, fetch patientdata associated with it
-     * Every change in the queue data triggers a new database query..... Maybe this can be optimized???
-     * ---------------------@Todo Suggestion maybe just query the changed queue element id's
-     */
     getpatientsinqueue(): void {
-        this.queue.pipe(switchMap((queue) => {
-            this.fetchingpatientdata.next(true)
-            /**
-             * make every entry of the elements in the array create an independent Observable
-             * Then, by using combinelatest, a value will only be emmitted when every Observable emits a value
-             * There afterwards, whenever any of the observables changes, a new set of values is emitted
-             * Although this is not the functionlity we are after... maybe this can be improved???
-             * I don't see any side effects at this time anyway
-             */
-            return combineLatest(...queue.queue.map(qq => {
-                const patientfile = this.stitch.db.collection<HospFile>('patientfiles')
-                    .findOne({
-                        _id: qq.fileId
-                    });
-                const patient = this.stitch.db.collection<Patient>('patients')
-                    .findOne({
-                        _id: qq.patientId
-                    });
-                return combineLatest([patientfile, patient], (f, p) => {
-                    const data: MergedPatientQueueModel = {
-                        patientdata: Object.assign(emptypatient, patient, { fileInfo: patientfile }),
-                        queuedata: qq
-                    };
-                    return data;
-                });
-            }));
-        })).subscribe(que => {
-            this.fetchingpatientdata.next(true);
-            const patientmap: Map<BSON.ObjectId, MergedPatientQueueModel> = new Map();
-            que.map(q => {
-                patientmap.set(q._id, q);
-            });
-            this.mainpatientsqueue.next(patientmap);
-        });
+
     }
 
     /**

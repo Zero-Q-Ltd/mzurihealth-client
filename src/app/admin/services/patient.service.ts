@@ -1,3 +1,4 @@
+import { Visit } from './../../models/visit/Visit';
 import { MergedPatientQueueModel } from './../../models/visit/MergedPatientQueueModel';
 import { Injectable } from '@angular/core';
 import { emptypatient, Patient } from '../../models/patient/Patient';
@@ -315,7 +316,7 @@ export class PatientService {
          * 3.
          * */
 
-        const visitTemp = {
+        const visitTemp: Visit = {
             visitdescription: description,
             patientid: patient._id,
             hospitalid: this.activehospital._id,

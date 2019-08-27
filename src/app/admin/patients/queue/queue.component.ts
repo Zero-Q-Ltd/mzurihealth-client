@@ -1,10 +1,10 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import {FormControl} from '@angular/forms';
-import {fuseAnimations} from '../../../../@fuse/animations';
-import {FuseSidebarService} from '../../../../@fuse/components/sidebar/sidebar.service';
-import {MatTabChangeEvent} from '@angular/material';
-import {LocalcommunicationService} from './current/localcommunication.service';
-import {QueueService} from '../../services/queue.service';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { fuseAnimations } from '../../../../@fuse/animations';
+import { FuseSidebarService } from '../../../../@fuse/components/sidebar/sidebar.service';
+import { MatTabChangeEvent } from '@angular/material';
+import { LocalcommunicationService } from './current/localcommunication.service';
+import { QueueService } from '../../services/queue.service';
 
 @Component({
     selector: 'app-queue',
@@ -23,22 +23,25 @@ export class QueueComponent implements OnInit {
     mainQueue = 0;
     myQueue = 0;
 
-    constructor(private _fuseSidebarService: FuseSidebarService, 
-        private communication: LocalcommunicationService, 
+    constructor(private _fuseSidebarService: FuseSidebarService,
+        private communication: LocalcommunicationService,
         private queueservice: QueueService) {
         this.communication.ontabchanged.subscribe(tabindex => {
             this.activetabindex = tabindex;
         });
         this.queueservice.mainpatientsqueue.subscribe(main => {
+            if (!main) { return; }
             this.mainQueue = main.size;
         });
         this.queueservice.mypatients.subscribe(mine => {
+            if (!mine) { return; }
             this.myQueue = mine.size;
         });
         this.queueservice.currentpatient.subscribe(current => {
+            if (!current) { return; }
             this.currentpatient = !current.patientdata._id;
         });
-        this.queueservice.getqueue()
+        this.queueservice.getqueue();
     }
 
     ngOnInit(): void {
@@ -56,5 +59,5 @@ export class QueueComponent implements OnInit {
     tabChanged = (tabChangeEvent: MatTabChangeEvent): void => {
         this.communication.resetall();
         this.communication.ontabchanged.next(tabChangeEvent.index);
-    };
+    }
 }

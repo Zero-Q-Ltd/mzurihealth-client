@@ -14,6 +14,6 @@ export const environment: AppEnvironment = {
    */
   mongo: {
     stitchAppId: 'stitch-uyxfz',
-    database: production ? 'live' : 'dev',
+    database:  'dev',
   },
 }

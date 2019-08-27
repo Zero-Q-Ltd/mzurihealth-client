@@ -1,7 +1,5 @@
 import {Customfields, emptymetadata, Metadata} from '../universal';
 import {HospFile} from '../hospital/file';
-import {Condition} from '../procedure/MedicalConditions.model';
-import {Allegy} from '../procedure/Allergy.model';
 import {
     BSON
 } from 'mongodb-stitch-browser-sdk';
@@ -36,21 +34,7 @@ export interface Patient {
      * A patient can have several insurances at the same time
      */
     insurance: Array<Insurance>;
-    medicalInfo: {
-        bloodType: string,
-        conditions: Array<Condition>
-        allergies: Array<Allegy>;
-        vitals: {
-            height: number,
-            weight: number,
-            pressure: number,
-            sugar: number,
-            heartRate: number,
-            respiration: number,
-            hb: string,
-        };
-        metadata: Metadata;
-    };
+
     /**
      * used in queries so that you can optionally disable some patients
      */

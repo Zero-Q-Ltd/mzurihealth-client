@@ -1,6 +1,5 @@
 import { Injectable, NgZone } from '@angular/core';
 import {
-    AnonymousCredential,
     GoogleRedirectCredential,
     RemoteMongoClient,
     RemoteMongoDatabase,
@@ -35,14 +34,14 @@ export class StitchService {
     }
 
     protected createStitchApp(): void {
-        const stitchAppId = environment.mongo.stitchAppId;
+        const stitchAppId = 'stitch-uyxfz';
         this.client = Stitch.initializeAppClient(stitchAppId);
 
         // Just a shortcut to StitchAuth, since it's often accessed
         this.auth = this.client.auth;
 
         // It's OK to get RemoteMongoDatabase *before* connecting/authenticating the client
-        this.db = this.client.getServiceClient(RemoteMongoClient.factory, 'mongodb-atlas').db(environment.mongo.database);
+        this.db = this.client.getServiceClient(RemoteMongoClient.factory, 'mongodb-atlas').db('dev');
         // console.log('StitchService#createStitchApp', {
         //   loggedIn: this.client.auth.isLoggedIn,
         //   hasRedirectResult: this.auth.hasRedirectResult(),
@@ -51,7 +50,7 @@ export class StitchService {
         //   auth: this.auth,
         //   db: this.db,
         // });
-
+        
         this.handleRedirectResultIfNeeded();
     }
 
@@ -62,14 +61,6 @@ export class StitchService {
         }
     }
 
-
-    public connectToDbAsAnonymous(): Promise<StitchUser> {
-        return this.auth.loginWithCredential(new AnonymousCredential());
-        // .then((user: StitchUser) => {
-        //   console.log('StitchService#connectToDbAsAnonymous, connected', user);
-        //   return user;
-        // });
-    }
 
     /**
      * De-authenticate current user's session.

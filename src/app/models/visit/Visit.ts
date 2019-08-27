@@ -8,20 +8,13 @@ export interface Visit {
     procedures: Array<Procedureperformed>;
     totalcost: number;
     visitDescription: string;
-    vitals: {
-        height: number,
-        weight: number,
-        pressure: number,
-        sugar: number,
-        heartrate: number,
-        respiration: number
-    };
+
     generalNotes: Array<{
         adminid: string,
         notes: string
     }>;
-    patientid: string;
-    hospitalid: string;
+    patientId: BSON.ObjectId;
+    hospitalId: BSON.ObjectId;
     prescription: string;
     metadata: Metadata;
     payment: {
@@ -53,18 +46,12 @@ export interface Checkin {
     status: 0 | 1 | 2 | 3 | 4;
 }
 
+
 export const emptypatientvisit: Visit = {
     procedures: [],
     totalcost: 0,
     visitDescription: null,
-    vitals: {
-        height: null,
-        weight: null,
-        pressure: null,
-        sugar: null,
-        heartrate: null,
-        respiration: null
-    },
+
     invoiceId: 0,
     generalNotes: [],
     checkin: {

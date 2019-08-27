@@ -1,9 +1,13 @@
 
 import { Condition } from '../procedure/MedicalConditions.model';
 import { Allegy } from '../procedure/Allergy.model';
-import { Metadata } from '../universal';
+import { Metadata, emptymetadata } from '../universal';
+import {
+    BSON
+} from 'mongodb-stitch-browser-sdk';
 
 export interface MedicalInfo {
+    _id: BSON.ObjectId;
     bloodType: string;
     conditions: Array<Condition>;
     allergies: Array<Allegy>;
@@ -17,4 +21,23 @@ export interface MedicalInfo {
         hb: string,
     };
     metadata: Metadata;
+    visitId: BSON.ObjectId;
 }
+
+export const emptymedicalInfo: MedicalInfo = {
+    _id: null,
+    bloodType: null,
+    conditions: [],
+    allergies: [],
+    vitals: {
+        height: null,
+        weight: null,
+        pressure: null,
+        sugar: null,
+        heartRate: null,
+        respiration: null,
+        hb: null
+    },
+    visitId: null,
+    metadata: emptymetadata
+};

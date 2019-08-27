@@ -5,6 +5,7 @@ import {
 } from 'mongodb-stitch-browser-sdk';
 
 export interface Patient {
+    _id: BSON.ObjectId;
     personalInfo: {
         address: string,
         photoURL: string
@@ -18,7 +19,6 @@ export interface Patient {
         dob: Date,
     };
     fileInfo?: HospFile;
-    _id: string;
     /**
      * Optional parent id number for minors
      */
@@ -71,21 +71,6 @@ export const emptypatient: Patient = {
         workplace: null
     },
     insurance: [],
-    medicalInfo: {
-        bloodType: null,
-        conditions: [],
-        allergies: [],
-        vitals: {
-            height: null,
-            weight: null,
-            pressure: null,
-            sugar: null,
-            heartRate: null,
-            respiration: null,
-            hb: null
-        },
-        metadata: emptymetadata
-    },
     status: true,
     exrainfo: null,
     primaryHosp: null,

@@ -142,6 +142,7 @@ export class VisitService {
         return true as any;
 
     }
+    
 
     terminatepatientvisit(visitid) {
         // return this.db.collection('hospitalvisits').doc(visitid).update({

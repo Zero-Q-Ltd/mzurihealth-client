@@ -6,7 +6,7 @@ import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
 import { HospitalAdmin } from '../../models/user/HospitalAdmin';
 import { PatientService } from './patient.service';
 import { Visit } from '../../models/visit/Visit';
-import { emptymergedQueueModel, MergedPatientQueueModel } from '../../models/visit/MergedPatientQueueModel';
+import { emptymergedQueueModel, MergedPatientQueueModel as PatientQueue, CurrentPatient } from '../../models/visit/MergedPatientQueueModel';
 import { ProceduresService } from './procedures.service';
 import { MergedProcedureModel } from '../../models/procedure/MergedProcedure.model';
 import * as moment from 'moment';
@@ -28,10 +28,10 @@ export class QueueService {
      * otherwise encountered when sifting through the data, as there is a lot of fitering to do
      * and for big hospitals the number of patients in the mainqueue at any given time might be big
      */
-    mainpatientsqueue: BehaviorSubject<Map<BSON.ObjectId, MergedPatientQueueModel>> = new BehaviorSubject(new Map());
-    mypatients: BehaviorSubject<Map<BSON.ObjectId, MergedPatientQueueModel>> = new BehaviorSubject(new Map());
-    mypatientqueue: BehaviorSubject<Array<MergedPatientQueueModel>> = new BehaviorSubject([]);
-    currentpatient: BehaviorSubject<MergedPatientQueueModel> = new BehaviorSubject({ ...emptymergedQueueModel });
+    mainpatientsqueue: BehaviorSubject<Map<BSON.ObjectId, PatientQueue>> = new BehaviorSubject(new Map());
+    mypatients: BehaviorSubject<Map<BSON.ObjectId, PatientQueue>> = new BehaviorSubject(new Map());
+    mypatientqueue: BehaviorSubject<Array<PatientQueue>> = new BehaviorSubject([]);
+    currentpatient: BehaviorSubject<CurrentPatient> = new BehaviorSubject(null);
     adminid: BSON.ObjectId;
     fetchingpatientdata: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
@@ -94,7 +94,7 @@ export class QueueService {
                 }).map(q => {
                     return this.mainpatientsqueue.value.get(q.patientId);
                 });
-                const mypatientsmap: Map<BSON.ObjectId, MergedPatientQueueModel> = new Map();
+                const mypatientsmap: Map<BSON.ObjectId, PatientQueue> = new Map();
                 mypatients.map(q => {
                     mypatientsmap.set(q.patientdata._id, q);
                 });
@@ -190,7 +190,7 @@ export class QueueService {
                                     _id: qq.patientId
                                 });
                             return combineLatest([patientfile, patient], (f, p) => {
-                                const data: MergedPatientQueueModel = {
+                                const data: PatientQueue = {
                                     patientdata: Object.assign(emptypatient, patient, { fileInfo: patientfile }),
                                     queuedata: qq
                                 };
@@ -198,7 +198,7 @@ export class QueueService {
                             });
                         })).subscribe(que => {
                             this.fetchingpatientdata.next(true);
-                            const patientmap: Map<BSON.ObjectId, MergedPatientQueueModel> = new Map();
+                            const patientmap: Map<BSON.ObjectId, PatientQueue> = new Map();
                             que.map(q => {
                                 patientmap.set(q._id, q);
                             });

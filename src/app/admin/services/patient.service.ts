@@ -298,17 +298,7 @@ export class PatientService {
         description: string, insurance: Array<{ insuranceControl: string; insurancenumber: string; }>
     }, patient: Patient,
         selected: { insuranceControl: string, insurancenumber: string }): Promise<void> {
-        /**
-         * add patient to queue
-         * */
-        // todays date
-        const todayDate = moment().toDate();
-
-        /**
-         * patient document ID
-         * **/
-        const queueID = '';
-
+     
         /**
          * steps
          * 1. hospitalvisits
@@ -317,31 +307,35 @@ export class PatientService {
          * */
 
         const visitTemp: Visit = {
-            visitdescription: description,
+            visitDescription: description,
             patientid: patient._id,
             hospitalid: this.activehospital._id,
             metadata: {
-                date: todayDate,
-                lastedit: todayDate
+                edited: {
+                    date: moment().toDate(),
+                    adminId: this.adminservice.userdata._id,
+                    hospitalId: this.activehospital._id
+                }
             },
             payment: {
-                hasinsurance: type.name === 'insurance',
-                splitpayment: false,
+                hasInsurance: type.name === 'insurance',
+                splitPayment: false,
                 status: false,
                 total: 0,
-                singlepayment: {
-                    channelid: type._id,
+                singlePayment: {
+                    channelId: type._id,
                     amount: 0,
-                    methidid: type.name === 'insurance' ? selected.insuranceControl : null,
-                    transactionid: null
+                    methodId: type.name === 'insurance' ? selected.insuranceControl : null,
+                    transactionId: null
                 }
 
             },
-            id: queueID,
+            _id: new BSON.ObjectId,
             checkin: {
                 status: 0,
                 admin: null
-            }
+            },
+            
         };
 
         const combineData = Object.assign({}, emptypatientvisit, visitTemp);

@@ -16,7 +16,7 @@ import {map, startWith} from 'rxjs/operators';
 import {allerytypearray} from '../../../../../models/procedure/Allergy.model';
 import {medicalconditionsarray} from '../../../../../models/procedure/MedicalConditions.model';
 import {QueueService} from '../../../../services/queue.service';
-import {MergedPatientQueueModel} from '../../../../../models/visit/MergedPatientQueueModel';
+import {MergedPatientQueueModel, CurrentPatient} from '../../../../../models/visit/MergedPatientQueueModel';
 import {AdminSelectionComponent} from '../../admin-selection/admin-selection.component';
 import {MatDialog, MatDialogRef, MatTableDataSource} from '@angular/material';
 import {LocalcommunicationService} from '../localcommunication.service';
@@ -42,7 +42,7 @@ export class TodayComponent implements OnInit {
     vitalsform: FormGroup;
     hospitalprocedures: Array<MergedProcedureModel> = [];
     selectedprocedure: { rawprocedure: RawProcedure, customprocedure: CustomProcedure };
-    currentpatient: MergedPatientQueueModel;
+    currentpatient: CurrentPatient;
     expand = true;
     procedurecategories: Array<ProcedureCategory>;
     procedureselection: FormGroup;
@@ -421,12 +421,12 @@ export class TodayComponent implements OnInit {
     }
 
     initvitalsformm(): void {
-        const height = new FormControl(this.currentpatient.patientdata.medicalInfo.vitals.height);
-        const weight = new FormControl(this.currentpatient.patientdata.medicalInfo.vitals.weight);
-        const pressure = new FormControl(this.currentpatient.patientdata.medicalInfo.vitals.pressure);
-        const heartrate = new FormControl(this.currentpatient.patientdata.medicalInfo.vitals.heartRate);
-        const sugar = new FormControl(this.currentpatient.patientdata.medicalInfo.vitals.sugar);
-        const respiration = new FormControl(this.currentpatient.patientdata.medicalInfo.vitals.respiration);
+        const height = new FormControl(this.currentpatient.medicalInfo.vitals.height);
+        const weight = new FormControl(this.currentpatient.medicalInfo.vitals.weight);
+        const pressure = new FormControl(this.currentpatient.medicalInfo.vitals.pressure);
+        const heartrate = new FormControl(this.currentpatient.medicalInfo.vitals.heartRate);
+        const sugar = new FormControl(this.currentpatient.medicalInfo.vitals.sugar);
+        const respiration = new FormControl(this.currentpatient.medicalInfo.vitals.respiration);
         this.vitalsform = new FormGroup({
             height: height,
             weight: weight,
@@ -481,12 +481,12 @@ export class TodayComponent implements OnInit {
 
     private initconditionsallergiesforms(): void {
         this.allergiesform = this.formBuilder.group({
-            allergiesformArray: this.formBuilder.array(this.currentpatient.patientdata.medicalInfo.allergies.map(mzio => {
+            allergiesformArray: this.formBuilder.array(this.currentpatient.medicalInfo.allergies.map(mzio => {
                 return this.igamizio(mzio);
             }))
         });
         this.medconditionsform = this.formBuilder.group({
-            conditionsformArray: this.formBuilder.array(this.currentpatient.patientdata.medicalInfo.conditions.map(tatizo => {
+            conditionsformArray: this.formBuilder.array(this.currentpatient.medicalInfo.conditions.map(tatizo => {
                 return this.igamatatizo(tatizo);
             }))
         });

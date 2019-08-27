@@ -5,7 +5,7 @@ import {AdminService} from '../../services/admin.service';
 import {PatientService} from '../../services/patient.service';
 import {HospitalService} from '../../services/hospital.service';
 import {emptyhospital, Hospital} from '../../../models/hospital/Hospital';
-import {emptyfile, HospFile} from '../../../models/hospital/file';
+import {emptyfile, HospFile} from '../../../models/hospital/HospFile';
 import * as moment from 'moment';
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {fuseAnimations} from '../../../../@fuse/animations';
@@ -69,8 +69,8 @@ export class AddComponent implements OnInit {
                 /**
                  * set the form data and disable it
                  * */
-                // this.patientsForm.controls['personaLinfo']
-                //     .get('fileno').patchValue(this.patientfileno.no);
+                this.patientsForm.controls['personaLinfo']
+                    .get('fileno').patchValue(this.patientfileno.no);
 
                 // this.patientsForm.controls['personaLinfo']
                 //     .get('fileno').disable({onlySelf: true});

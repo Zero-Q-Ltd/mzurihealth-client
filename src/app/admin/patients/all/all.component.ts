@@ -123,7 +123,7 @@ export class AllComponent implements OnInit, AfterViewInit {
                      */
 
                     case 'save':
-                        this.patientservice.addPatientToQueue(formData.data.getRawValue(), patient, formData.selected)
+                        this.queueService.addPatientToQueue(formData.data.getRawValue(), patient, formData.selected)
                             .then(() => {
                                 // navigate to queues
                                 this.router.navigate(['admin/patients/queue']);

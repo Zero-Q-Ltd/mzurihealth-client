@@ -1,35 +1,19 @@
-import {Customfields, emptymetadata, Metadata} from '../universal';
-import {HospFile} from '../hospital/file';
+import { Customfields, emptymetadata, Metadata } from '../universal';
+import { HospFile } from '../hospital/HospFile';
 import {
     BSON
 } from 'mongodb-stitch-browser-sdk';
 
 export interface Patient {
     _id: BSON.ObjectId;
-    personalInfo: {
-        address: string,
-        photoURL: string
-        name: string,
-        gender: number,
-        occupation: string,
-        workplace: string,
-        phone: number,
-        email: string,
-        idno: string,
-        dob: Date,
-    };
+    personalInfo: PersonalInfo;
     fileInfo?: HospFile;
     /**
      * Optional parent id number for minors
      */
     parentid?: string;
 
-    nextofKin: {
-        name: string,
-        relationship: string,
-        phone: number,
-        workplace: string
-    };
+    nextofKin: NextofKin;
     /**
      * A patient can have several insurances at the same time
      */
@@ -48,6 +32,24 @@ export interface Patient {
 export interface Insurance {
     _id: BSON.ObjectId;
     insuranceNo: string;
+}
+export interface NextofKin {
+    name: string;
+    relationship: string;
+    phone: number;
+    workplace: string;
+}
+export interface PersonalInfo {
+    address: string;
+    photoURL: string;
+    name: string;
+    gender: number;
+    occupation: string;
+    workplace: string;
+    phone: string;
+    email: string;
+    idno: string;
+    dob: Date;
 }
 
 export const emptypatient: Patient = {

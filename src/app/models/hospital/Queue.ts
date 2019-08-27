@@ -9,10 +9,10 @@ import { Checkin } from '../visit/Visit';
 export interface Queue {
     _id: BSON.ObjectId;
     hospitalId: BSON.ObjectId; 
-    queue: Array<QueueRefs>;
+    queue: Array<QueueRef>;
 }
 
-export interface QueueRefs {
+export interface QueueRef {
     /**
      * The checkin is duplicated as a hack
      * Instead of keeping realtime subscriptions to the patient data, the data will be re-fetched when the status changes

@@ -1,14 +1,14 @@
 import { Visit } from './../../models/visit/Visit';
 import { MergedPatientQueueModel } from './../../models/visit/MergedPatientQueueModel';
 import { Injectable } from '@angular/core';
-import { emptypatient, Patient } from '../../models/patient/Patient';
+import { emptypatient, Patient, NextofKin, Insurance } from '../../models/patient/Patient';
 import { emptypatientvisit } from '../../models/visit/Visit';
 import { Hospital } from '../../models/hospital/Hospital';
 import { HospitalAdmin } from '../../models/user/HospitalAdmin';
 import { HospitalService } from './hospital.service';
 import { AdminService } from './admin.service';
 import * as moment from 'moment';
-import { emptyfile, HospFile } from '../../models/hospital/file';
+import { emptyfile, HospFile } from '../../models/hospital/HospFile';
 import { AddPatientFormModel } from '../../models/patient/AddPatientForm.model';
 import { debounceTime, map, switchMap } from 'rxjs/operators';
 import { BehaviorSubject, combineLatest, Observable, of, from } from 'rxjs';
@@ -62,71 +62,14 @@ export class PatientService {
             });
 
         const patientwatcher = this.stitch.db.collection<Patient>('patients')
-            .findOne({ _id: patientid});
+            .findOne({ _id: patientid });
 
         const pt = combineLatest([patientfile, patientwatcher], (file, patient) => {
             return Object.assign(emptypatient, patient, { fileInfo: file }) as Patient;
         });
 
         return pt.toPromise();
-
-        // const mainpatientdata = await this.stitch.db.collection('patients').doc(patientid)
-        //     .get().toPromise().then(async value => {
-        //         const patient = Object.assign({...emptypatient}, value.data(), {id: value.id});
-        //         const patientdata = await this.stitch.db.collection('hospitals')
-        //             .doc(this.activehospital._id)
-        //             .collection('filenumbers')
-        //             .doc(patientid).get()
-        //             .toPromise()
-        //             .then(val => {
-        //                 console.log(val.data());
-        //                 patient.fileinfo = val.data() as HospFile;
-        //                 console.log(patient);
-        //                 return patient;
-        //             });
-        //         return patientdata;
-        //     });
-        // return mainpatientdata;
     }
-
-    // async getpatientbyid(patientid: BSON.ObjectId): Promise<Patient> {
-    //     const patientfile = this.stitch.db.collection<HospFile>('patientfiles')
-    //         .findOne({
-    //             hospitalId: this.activehospital._id,
-    //             patientId: patientid
-    //         });
-
-    //     const patientwatcher = await this.stitch.db.collection<Patient>('patients')
-    //         .watch([patientid]);
-
-    //     const t = new Observable(h => {
-    //         patientwatcher.onNext(k => h.next(k.fullDocument));
-    //     });
-
-    //     const pt = combineLatest([patientfile, t], (file, patient) => {
-    //         return Object.assign(emptypatient, patient, { fileInfo: file }) as Patient;
-    //     });
-
-    //     return pt.toPromise();
-
-    //     // const mainpatientdata = await this.stitch.db.collection('patients').doc(patientid)
-    //     //     .get().toPromise().then(async value => {
-    //     //         const patient = Object.assign({...emptypatient}, value.data(), {id: value.id});
-    //     //         const patientdata = await this.stitch.db.collection('hospitals')
-    //     //             .doc(this.activehospital._id)
-    //     //             .collection('filenumbers')
-    //     //             .doc(patientid).get()
-    //     //             .toPromise()
-    //     //             .then(val => {
-    //     //                 console.log(val.data());
-    //     //                 patient.fileinfo = val.data() as HospFile;
-    //     //                 console.log(patient);
-    //     //                 return patient;
-    //     //             });
-    //     //         return patientdata;
-    //     //     });
-    //     // return mainpatientdata;
-    // }
 
     deletepatient(patientid: string): Promise<void> {
         return true as any;
@@ -141,19 +84,23 @@ export class PatientService {
     /**
      * save patient to db
      * */
-    savePatient({ personaLinfo, insurance, nextofkin }: AddPatientFormModel): Promise<any> {
+    savePatient({ personaLinfo, insurance, nextofkin, fileNo }: AddPatientFormModel): Promise<any> {
         /**
          * create data to insert to the patient collection
          * */
-        const transformedNextOfKin = {
+        const transformedNextOfKin: NextofKin = {
             name: nextofkin.name.toLowerCase(),
             relationship: nextofkin.relationship.toLowerCase(),
             phone: nextofkin.phone,
             workplace: nextofkin.workplace.toLowerCase()
         };
 
-        const tempInsurance = insurance.map((value, index: number) => {
-            return { id: value._id, insuranceno: value.insuranceNo };
+        const tempInsurance: Array<Insurance> = insurance.map((value, index: number) => {
+            const i: Insurance = {
+                _id: value._id,
+                insuranceNo: value.insuranceNo
+            }
+            return i;
         });
 
         // todays date
@@ -164,26 +111,36 @@ export class PatientService {
          * **/
         const patientID = new BSON.ObjectID();
 
+        const newmeta = {
+            date: moment().toDate(),
+            adminId: this.adminservice.userdata._id,
+            hospitalId: this.activehospital._id
+        };
 
-        const modifiedData = {
-            id: patientID,
-            personalinfo: {
-                name: personaLinfo.firstName.toLowerCase() + ' ' + personaLinfo.lastName.toLowerCase(),
+        const modifiedData: Patient = {
+            _id: patientID,
+            personalInfo: {
+                name: personaLinfo.name.toLowerCase(),
                 address: personaLinfo.address.toLowerCase(),
                 gender: personaLinfo.gender,
                 occupation: personaLinfo.occupation.toLowerCase(),
                 workplace: personaLinfo.workplace.toLowerCase(),
                 phone: personaLinfo.phone,
                 email: personaLinfo.email.toLowerCase(),
-                idno: personaLinfo.idNo,
-                dob: moment(personaLinfo.birth, 'MM/DD/YYYY').toDate(),
+                idno: personaLinfo.idno,
+                dob: moment(personaLinfo.dob, 'MM/DD/YYYY').toDate(),
+                photoURL: null,
             },
-            nextofkin: transformedNextOfKin,
+            nextofKin: transformedNextOfKin,
             insurance: tempInsurance,
             metadata: {
-                date: todayDate,
-                lastedit: todayDate
-            }
+                created: newmeta,
+                edited: newmeta
+            },
+            customFieelds: null,
+            exrainfo: null,
+            primaryHosp: null,
+            status: true
         };
 
         /**
@@ -199,176 +156,65 @@ export class PatientService {
             date: todayDate,
             lastVisit: todayDate,
             hospitalId: this.activehospital._id,
-            no: personaLinfo.fileno,
+            no: fileNo,
             visitCount: 0,
             patientId: patientID,
-            idno: personaLinfo.idNo
         };
 
         const hospitalFileNumber = Object.assign({}, emptyfile, hospitalFileNumberTemp);
 
+        /**
+         * create a file number associated with that hospital only
+         */
         const i = this.stitch.db.collection<HospFile>('patientfiles')
             .insertOne(hospitalFileNumber)
 
+        /**
+         * create the patient
+         */
         const j = this.stitch.db.collection<Patient>('patients')
             .insertOne(patientDoc);
 
+        /**
+         * Update the patient count in that hospital
+         */
         const k = this.stitch.db.collection('hospitals')
             .updateOne({ _id: this.activehospital._id }, { $set: { $inc: { patientcount: 1 } } }, { upsert: true });
 
-        return Promise.all([i, j, k])
-        /**
-         * start batch write
-         * */
-        // create batch
-        // const batch = this.stitch.db.firestore.batch();
-        //
-        // const patientRef = this.stitch.db.firestore
-        //     .collection('patients').doc(patientID);
-        //
-        // batch.set(patientRef, patientDoc);
-        //
-        //
-        // // batch write Hospital file
-        // const patientFileRef = this.stitch.db.firestore.collection('hospitals')
-        //     .doc(this.activehospital._id).collection('filenumbers').doc(patientID);
-        // batch.set(patientFileRef, hospitalFileNumber);
-        //
-        //
-        // // batch write the number of active patients
-        // const numberOfPatientsRef = this.stitch.db.firestore.collection('hospitals').doc(this.activehospital._id);
-        // batch.update(numberOfPatientsRef, {patientcount: this.activehospital.patientCount + 1});
-        //
-        // return batch.commit();
-        return true as any;
-
+        return Promise.all([i, j, k]);
 
     }
 
 
     /**
      * get all patients
+     * @TODO implement a custom paginator
      * */
     getHospitalPatients(): void {
-        this.stitch.db.collection<HospFile>('patientfiles')
+        const patientdata = this.stitch.db.collection<Patient>('patients')
             .find({
                 hospitalId: this.activehospital._id,
-            }, { limit: 1000 })
-            .toArray()
-            .then(files => {
-
+            }, { limit: 25 })
+        const patientfiles = this.stitch.db.collection<HospFile>('patientfiles')
+            .find({
+                hospitalId: this.activehospital._id,
+            }, { limit: 25, sort: { 'created.date': 1 } });
+        combineLatest([patientfiles, patientdata], (f: Array<HospFile>, p: Array<Patient>) => {
+            /**
+             * crossmatch every file to its relevant patient by looping
+             */
+            const patients = p.map(patient => {
+                /**
+                 * There can only be one file associated with a patient
+                 */
+                return f.find(file => {
+                    return file.patientId === patient._id;
+                })[0];
             });
-
-
-        // const patientwatcher = this.stitch.db.collection<Patient>('patients')
-        //     .find();
-
-        // return combineLatest(patientfile, patientwatcher, (file, patient) => {
-        //     return Object.assign(patient, { fileInfo: file });
-        // });
-
-        // this.stitch.db.collection('hospitals').doc(this.activehospital._id)
-        //     .collection('filenumbers', ref => ref.limit(100)).snapshotChanges().pipe(
-        //     switchMap(f => {
-        //         return combineLatest(...f.map(t => {
-        //             const hospitalfile = t.payload.doc.data() as HospFile;
-        //             hospitalfile.id = t.payload.doc.id;
-        //             return this.stitch.db.collection('patients').doc(hospitalfile.id).snapshotChanges().pipe(
-        //                 map(patientdata => {
-        //                     if (!patientdata.payload.exists) {
-        //                         return {...emptypatient};
-        //                     }
-        //                     const patient = patientdata.payload.data() as Patient;
-        //                     patient._id = patientdata.payload.id;
-        //                     patient.fileInfo = hospitalfile;
-        //                     return Object.assign({}, emptypatient, patient);
-        //                 })
-        //             );
-        //         }));
-        //     })
-        // ).subscribe(mergedData => {
-        //     this.hospitalpatients.next(mergedData.sort((a: Patient, b: Patient) => {
-        //         return this.getTime(a.metadata.date.toDate()) - this.getTime(b.metadata.date.toDate());
-        //     }));
-        // });
+            this.hospitalpatients.next(patients);
+        });
     }
 
-    addPatientToQueue({ type, description, insurance }: {
-        type: PaymentChannel,
-        description: string, insurance: Array<{ insuranceControl: string; insurancenumber: string; }>
-    }, patient: Patient,
-        selected: { insuranceControl: string, insurancenumber: string }): Promise<void> {
-     
-        /**
-         * steps
-         * 1. hospitalvisits
-         * 2. filenumber last visit -- maybe when everything is done
-         * 3.
-         * */
-
-        const visitTemp: Visit = {
-            visitDescription: description,
-            patientid: patient._id,
-            hospitalid: this.activehospital._id,
-            metadata: {
-                edited: {
-                    date: moment().toDate(),
-                    adminId: this.adminservice.userdata._id,
-                    hospitalId: this.activehospital._id
-                }
-            },
-            payment: {
-                hasInsurance: type.name === 'insurance',
-                splitPayment: false,
-                status: false,
-                total: 0,
-                singlePayment: {
-                    channelId: type._id,
-                    amount: 0,
-                    methodId: type.name === 'insurance' ? selected.insuranceControl : null,
-                    transactionId: null
-                }
-
-            },
-            _id: new BSON.ObjectId,
-            checkin: {
-                status: 0,
-                admin: null
-            },
-            
-        };
-
-        const combineData = Object.assign({}, emptypatientvisit, visitTemp);
-        //
-        // // Get a new write batch
-        // const batch = this.stitch.db.firestore.batch();
-        // const hospitalVisitRef = this.stitch.db.firestore.collection('hospitalvisits').doc(queueID);
-        // batch.set(hospitalVisitRef, combineData);
-        //
-        //
-        // // const
-        // // store insurance
-        // const tempInsurance = insurance.map((value, index: number) => {
-        //     return {id: value.insuranceControl, insuranceno: value.insurancenumber};
-        // });
-        //
-        // const patientRef = this.stitch.db.firestore
-        //     .collection('patients').doc(patient._id);
-        //
-        // batch.update(patientRef, {patient, insurance: tempInsurance});
-        //
-        // // TODO: use transactions with promise.all
-        // // increment the visit count
-        // const hospitalFileRef = this.stitch.db.firestore.collection('hospitals')
-        //     .doc(this.activehospital._id).collection('filenumbers').doc(patient._id);
-        //
-        //
-        // batch.update(hospitalFileRef, Object.assign({}, patient.fileInfo, {visitcount: patient.fileInfo.visitCount + 1}));
-        //
-        // return batch.commit();
-        return true as any;
-
-    }
 
     /***
      *
@@ -493,20 +339,7 @@ export class PatientService {
     }
 
     searchPatient(field: string, value: string): any {
-
-        /*
-        * searchable items
-        * - file number
-        * - Id number
-        * - mobile number
-        * - name
-        * **/
-
-        if (field === 'no' || field === 'idno') {
-            this.searchFromHospitalFile(field, value);
-        } else if (field === 'phone' || field === 'name') {
-            this.searchFromPatients(field, value);
-        }
+        return true as any;
     }
 
     updateVitalsAllegiesConditions(patientID: string, vitals, conditions: Array<any>, allegies: Array<any>): any {
@@ -569,79 +402,6 @@ export class PatientService {
 
     private getTime(date?: Date): any {
         return date != null ? date.getTime() : 0;
-    }
-
-    private searchFromHospitalFile(field: string, value: string): any {
-        /**
-         * search filenumber
-         * search _id
-         * */
-        // this.stitch.db.collection('hospitals')
-        //     .doc(this.activehospital._id)
-        //     .collection('filenumbers', ref => {
-        //         return ref.where(field, '==', value);
-        //     }).snapshotChanges().pipe(
-        //     switchMap(f => {
-        //         if (f.length === 0) {
-        //             return of([]);
-        //         }
-        //         return combineLatest(...f.map(t => {
-        //             console.log('inside patient t');
-        //             console.log(t);
-        //             const fileInfo = t.payload.doc.data() as HospFile;
-        //
-        //             return this.stitch.db.collection('patients').doc(fileInfo.id).snapshotChanges().pipe(
-        //                 map(patientData => {
-        //                     console.log('inside patient data');
-        //                     console.log(patientData);
-        //                     return Object.assign({}, emptypatient, patientData.payload.data(), {fileinfo: fileInfo});
-        //                 })
-        //             );
-        //         }));
-        //
-        //     })
-        // ).subscribe(mergedData => {
-        //     this.hospitalpatients.next(mergedData);
-        // });
-        return true as any;
-    }
-
-    private searchFromPatients(field: string, value: string): any {
-        /**
-         * search mobile number
-         * search name
-         * */
-
-        // TODO: make sure something is done if the patient has no file number
-        // this.stitch.db.collection('patients', ref => {
-        //     return ref.where(`personalinfo.${field}`, '==', value);
-        // }).snapshotChanges().pipe(
-        //     switchMap(f => {
-        //         if (f.length === 0) {
-        //             of([]);
-        //         }
-        //         return combineLatest(...f.map(t => {
-        //
-        //             const patient = Object.assign({}, emptypatient, t.payload.doc.data());
-        //
-        //             return this.stitch.db.collection('hospitals')
-        //                 .doc(this.activehospital._id)
-        //                 .collection('filenumbers').doc(patient._id).snapshotChanges()
-        //                 .pipe(
-        //                     map(fileData => {
-        //                         // TODO: return null if no patient
-        //                         const patientFileData = fileData.payload.data() as HospFile;
-        //                         patient.fileinfo = patientFileData;
-        //
-        //                         return patient;
-        //                     })
-        //                 );
-        //         }));
-        //     })
-        // ).subscribe(mergedData => {
-        //     this.hospitalpatients.next(mergedData);
-        // });
-        return true as any;
     }
 
 }

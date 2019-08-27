@@ -8,7 +8,6 @@ export interface HospFile {
     date: Date;
     lastVisit: Date;
     no: string;
-    idno: number;
     visitCount: number;
     patientId: BSON.ObjectId;
 }
@@ -19,7 +18,6 @@ export const emptyfile: HospFile = {
     date: null,
     lastVisit: null,
     no: '0',
-    idno: null,
     visitCount: 0,
     patientId : null
 };

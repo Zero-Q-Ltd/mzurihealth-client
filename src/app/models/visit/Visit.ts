@@ -3,6 +3,7 @@ import {Procedureperformed} from '../procedure/Procedureperformed';
 import {
     BSON
 } from 'mongodb-stitch-browser-sdk';
+import { Prescription } from './Prescription';
 
 export interface Visit {
     procedures: Array<Procedureperformed>;
@@ -15,7 +16,7 @@ export interface Visit {
     }>;
     patientId: BSON.ObjectId;
     hospitalId: BSON.ObjectId;
-    prescription: string;
+    prescription: Prescription;
     metadata: Metadata;
     payment: {
         splitPayment: boolean;
@@ -64,8 +65,8 @@ export const emptypatientvisit: Visit = {
         status: false,
         hasInsurance: false,
     },
-    patientid: null,
-    hospitalid: null,
+    patientId: null,
+    hospitalId: null,
     prescription: null,
     metadata: emptymetadata,
     _id: null

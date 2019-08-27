@@ -5,18 +5,21 @@ import { AdminService } from './admin.service';
 import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
 import { HospitalAdmin } from '../../models/user/HospitalAdmin';
 import { PatientService } from './patient.service';
-import { Visit } from '../../models/visit/Visit';
+import { Visit, emptypatientvisit } from '../../models/visit/Visit';
 import { emptymergedQueueModel, MergedPatientQueueModel as PatientQueue, CurrentPatient } from '../../models/visit/MergedPatientQueueModel';
 import { ProceduresService } from './procedures.service';
 import { MergedProcedureModel } from '../../models/procedure/MergedProcedure.model';
 import * as moment from 'moment';
 import { StitchService } from './stitch/stitch.service';
 import { switchMap, takeUntil, skipWhile } from 'rxjs/operators';
-import { BSON } from 'bson'
 import { RemoteInsertOneResult } from 'mongodb-stitch-browser-sdk';
-import { HospFile } from 'app/models/hospital/file';
-import { Queue, QueueRefs, emptyqueue } from 'app/models/hospital/Queue';
+import { HospFile } from 'app/models/hospital/HospFile';
+import { Queue, emptyqueue } from 'app/models/hospital/Queue';
+import { PaymentChannel } from 'app/models/payment/PaymentChannel';
 
+import {
+    BSON
+} from 'mongodb-stitch-browser-sdk';
 @Injectable({
     providedIn: 'root'
 })
@@ -43,8 +46,7 @@ export class QueueService {
         this.hospitalservice.activehospital.subscribe(hospital => {
             if (hospital._id) {
                 this.activehospitalid = hospital._id;
-                // this.getqueue();
-                this.getpatientsinqueue();
+                this.getqueue();
             }
         });
 
@@ -189,9 +191,9 @@ export class QueueService {
                                 .findOne({
                                     _id: qq.patientId
                                 });
-                            return combineLatest([patientfile, patient], (f, p) => {
+                            return combineLatest([patientfile, patient], (f: HospFile, p: Patient) => {
                                 const data: PatientQueue = {
-                                    patientdata: Object.assign(emptypatient, patient, { fileInfo: patientfile }),
+                                    patientdata: Object.assign(emptypatient, p, { fileInfo: f }),
                                     queuedata: qq
                                 };
                                 return data;
@@ -209,10 +211,95 @@ export class QueueService {
             });
     }
 
-    getpatientsinqueue(): void {
+    addPatientToQueue({ type, description, insurance }: {
+            type: PaymentChannel,
+            description: string,
+            insurance: Array<{
+                insuranceControl: string;
+                insurancenumber: string;
+            }>
+        },
+        patient: Patient,
+        selected:
+            {
+                insuranceControl: string,
+                insurancenumber: string
+            }): Promise<void> {
+
+        /**
+         * steps
+         * 1. hospitalvisits
+         * 2. filenumber last visit -- maybe when everything is done
+         * 3.
+         * */
+
+        const visitTemp: Visit = {
+            visitDescription: description,
+            patientId: patient._id,
+            hospitalId: this.activehospitalid,
+            metadata: {
+                edited: {
+                    date: moment().toDate(),
+                    adminId: this.adminservice.userdata._id,
+                    hospitalId: this.activehospitalid
+                }
+            },
+            payment: {
+                hasInsurance: type.name === 'insurance',
+                splitPayment: false,
+                status: false,
+                total: 0,
+                singlePayment: {
+                    channelId: type._id,
+                    amount: 0,
+                    methodId: type.name === 'insurance' ? selected.insuranceControl : null,
+                    transactionId: null
+                }
+
+            },
+            _id: new BSON.ObjectId,
+            checkin: {
+                status: 0,
+                admin: null
+            },
+            generalNotes: [],
+            invoiceId: this.hospitalservice.activehospital.value.invoiceCount + 1,
+            prescription: null,
+            procedures: [],
+            totalcost: 0
+        };
+
+        const combineData = Object.assign({}, emptypatientvisit, visitTemp);
+        //
+        // // Get a new write batch
+        // const batch = this.stitch.db.firestore.batch();
+        // const hospitalVisitRef = this.stitch.db.firestore.collection('hospitalvisits').doc(queueID);
+        // batch.set(hospitalVisitRef, combineData);
+        //
+        //
+        // // const
+        // // store insurance
+        // const tempInsurance = insurance.map((value, index: number) => {
+        //     return {id: value.insuranceControl, insuranceno: value.insurancenumber};
+        // });
+        //
+        // const patientRef = this.stitch.db.firestore
+        //     .collection('patients').doc(patient._id);
+        //
+        // batch.update(patientRef, {patient, insurance: tempInsurance});
+        //
+        // // TODO: use transactions with promise.all
+        // // increment the visit count
+        // const hospitalFileRef = this.stitch.db.firestore.collection('hospitals')
+        //     .doc(this.activehospital._id).collection('filenumbers').doc(patient._id);
+        //
+        //
+        // batch.update(hospitalFileRef, Object.assign({}, patient.fileInfo, {visitcount: patient.fileInfo.visitCount + 1}));
+        //
+        // return batch.commit();
+        return true as any;
 
     }
-
     /**
      * Inserts an empty queue to the database
      */

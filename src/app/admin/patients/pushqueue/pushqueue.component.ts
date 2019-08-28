@@ -1,11 +1,11 @@
-import {Component, Inject, OnInit, ViewEncapsulation} from '@angular/core';
-import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {Insurance, Patient} from '../../../models/patient/Patient';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
-import {PaymentmethodService} from '../../services/paymentmethod.service';
-import {PaymentChannel, Paymentmethods} from '../../../models/payment/PaymentChannel';
-import {PatientService} from '../../services/patient.service';
-import {NotificationService} from '../../../shared/services/notifications.service';
+import { Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Insurance, Patient } from '../../../models/patient/Patient';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { PaymentmethodService } from '../../services/paymentmethod.service';
+import { PaymentChannel, Paymentmethods } from '../../../models/payment/PaymentChannel';
+import { PatientService } from '../../services/patient.service';
+import { NotificationService } from '../../../shared/services/notifications.service';
 
 @Component({
     selector: 'app-pushqueue',
@@ -29,8 +29,8 @@ export class PushqueueComponent implements OnInit {
     private insuranceAvailable: boolean;
 
     constructor(private _formBuilder: FormBuilder, @Inject(MAT_DIALOG_DATA) private _data: any,
-                public matDialogRef: MatDialogRef<PushqueueComponent>, private notificationService: NotificationService,
-                private paymentmethodService: PaymentmethodService, private patientService: PatientService) {
+        public matDialogRef: MatDialogRef<PushqueueComponent>, private notificationService: NotificationService,
+        private paymentmethodService: PaymentmethodService, private patientService: PatientService) {
 
         this.insuranceAvailable = false;
         this.insuranceSet = false;
@@ -89,17 +89,17 @@ export class PushqueueComponent implements OnInit {
                     alertType: 'info',
                     body: 'Please select Insurance',
                     title: 'Select insurance',
-                    placement: {horizontal: 'right', vertical: 'top'}
+                    placement: { horizontal: 'right', vertical: 'top' }
                 });
                 return;
             }
-            this.matDialogRef.close(['save', {data: this.queueForm, selected: this.selectedInsurance}]);
+            this.matDialogRef.close({ data: this.queueForm, selected: this.selectedInsurance });
         } else {
             this.notificationService.notify({
                 alertType: 'info',
                 body: 'The user does not have any insurance',
                 title: 'No Insurance',
-                placement: {horizontal: 'right', vertical: 'top'}
+                placement: { horizontal: 'right', vertical: 'top' }
             });
         }
     }
@@ -147,16 +147,16 @@ export class PushqueueComponent implements OnInit {
                         this.addInsurance();
 
                         const mergedData = Object.assign({}, this.allInsurance[insuranceData._id],
-                            {id: insuranceData._id, insuranceno: insuranceData.insuranceNo});
+                            { id: insuranceData._id, insuranceno: insuranceData.insuranceNo });
 
-                        this.insurance.controls[index].get('insuranceControl').patchValue(mergedData.id, {emitEvent: false});
-                        this.insurance.controls[index].get('insurancenumber').patchValue(mergedData.insuranceno, {emitEvent: false});
+                        this.insurance.controls[index].get('insuranceControl').patchValue(mergedData.id, { emitEvent: false });
+                        this.insurance.controls[index].get('insurancenumber').patchValue(mergedData.insuranceno, { emitEvent: false });
 
                         /*
                         * disable inputs
                         * **/
-                        this.insurance.controls[index].get('insuranceControl').disable({emitEvent: false});
-                        this.insurance.controls[index].get('insurancenumber').disable({emitEvent: false});
+                        this.insurance.controls[index].get('insuranceControl').disable({ emitEvent: false });
+                        this.insurance.controls[index].get('insurancenumber').disable({ emitEvent: false });
                     });
                 });
 

@@ -1,6 +1,6 @@
-import {Customfields, emptymetadata, Metadata} from '../universal';
-import {HospFile} from '../hospital/HospFile';
-import {BSON} from 'mongodb-stitch-browser-sdk';
+import { Customfields, emptymetadata, Metadata } from '../universal';
+import { HospFile, NewFile } from '../hospital/HospFile';
+import { BSON } from 'mongodb-stitch-browser-sdk';
 
 export interface Patient {
     _id: BSON.ObjectId;
@@ -35,7 +35,7 @@ export interface Insurance {
 export interface NextofKin {
     name: string;
     relationship: string;
-    phone: number;
+    phone: string;
     workplace: string;
 }
 

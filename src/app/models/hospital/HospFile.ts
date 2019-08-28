@@ -1,4 +1,4 @@
-import {BSON} from 'mongodb-stitch-browser-sdk';
+import { BSON } from 'mongodb-stitch-browser-sdk';
 
 export interface HospFile {
     _id: BSON.ObjectId;

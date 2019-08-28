@@ -1,10 +1,10 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import {FormControl} from '@angular/forms';
-import {fuseAnimations} from '../../../../@fuse/animations';
-import {FuseSidebarService} from '../../../../@fuse/components/sidebar/sidebar.service';
-import {MatTabChangeEvent} from '@angular/material';
-import {LocalcommunicationService} from './current/localcommunication.service';
-import {QueueService} from '../../services/queue.service';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { fuseAnimations } from '../../../../@fuse/animations';
+import { FuseSidebarService } from '../../../../@fuse/components/sidebar/sidebar.service';
+import { MatTabChangeEvent } from '@angular/material';
+import { LocalcommunicationService } from './current/localcommunication.service';
+import { QueueService } from '../../services/queue.service';
 
 @Component({
     selector: 'app-queue',
@@ -24,8 +24,8 @@ export class QueueComponent implements OnInit {
     myQueue = 0;
 
     constructor(private _fuseSidebarService: FuseSidebarService,
-                private communication: LocalcommunicationService,
-                private queueservice: QueueService) {
+        private communication: LocalcommunicationService,
+        private queueservice: QueueService) {
         this.communication.ontabchanged.subscribe(tabindex => {
             this.activetabindex = tabindex;
         });
@@ -47,7 +47,6 @@ export class QueueComponent implements OnInit {
             }
             this.currentpatient = !current.patientdata._id;
         });
-        this.queueservice.getqueue();
     }
 
     ngOnInit(): void {

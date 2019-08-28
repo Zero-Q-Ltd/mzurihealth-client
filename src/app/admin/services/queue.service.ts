@@ -1,20 +1,20 @@
-import {emptypatient, Patient} from './../../models/patient/Patient';
-import {Injectable} from '@angular/core';
-import {HospitalService} from './hospital.service';
-import {AdminService} from './admin.service';
-import {BehaviorSubject, combineLatest} from 'rxjs';
-import {HospitalAdmin} from '../../models/user/HospitalAdmin';
-import {PatientService} from './patient.service';
-import {emptypatientvisit, Visit} from '../../models/visit/Visit';
-import {CurrentPatient, MergedPatientQueueModel as PatientQueue} from '../../models/visit/MergedPatientQueueModel';
-import {ProceduresService} from './procedures.service';
+import { emptypatient, Patient } from './../../models/patient/Patient';
+import { Injectable } from '@angular/core';
+import { HospitalService } from './hospital.service';
+import { AdminService } from './admin.service';
+import { BehaviorSubject, combineLatest } from 'rxjs';
+import { HospitalAdmin } from '../../models/user/HospitalAdmin';
+import { PatientService } from './patient.service';
+import { emptypatientvisit, Visit } from '../../models/visit/Visit';
+import { CurrentPatient, MergedPatientQueueModel as PatientQueue } from '../../models/visit/MergedPatientQueueModel';
+import { ProceduresService } from './procedures.service';
 import * as moment from 'moment';
-import {StitchService} from './stitch/stitch.service';
-import {skipWhile} from 'rxjs/operators';
-import {BSON, RemoteInsertOneResult} from 'mongodb-stitch-browser-sdk';
-import {HospFile} from 'app/models/hospital/HospFile';
-import {emptyqueue, Queue} from 'app/models/hospital/Queue';
-import {PaymentChannel} from 'app/models/payment/PaymentChannel';
+import { StitchService } from './stitch/stitch.service';
+import { skipWhile } from 'rxjs/operators';
+import { BSON, RemoteInsertOneResult } from 'mongodb-stitch-browser-sdk';
+import { HospFile } from 'app/models/hospital/HospFile';
+import { emptyqueue, Queue } from 'app/models/hospital/Queue';
+import { PaymentChannel } from 'app/models/payment/PaymentChannel';
 
 @Injectable({
     providedIn: 'root'
@@ -35,10 +35,10 @@ export class QueueService {
     fetchingpatientdata: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
     constructor(private hospitalservice: HospitalService,
-                private adminservice: AdminService,
-                private patientservice: PatientService,
-                private procedureservice: ProceduresService,
-                private stitch: StitchService) {
+        private adminservice: AdminService,
+        private patientservice: PatientService,
+        private procedureservice: ProceduresService,
+        private stitch: StitchService) {
         this.hospitalservice.activehospital.subscribe(hospital => {
             if (hospital._id) {
                 this.activehospitalid = hospital._id;
@@ -61,10 +61,10 @@ export class QueueService {
     filterqueue(): void {
 
         combineLatest([this.queue, this.mainpatientsqueue])
-        /**
-         * Only filter the data if its not already loading, because the queue may change and trigger,
-         * but we want to filter once loading is complete
-         */
+            /**
+             * Only filter the data if its not already loading, because the queue may change and trigger,
+             * but we want to filter once loading is complete
+             */
             .pipe(skipWhile(() => this.fetchingpatientdata.value))
             .subscribe(data => {
                 const qq = data[0].queue;
@@ -138,9 +138,8 @@ export class QueueService {
      * patient data and queue info can be made
      */
     getqueue() {
-        console.log('triggered');
         this.stitch.db.collection<Queue>('queues')
-            .findOne({hospitalId: this.activehospitalid})
+            .findOne({ hospitalId: this.activehospitalid })
             .then(async q => {
                 /**
                  * Create  new queue object in case it doesnt exist for that hospital
@@ -189,7 +188,7 @@ export class QueueService {
                                 });
                             return combineLatest([patientfile, patient], (f: HospFile, p: Patient) => {
                                 const data: PatientQueue = {
-                                    patientdata: Object.assign(emptypatient, p, {fileInfo: f}),
+                                    patientdata: Object.assign(emptypatient, p, { fileInfo: f }),
                                     queuedata: qq
                                 };
                                 return data;
@@ -207,20 +206,20 @@ export class QueueService {
             });
     }
 
-    addPatientToQueue({type, description, insurance}: {
-                          type: PaymentChannel,
-                          description: string,
-                          insurance: Array<{
-                              insuranceControl: string;
-                              insurancenumber: string;
-                          }>
-                      },
-                      patient: Patient,
-                      selected:
-                          {
-                              insuranceControl: string,
-                              insurancenumber: string
-                          }): Promise<void> {
+    addPatientToQueue({ type, description, insurance }: {
+        type: PaymentChannel,
+        description: string,
+        insurance: Array<{
+            insuranceControl: string;
+            insurancenumber: string;
+        }>
+    },
+        patient: Patient,
+        selected:
+            {
+                insuranceControl: string,
+                insurancenumber: string
+            }): Promise<void> {
 
         /**
          * steps
@@ -302,10 +301,10 @@ export class QueueService {
      */
     private createq(): Promise<RemoteInsertOneResult> {
         return this.stitch.db.collection<Queue>('queues')
-        /**
-         * make sure to assign the correct hospitalID
-         */
-            .insertOne(Object.assign(emptyqueue, {hospitalId: this.activehospitalid}));
+            /**
+             * make sure to assign the correct hospitalID
+             */
+            .insertOne(Object.assign(emptyqueue, { hospitalId: this.activehospitalid }));
     }
 
 } 

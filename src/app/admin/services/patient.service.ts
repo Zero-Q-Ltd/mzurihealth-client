@@ -6,12 +6,12 @@ import { HospitalService } from './hospital.service';
 import { AdminService } from './admin.service';
 import * as moment from 'moment';
 import { emptyfile, HospFile } from '../../models/hospital/HospFile';
-import { AddPatientFormModel } from '../../models/patient/AddPatientForm.model';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import 'rxjs/add/observable/empty';
 
 import { BSON } from 'mongodb-stitch-browser-sdk';
 import { StitchService } from './stitch/stitch.service';
+import { NewPatientForm } from 'app/models/patient/NewPatientForm';
 
 @Injectable({
     providedIn: 'root'
@@ -77,16 +77,16 @@ export class PatientService {
     /**
      * save patient to db
      * */
-    savePatient(data: AddPatientFormModel): Promise<any> {
+    savePatient(data: NewPatientForm): Promise<any> {
         /**
          * create data to insert to the patient collection
          * */
         console.log(data);
         const transformedNextOfKin: NextofKin = {
-            name: data.nextofkin.name.toLowerCase(),
-            relationship: data.nextofkin.relationship.toLowerCase(),
-            phone: data.nextofkin.phone,
-            workplace: data.nextofkin.workplace.toLowerCase()
+            name: data.nextofKin.name.toLowerCase(),
+            relationship: data.nextofKin.relationship.toLowerCase(),
+            phone: data.nextofKin.phone,
+            workplace: data.nextofKin.workplace.toLowerCase()
         };
 
         const tempInsurance: Array<Insurance> = data.insurance.map((value, index: number) => {
@@ -114,15 +114,15 @@ export class PatientService {
         const modifiedData: Patient = {
             _id: patientID,
             personalInfo: {
-                name: data.personaLinfo.name.toLowerCase(),
-                address: data.personaLinfo.address.toLowerCase(),
-                gender: data.personaLinfo.gender,
-                occupation: data.personaLinfo.occupation.toLowerCase(),
-                workplace: data.personaLinfo.workplace.toLowerCase(),
-                phone: data.personaLinfo.phone,
-                email: data.personaLinfo.email.toLowerCase(),
-                idno: data.personaLinfo.idno,
-                dob: moment(data.personaLinfo.dob, 'MM/DD/YYYY').toDate(),
+                name: data.personalInfo.name.toLowerCase(),
+                address: data.personalInfo.address.toLowerCase(),
+                gender: data.personalInfo.gender,
+                occupation: data.personalInfo.occupation.toLowerCase(),
+                workplace: data.personalInfo.workplace.toLowerCase(),
+                phone: data.personalInfo.phone,
+                email: data.personalInfo.email.toLowerCase(),
+                idno: data.personalInfo.idno,
+                dob: moment(data.personalInfo.dob, 'MM/DD/YYYY').toDate(),
                 photoURL: null,
             },
             nextofKin: transformedNextOfKin,
@@ -219,7 +219,7 @@ export class PatientService {
      *
      *   return  Promise
      * */
-    updatePatient(patientID: string, { personaLinfo, insurance, nextofkin }: AddPatientFormModel): Promise<any> {
+    updatePatient(data: NewPatientForm): Promise<any> {
         // get current data
         // const patientDataRef = this.stitch.db.firestore.collection('patients').doc(patientID);
         //

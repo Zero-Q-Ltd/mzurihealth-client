@@ -13,6 +13,7 @@ import {Router} from '@angular/router';
 import {Paymentmethods} from '../../../models/payment/PaymentChannel';
 import {PaymentmethodService} from '../../services/paymentmethod.service';
 import {NumberValidator} from '../../validators/number.validator';
+import { FilenumberValidator } from 'app/admin/validators/filenumber.validator';
 
 @Component({
     selector: 'app-add',
@@ -181,7 +182,6 @@ export class AddComponent implements OnInit {
          * personal information
          * */
         const firstname = new FormControl('', Validators.required);
-        const lastname = new FormControl('', Validators.required);
         const occupation = new FormControl('');
         const idno = new FormControl('', Validators.required);
         const gender = new FormControl('', Validators.required);
@@ -207,13 +207,12 @@ export class AddComponent implements OnInit {
 
         const fileno = new FormControl('',
             Validators.required,
-            // FilenumberValidator.validate(this.patientservice)
+            FilenumberValidator.validate(this.patientservice)
         );
 
 
         this.personalinfo = new FormGroup({
             firstname: firstname,
-            lastname: lastname,
             occupation: occupation,
             idno: idno,
             gender: gender,

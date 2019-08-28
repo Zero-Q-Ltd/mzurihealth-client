@@ -1,17 +1,17 @@
-import {Injectable} from '@angular/core';
-import {emptypatient, Insurance, NextofKin, Patient} from '../../models/patient/Patient';
-import {Hospital} from '../../models/hospital/Hospital';
-import {HospitalAdmin} from '../../models/user/HospitalAdmin';
-import {HospitalService} from './hospital.service';
-import {AdminService} from './admin.service';
+import { Injectable } from '@angular/core';
+import { emptypatient, Insurance, NextofKin, Patient } from '../../models/patient/Patient';
+import { Hospital } from '../../models/hospital/Hospital';
+import { HospitalAdmin } from '../../models/user/HospitalAdmin';
+import { HospitalService } from './hospital.service';
+import { AdminService } from './admin.service';
 import * as moment from 'moment';
-import {emptyfile, HospFile} from '../../models/hospital/HospFile';
-import {AddPatientFormModel} from '../../models/patient/AddPatientForm.model';
-import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
+import { emptyfile, HospFile } from '../../models/hospital/HospFile';
+import { AddPatientFormModel } from '../../models/patient/AddPatientForm.model';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import 'rxjs/add/observable/empty';
 
-import {BSON} from 'mongodb-stitch-browser-sdk';
-import {StitchService} from './stitch/stitch.service';
+import { BSON } from 'mongodb-stitch-browser-sdk';
+import { StitchService } from './stitch/stitch.service';
 
 @Injectable({
     providedIn: 'root'
@@ -55,10 +55,10 @@ export class PatientService {
             });
 
         const patientwatcher = this.stitch.db.collection<Patient>('patients')
-            .findOne({_id: patientid});
+            .findOne({ _id: patientid });
 
         const pt = combineLatest([patientfile, patientwatcher], (file, patient) => {
-            return Object.assign(emptypatient, patient, {fileInfo: file}) as Patient;
+            return Object.assign(emptypatient, patient, { fileInfo: file }) as Patient;
         });
 
         return pt.toPromise();
@@ -77,7 +77,7 @@ export class PatientService {
     /**
      * save patient to db
      * */
-    savePatient({personaLinfo, insurance, nextofkin, fileNo}: AddPatientFormModel): Promise<any> {
+    savePatient({ personaLinfo, insurance, nextofkin, fileNo }: AddPatientFormModel): Promise<any> {
         /**
          * create data to insert to the patient collection
          * */
@@ -139,7 +139,7 @@ export class PatientService {
         /**
          * join objects to create a full document
          * */
-        const patientDoc = Object.assign({}, {...emptypatient}, {...modifiedData}) as Patient;
+        const patientDoc = Object.assign({}, { ...emptypatient }, { ...modifiedData }) as Patient;
 
         /**
          * hospital file number
@@ -172,7 +172,7 @@ export class PatientService {
          * Update the patient count in that hospital
          */
         const k = this.stitch.db.collection('hospitals')
-            .updateOne({_id: this.activehospital._id}, {$set: {$inc: {patientcount: 1}}}, {upsert: true});
+            .updateOne({ _id: this.activehospital._id }, { $set: { $inc: { patientcount: 1 } } }, { upsert: true });
 
         return Promise.all([i, j, k]);
 
@@ -187,11 +187,11 @@ export class PatientService {
         const patientdata = this.stitch.db.collection<Patient>('patients')
             .find({
                 hospitalId: this.activehospital._id,
-            }, {limit: 25});
+            }, { limit: 25 });
         const patientfiles = this.stitch.db.collection<HospFile>('patientfiles')
             .find({
                 hospitalId: this.activehospital._id,
-            }, {limit: 25, sort: {'created.date': 1}});
+            }, { limit: 25, sort: { 'created.date': 1 } });
         combineLatest([patientfiles, patientdata], (f: Array<HospFile>, p: Array<Patient>) => {
             /**
              * crossmatch every file to its relevant patient by looping
@@ -218,7 +218,7 @@ export class PatientService {
      *
      *   return  Promise
      * */
-    updatePatient(patientID: string, {personaLinfo, insurance, nextofkin}: AddPatientFormModel): Promise<any> {
+    updatePatient(patientID: string, { personaLinfo, insurance, nextofkin }: AddPatientFormModel): Promise<any> {
         // get current data
         // const patientDataRef = this.stitch.db.firestore.collection('patients').doc(patientID);
         //
@@ -378,18 +378,13 @@ export class PatientService {
     /*
     * will use this to check if the file number is available
     * **/
-    getHospitalFileByNumber(fileNumber: string): Observable<HospFile[]> {
-        // console.log('fetch hospital file');
-        // return this.stitch.db.collection('hospitals')
-        //     .doc(this.activehospital._id)
-        //     .collection('filenumbers', ref => ref.where('no', '==', fileNumber))
-        //     .snapshotChanges().pipe(
-        //         debounceTime(500),
-        //         map(actions => actions.map(action => {
-        //             return action.payload.doc.data() as HospFile;
-        //         }))
-        //     );
-        return true as any;
+    getHospitalFileByNumber(fileNumber: string): Promise<HospFile> {
+        console.log('called')
+        return this.stitch.db.collection<HospFile>('patientfiles')
+            .findOne({
+                hospitalId: this.activehospital._id,
+                no: fileNumber
+            });
 
     }
 

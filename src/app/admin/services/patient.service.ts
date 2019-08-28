@@ -77,18 +77,19 @@ export class PatientService {
     /**
      * save patient to db
      * */
-    savePatient({ personaLinfo, insurance, nextofkin, fileNo }: AddPatientFormModel): Promise<any> {
+    savePatient(data: AddPatientFormModel): Promise<any> {
         /**
          * create data to insert to the patient collection
          * */
+        console.log(data);
         const transformedNextOfKin: NextofKin = {
-            name: nextofkin.name.toLowerCase(),
-            relationship: nextofkin.relationship.toLowerCase(),
-            phone: nextofkin.phone,
-            workplace: nextofkin.workplace.toLowerCase()
+            name: data.nextofkin.name.toLowerCase(),
+            relationship: data.nextofkin.relationship.toLowerCase(),
+            phone: data.nextofkin.phone,
+            workplace: data.nextofkin.workplace.toLowerCase()
         };
 
-        const tempInsurance: Array<Insurance> = insurance.map((value, index: number) => {
+        const tempInsurance: Array<Insurance> = data.insurance.map((value, index: number) => {
             const i: Insurance = {
                 _id: value._id,
                 insuranceNo: value.insuranceNo
@@ -113,15 +114,15 @@ export class PatientService {
         const modifiedData: Patient = {
             _id: patientID,
             personalInfo: {
-                name: personaLinfo.name.toLowerCase(),
-                address: personaLinfo.address.toLowerCase(),
-                gender: personaLinfo.gender,
-                occupation: personaLinfo.occupation.toLowerCase(),
-                workplace: personaLinfo.workplace.toLowerCase(),
-                phone: personaLinfo.phone,
-                email: personaLinfo.email.toLowerCase(),
-                idno: personaLinfo.idno,
-                dob: moment(personaLinfo.dob, 'MM/DD/YYYY').toDate(),
+                name: data.personaLinfo.name.toLowerCase(),
+                address: data.personaLinfo.address.toLowerCase(),
+                gender: data.personaLinfo.gender,
+                occupation: data.personaLinfo.occupation.toLowerCase(),
+                workplace: data.personaLinfo.workplace.toLowerCase(),
+                phone: data.personaLinfo.phone,
+                email: data.personaLinfo.email.toLowerCase(),
+                idno: data.personaLinfo.idno,
+                dob: moment(data.personaLinfo.dob, 'MM/DD/YYYY').toDate(),
                 photoURL: null,
             },
             nextofKin: transformedNextOfKin,
@@ -149,7 +150,7 @@ export class PatientService {
             date: todayDate,
             lastVisit: todayDate,
             hospitalId: this.activehospital._id,
-            no: fileNo,
+            no: data.fileNo,
             visitCount: 0,
             patientId: patientID,
         };
@@ -379,7 +380,6 @@ export class PatientService {
     * will use this to check if the file number is available
     * **/
     getHospitalFileByNumber(fileNumber: string): Promise<HospFile> {
-        console.log('called')
         return this.stitch.db.collection<HospFile>('patientfiles')
             .findOne({
                 hospitalId: this.activehospital._id,

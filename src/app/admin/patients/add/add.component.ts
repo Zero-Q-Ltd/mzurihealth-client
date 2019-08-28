@@ -69,8 +69,7 @@ export class AddComponent implements OnInit {
                 /**
                  * set the form data and disable it
                  * */
-                this.patientsForm.controls['personalinfo']
-                    .get('fileno').patchValue(this.patientfileno.no);
+                this.patientsForm.get('fileno').patchValue(this.patientfileno.no);
 
                 // this.patientsForm.controls['personaLinfo']
                 //     .get('fileno').disable({onlySelf: true});
@@ -221,7 +220,6 @@ export class AddComponent implements OnInit {
             workplace: userWorkplace,
             phone: userPhone,
             address: address,
-            fileno: fileno
         });
 
 
@@ -251,7 +249,8 @@ export class AddComponent implements OnInit {
         this.patientsForm = this.formBuilder.group({
             insurance: this.formBuilder.array([this.createInsurance()]),
             nextofkin: this.nextofkin,
-            personalinfo: this.personalinfo
+            personalinfo: this.personalinfo,
+            fileno: fileno
         });
 
 

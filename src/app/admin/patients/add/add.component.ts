@@ -93,7 +93,7 @@ export class AddComponent implements OnInit {
         console.log(this.patientsForm);
 
         if (this.patientsForm.valid) {
-            this.savingUser = true;
+            // this.savingUser = true;
 
             this.patientservice.savePatient(this.patientsForm.getRawValue()).then(() => {
                 console.log('patient added successfully');

@@ -8,13 +8,11 @@
     <div class="center">
 
         <!-- HEADER -->
-        <div class="header accent"
-             fxLayout="column" fxLayout.gt-sm="row"
-             fxLayoutAlign="center center" fxLayoutAlign.gt-sm="space-between center">
+        <div class="header accent" fxLayout="column" fxLayout.gt-sm="row" fxLayoutAlign="center center"
+            fxLayoutAlign.gt-sm="space-between center">
 
             <!-- APP TITLE -->
-            <div class="logo mb-24 mb-md-0"
-                 fxLayout="row" fxLayoutAlign="start center">
+            <div class="logo mb-24 mb-md-0" fxLayout="row" fxLayoutAlign="start center">
                 <mat-icon [@animate]="{value:'*',params:{delay:'50ms',scale:'0.2'}}" class="logo-icon s-32 mr-16">
                     shopping_basket
                 </mat-icon>
@@ -24,11 +22,8 @@
             </div>
             <!-- / APP TITLE -->
 
-            <button [@animate]="{value:'*', params:{delay:'300ms',scale:'0.2'}}"
-                    [routerLink]="'/admin/patients/add'"
-                    aria-label="Add patient"
-                    color="warn"
-                    mat-fab>
+            <button [@animate]="{value:'*', params:{delay:'300ms',scale:'0.2'}}" [routerLink]="'/admin/patients/add'"
+                aria-label="Add patient" color="warn" mat-fab>
                 <mat-icon>person_add</mat-icon>
             </button>
 
@@ -48,8 +43,7 @@
                     </mat-expansion-panel-header>
                     <div class="my-4">
                         <form (ngSubmit)="submitSearchForm()" [formGroup]="searchForm" class=" " fxFlex="1 0 auto"
-                              fxLayoutAlign="start"
-                              name="form">
+                            fxLayoutAlign="start" name="form">
 
                             <!--First name, second name-->
 
@@ -92,17 +86,14 @@
                     </div>
                 </mat-expansion-panel>
             </div>
-            <mat-table #table
-                       [@animateStagger]="{value:'50'}" [dataSource]="patientsdatasource"
-                       class="patients-table"
-                       fusePerfectScrollbar
-                       matSort>
+            <mat-table #table [@animateStagger]="{value:'50'}" [dataSource]="patientsdatasource" class="patients-table"
+                fusePerfectScrollbar matSort>
 
                 <!-- ID Column -->
                 <ng-container matColumnDef="FileNo">
                     <mat-header-cell *matHeaderCellDef mat-sort-header>FileNo</mat-header-cell>
                     <mat-cell *matCellDef="let patient">
-                        <p class="text-truncate">{{patient.fileinfo.no}}</p>
+                        <p class="text-truncate">{{patient.fileInfo.no}}</p>
                     </mat-cell>
                 </ng-container>
 
@@ -113,15 +104,13 @@
                     <mat-cell *matCellDef="let patient">
 
                         <p>
-                            <img *ngIf="patient.personalinfo.gender == 1"
-                                 [src]="patient.personalinfo.photoURL || 'assets/images/avatars/male.png'"
-                                 alt="male avatar"
-                                 class="avatar"/>
+                            <img *ngIf="patient.personalInfo.gender == 1"
+                                [src]="patient.personalInfo.photoURL || 'assets/images/avatars/male.png'"
+                                alt="male avatar" class="avatar" />
 
-                            <img *ngIf="patient.personalinfo.gender == 0"
-                                 [src]="patient.personalinfo.photoURL || 'assets/images/avatars/female.png'"
-                                 alt="female avatar"
-                                 class="avatar"/>
+                            <img *ngIf="patient.personalInfo.gender == 0"
+                                [src]="patient.personalInfo.photoURL || 'assets/images/avatars/female.png'"
+                                alt="female avatar" class="avatar" />
                         </p>
 
                     </mat-cell>
@@ -131,7 +120,7 @@
                 <ng-container matColumnDef="name">
                     <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
                     <mat-cell *matCellDef="let patient">
-                        <p class="text-truncate">{{patient.personalinfo.name}}</p>
+                        <p class="text-truncate">{{patient.personalInfo.name}}</p>
                     </mat-cell>
                 </ng-container>
 
@@ -142,7 +131,7 @@
                     </mat-header-cell>
                     <mat-cell *matCellDef="let patient">
                         <p class="price text-truncate">
-                            {{getAge(patient.personalinfo.dob)}}
+                            {{getAge(patient.personalInfo.dob)}}
                         </p>
                     </mat-cell>
                 </ng-container>
@@ -151,7 +140,7 @@
                     <mat-header-cell *matHeaderCellDef mat-sort-header>ID Number</mat-header-cell>
                     <mat-cell *matCellDef="let patient">
                         <p class="price text-truncate">
-                            {{patient.personalinfo.idno}}
+                            {{patient.personalInfo.idno}}
                         </p>
                     </mat-cell>
                 </ng-container>
@@ -160,7 +149,7 @@
                     <mat-header-cell *matHeaderCellDef>Phone</mat-header-cell>
                     <mat-cell *matCellDef="let patient">
                         <p class="price text-truncate">
-                            {{patient.personalinfo.phone}}
+                            {{patient.personalInfo.phone}}
                         </p>
                     </mat-cell>
                 </ng-container>
@@ -169,7 +158,7 @@
                     <mat-header-cell *matHeaderCellDef mat-sort-header>Last Visit</mat-header-cell>
                     <mat-cell *matCellDef="let patient">
                         <p class="price text-truncate">
-                            {{patient.fileinfo.lastvisit?.toDate().toDateString()}}
+                            {{patient.fileInfo.lastVisit.toDateString()}}
                         </p>
                     </mat-cell>
                 </ng-container>
@@ -188,19 +177,14 @@
 
                 <mat-header-row *matHeaderRowDef="patientsheaders; sticky:true"></mat-header-row>
 
-                <mat-row (click)="addToQueue(patient)"
-                         *matRowDef="let patient; columns: patientsheaders;"
-                         class="product"
-                         matRipple>
+                <mat-row (click)="addToQueue(patient)" *matRowDef="let patient; columns: patientsheaders;"
+                    class="product" matRipple>
                 </mat-row>
 
             </mat-table>
 
-            <mat-paginator #paginator
-                           [length]="patientsdatasource.data.length"
-                           [pageIndex]="0"
-                           [pageSizeOptions]="[5, 10, 25, 100]"
-                           [pageSize]="10">
+            <mat-paginator #paginator [length]="patientsdatasource.data.length" [pageIndex]="0"
+                [pageSizeOptions]="[5, 10, 25, 100]" [pageSize]="10">
             </mat-paginator>
 
         </div>

@@ -1,5 +1,5 @@
 import { Customfields, emptymetadata, Metadata } from '../universal';
-import { HospFile, NewFile } from '../hospital/HospFile';
+import { HospFile } from '../hospital/HospFile';
 import { BSON } from 'mongodb-stitch-browser-sdk';
 
 export interface Patient {

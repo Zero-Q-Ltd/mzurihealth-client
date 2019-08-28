@@ -12,7 +12,7 @@ import 'rxjs/add/observable/empty';
 import { BSON } from 'mongodb-stitch-browser-sdk';
 import { StitchService } from './stitch/stitch.service';
 import { NewPatientForm } from 'app/models/patient/NewPatientForm';
-
+import * as equal from 'deep-equal';
 @Injectable({
     providedIn: 'root'
 })
@@ -29,13 +29,8 @@ export class PatientService {
         this.hospitalservice.activehospital.subscribe(hospital => {
             if (hospital._id) {
                 this.activehospital = hospital;
-                /**
-                 * call the get hospital patients and invoke hospitalpatients
-                 * **/
+
                 this.getHospitalPatients();
-                // this.getpatientbyid(new BSON.ObjectID('5d61e1d1d6bfc02218d2e131')).then(k => {
-                //     console.log(k)
-                // });
             }
         });
         adminservice.observableuserdata.subscribe((admin: HospitalAdmin) => {
@@ -81,7 +76,6 @@ export class PatientService {
         /**
          * create data to insert to the patient collection
          * */
-        console.log(data);
         const transformedNextOfKin: NextofKin = {
             name: data.nextofKin.name.toLowerCase(),
             relationship: data.nextofKin.relationship.toLowerCase(),
@@ -89,13 +83,16 @@ export class PatientService {
             workplace: data.nextofKin.workplace.toLowerCase()
         };
 
-        const tempInsurance: Array<Insurance> = data.insurance.map((value, index: number) => {
+        /**
+         * make sure a value exists
+         */
+        const tempInsurance: Array<Insurance> = data.insurance ? data.insurance.map((value, index: number) => {
             const i: Insurance = {
                 _id: value._id,
                 insuranceNo: value.insuranceNo
             };
             return i;
-        });
+        }) : [];
 
         // todays date
         const todayDate = moment().toDate();
@@ -147,7 +144,10 @@ export class PatientService {
          * */
         const hospitalFileNumberTemp: HospFile = {
             _id: new BSON.ObjectID(),
-            date: todayDate,
+            metadata: {
+                created: newmeta,
+                edited: newmeta
+            },
             lastVisit: todayDate,
             hospitalId: this.activehospital._id,
             no: data.fileNo,
@@ -161,19 +161,23 @@ export class PatientService {
          * create a file number associated with that hospital only
          */
         const i = this.stitch.db.collection<HospFile>('patientfiles')
-            .insertOne(hospitalFileNumber);
+            .insertOne(hospitalFileNumber).catch(e => {
+                console.log(e);
+            });
 
         /**
          * create the patient
          */
         const j = this.stitch.db.collection<Patient>('patients')
-            .insertOne(patientDoc);
+            .insertOne(patientDoc).catch(e => {
+                console.log(e);
+            });
 
         /**
          * Update the patient count in that hospital
          */
         const k = this.stitch.db.collection('hospitals')
-            .updateOne({ _id: this.activehospital._id }, { $set: { $inc: { patientcount: 1 } } }, { upsert: true });
+            .updateOne({ _id: this.activehospital._id }, { $inc: { patientCount: 1 } }, { upsert: true });
 
         return Promise.all([i, j, k]);
 
@@ -187,13 +191,16 @@ export class PatientService {
     getHospitalPatients(): void {
         const patientdata = this.stitch.db.collection<Patient>('patients')
             .find({
-                hospitalId: this.activehospital._id,
-            }, { limit: 25 });
+                'metadata.created.hospitalId': this.activehospital._id,
+            }, { limit: 25 })
+            .asArray();
         const patientfiles = this.stitch.db.collection<HospFile>('patientfiles')
             .find({
-                hospitalId: this.activehospital._id,
-            }, { limit: 25, sort: { 'created.date': 1 } });
-        combineLatest([patientfiles, patientdata], (f: Array<HospFile>, p: Array<Patient>) => {
+                'metadata.created.hospitalId': this.activehospital._id,
+            }, { limit: 25, sort: { 'metadata.created.date': 1 } })
+            .asArray();
+
+        combineLatest<Array<Patient>>([patientfiles, patientdata], (f: Array<HospFile>, p: Array<Patient>) => {
             /**
              * crossmatch every file to its relevant patient by looping
              */
@@ -201,11 +208,15 @@ export class PatientService {
                 /**
                  * There can only be one file associated with a patient
                  */
-                return f.find(file => {
-                    return file.patientId === patient._id;
-                })[0];
+                const file = f.find(fi => {
+                    return equal(fi.patientId, patient._id);
+                });
+                patient.fileInfo = file;
+                return patient;
             });
-            this.hospitalpatients.next(patients);
+            return patients;
+        }).subscribe(pts => {
+            this.hospitalpatients.next(pts);
         });
     }
 

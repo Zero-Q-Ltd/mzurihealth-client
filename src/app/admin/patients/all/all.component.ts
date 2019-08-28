@@ -66,6 +66,7 @@ export class AllComponent implements OnInit, AfterViewInit {
             }
         });
         this.patientservice.hospitalpatients.subscribe(patients => {
+            console.log(patients)
             this.patientsdatasource.data = patients;
         });
 

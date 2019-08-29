@@ -67,7 +67,6 @@ export class AllComponent implements OnInit, AfterViewInit {
             }
         });
         this.patientservice.hospitalpatients.subscribe(patients => {
-            console.log(patients)
             this.patientsdatasource.data = patients;
         });
 
@@ -90,8 +89,10 @@ export class AllComponent implements OnInit, AfterViewInit {
 
     addToQueue(patient: Patient): void {
 
-        const fil = this.queueService.mainpatientsqueue.value.get(patient._id);
-
+        const fil = this.queueService.mainpatientsqueue.value.has(patient._id);
+        console.log(patient._id)
+        console.log(Array.from(this.queueService.mainpatientsqueue.value.keys()))
+        console.log(this.queueService.mainpatientsqueue.value.get(patient._id))
         if (fil) {
             this.notificationservice.notify({
                 alertType: 'warning',

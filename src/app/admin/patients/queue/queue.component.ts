@@ -35,7 +35,7 @@ export class QueueComponent implements OnInit {
             }
             this.mainQueue = main.size;
         });
-        this.queueservice.mypatients.subscribe(mine => {
+        this.queueservice.mypatientqueue.subscribe(mine => {
             if (!mine) {
                 return;
             }

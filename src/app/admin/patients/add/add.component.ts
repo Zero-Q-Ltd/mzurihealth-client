@@ -77,7 +77,8 @@ export class AddComponent implements OnInit {
         /**
          *
          * */
-        this.insurancechanges();
+        // this.insurancechanges();
+        // this.addInsurance()
 
     }
 
@@ -135,11 +136,10 @@ export class AddComponent implements OnInit {
     }
 
     insurancechanges(): void {
-        return
-        this.insurance.controls.forEach(x => {
-            x.get('_id').valueChanges.subscribe(g => {
+        this.getinsuranceArray().controls.forEach(x => {
+            x.get('id').valueChanges.subscribe(g => {
                 if (g) {
-                    if (x.get('_id').value.toString().length > -1) {
+                    if (x.get('id').value.toString().length > -1) {
                         x.get('insuranceNo').enable({ emitEvent: false });
                     } else {
                         x.get('insuranceNo').disable({ emitEvent: false });
@@ -148,23 +148,29 @@ export class AddComponent implements OnInit {
             });
         });
     }
+    /**
+     * Retruns the form array for dynamic manipulation
+     */
+    getinsuranceArray(): FormArray<Insurance> {
+        return this.patientsForm.get('insurance') as FormArray<Insurance>;
+    }
 
     addInsurance(): void {
-        this.insurance.push(this.createInsurance());
+        this.getinsuranceArray().push(this.createInsurance());
         this.insurancechanges();
     }
 
     removeInsurance(index: number): void {
-        // if (index === 0) {
-        //     // clear the insurance input
-        //     this.insurance.at(index).get('_id').patchValue(undefined);
-        //     this.insurance.at(index).get('_id').markAsUntouched();
-        //     this.insurance.at(index).get('insuranceNo').patchValue(undefined);
-        //     this.insurance.at(index).get('insuranceNo').disable();
-        //     return;
-        // }
+        if (index === 0) {
+            // clear the insurance input
+            this.getinsuranceArray().at(index).get('id').patchValue(undefined);
+            this.getinsuranceArray().at(index).get('id').markAsUntouched();
+            this.getinsuranceArray().at(index).get('insuranceNo').patchValue(undefined);
+            this.getinsuranceArray().at(index).get('insuranceNo').disable();
+            return;
+        }
 
-        // this.insurance.removeAt(index);
+        this.getinsuranceArray().removeAt(index);
     }
 
     /**
@@ -172,7 +178,7 @@ export class AddComponent implements OnInit {
      * */
     private initFormBuilder(): void {
         this.patientsForm = this.formBuilder.group<NewPatientForm>({
-            // insurance: this.formBuilder.array([this.createInsurance()]),
+            // insurance: this.createInsurance() ,
             nextofKin: this.formBuilder.group<NextofKin>({
                 name: ['', Validators.required],
                 relationship: ['', Validators.required],

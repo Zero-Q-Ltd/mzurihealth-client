@@ -2,21 +2,22 @@ import { emptypatient, Patient } from './../../models/patient/Patient';
 import { Injectable } from '@angular/core';
 import { HospitalService } from './hospital.service';
 import { AdminService } from './admin.service';
-import { BehaviorSubject, combineLatest } from 'rxjs';
+import { BehaviorSubject, combineLatest, } from 'rxjs';
 import { HospitalAdmin } from '../../models/user/HospitalAdmin';
 import { PatientService } from './patient.service';
 import { emptypatientvisit, Visit, NewVisit } from '../../models/visit/Visit';
-import { CurrentPatient, MergedPatientQueueModel as PatientQueue } from '../../models/visit/MergedPatientQueueModel';
+import { CurrentPatient, MergedPatientQueueModel } from '../../models/visit/MergedPatientQueueModel';
 import { ProceduresService } from './procedures.service';
 import * as moment from 'moment';
 import { StitchService } from './stitch/stitch.service';
 import { skipWhile } from 'rxjs/operators';
-import { BSON, RemoteInsertOneResult } from 'mongodb-stitch-browser-sdk';
+import { RemoteInsertOneResult } from 'mongodb-stitch-browser-sdk';
 import { HospFile } from 'app/models/hospital/HospFile';
 import { emptyqueue, Queue } from 'app/models/hospital/Queue';
 import { PaymentChannel } from 'app/models/payment/PaymentChannel';
-import { type } from 'os';
+import * as equal from 'deep-equal';
 import { Meta } from 'app/models/universal';
+import * as BSON from 'bson'
 
 @Injectable({
     providedIn: 'root'
@@ -29,9 +30,8 @@ export class QueueService {
      * otherwise encountered when sifting through the data, as there is a lot of fitering to do
      * and for big hospitals the number of patients in the mainqueue at any given time might be big
      */
-    mainpatientsqueue: BehaviorSubject<Map<BSON.ObjectId, PatientQueue>> = new BehaviorSubject(new Map());
-    mypatients: BehaviorSubject<Map<BSON.ObjectId, PatientQueue>> = new BehaviorSubject(new Map());
-    mypatientqueue: BehaviorSubject<Array<PatientQueue>> = new BehaviorSubject([]);
+    mainpatientsqueue: BehaviorSubject<Map<BSON.ObjectId, MergedPatientQueueModel>> = new BehaviorSubject(new Map());
+    mypatientqueue: BehaviorSubject<Map<BSON.ObjectId, MergedPatientQueueModel>> = new BehaviorSubject(new Map());
     currentpatient: BehaviorSubject<CurrentPatient> = new BehaviorSubject(null);
     adminid: BSON.ObjectId;
     fetchingpatientdata: BehaviorSubject<boolean> = new BehaviorSubject(false);
@@ -51,56 +51,10 @@ export class QueueService {
         adminservice.observableuserdata.subscribe((admin: HospitalAdmin) => {
             if (admin._id) {
                 this.adminid = admin._id;
-                this.filterqueue();
                 this.fetchQueuedPatients();
             }
         });
 
-    }
-
-    /**
-     * filters the queue to find the doc's queue as well as his current patient
-     */
-    filterqueue(): void {
-
-        combineLatest([this.queue, this.mainpatientsqueue])
-            /**
-             * Only filter the data if its not already loading, because the queue may change and trigger,
-             * but we want to filter once loading is complete
-             */
-            .pipe(skipWhile(() => this.fetchingpatientdata.value))
-            .subscribe(data => {
-                const qq = data[0].queue;
-                const pp = data[1];
-                /**
-                 * filter through the array to find queue-data that belong to this admin
-                 */
-                const mypatients = qq.filter(queue => {
-                    const equality = queue.checkin.admin === this.adminid;
-
-                    if (equality && queue.checkin.status === 2) {
-                        console.log(queue);
-                        /**
-                         * get the patient from the array
-                         */
-                        const dd = pp.get(queue.patientId);
-                        /**
-                         * @TODO Create a ~subscription~ to the patient visit
-                         *
-                         */
-                        // this.currentpatient.next();
-                        // currentpatientfound = true;
-                    }
-                    return equality;
-                }).map(q => {
-                    return this.mainpatientsqueue.value.get(q.patientId);
-                });
-                const mypatientsmap: Map<BSON.ObjectId, PatientQueue> = new Map();
-                mypatients.map(q => {
-                    mypatientsmap.set(q.patientdata._id, q);
-                });
-                this.mypatients.next(mypatientsmap);
-            });
     }
 
     /**
@@ -159,7 +113,6 @@ export class QueueService {
                         /**
                          * keep a local copy of the queue
                          */
-
                         this.queue.next(k.fullDocument);
                     });
                 }
@@ -197,18 +150,42 @@ export class QueueService {
                         _id: qq.patientId
                     });
                 return combineLatest([patientfile, patient], (f: HospFile, p: Patient) => {
-                    const data: PatientQueue = {
-                        patientdata: Object.assign(emptypatient, p, { fileInfo: f }),
+                    const data: MergedPatientQueueModel = {
+                        /**
+                         * Please note
+                         * The three dots below might cause you sleepless nights
+                         * Be veeeery careful when refactoring any of this code
+                         */
+                        patientdata: Object.assign({ ...emptypatient }, p, { fileInfo: f }),
                         queuedata: qq
                     };
                     return data;
                 });
-            })).subscribe((que: Array<PatientQueue>) => {
-                const patientmap: Map<BSON.ObjectId, PatientQueue> = new Map();
+            })).subscribe((que: Array<MergedPatientQueueModel>) => {
+                const patientmap: Map<BSON.ObjectId, MergedPatientQueueModel> = new Map();
+                const mypatientsmap: Map<BSON.ObjectId, MergedPatientQueueModel> = new Map();
+                /**
+                 * Use this opportunity to filter patients in the queue that belong to this admin
+                 */
                 que.map(q => {
                     patientmap.set(q.patientdata._id, q);
+                    const equality = equal(q.queuedata.checkin.admin, this.adminid);
+
+                    if (equality) {
+                        mypatientsmap.set(q.patientdata._id, q);
+                    }
+                    if (equality && q.queuedata.checkin.status === 2) {
+
+                        /**
+                         * @TODO Create a ~subscription~ to the patient visit
+                         *
+                         */
+                        // this.currentpatient.next(q);
+                        // currentpatientfound = true;
+                    }
                 });
                 this.mainpatientsqueue.next(patientmap);
+                this.mypatientqueue.next(mypatientsmap);
                 this.fetchingpatientdata.next(false);
             });
         })
@@ -238,7 +215,6 @@ export class QueueService {
                     methodId: newvist.insurance[newvist.selectedInsurance].id || null,
                     transactionId: null
                 }
-
             },
             _id: visitId,
             checkin: {

@@ -61,7 +61,7 @@
                     </div>
                     <mat-form-field appearance="outline" class="mr-12" fxFlex="40">
                         <mat-label>Insurance name</mat-label>
-                        <mat-select formControlName="insuranceId" required>
+                        <mat-select formControlName="id" required>
                             <mat-option *ngFor="let option of allInsurance | keyvalue" [value]="option?.key "
                                 class="text-truncate">
                                 {{option.value.name |titlecase}}
@@ -72,7 +72,7 @@
 
                     <mat-form-field appearance="outline" fxFlex="40">
                         <mat-label>Insurance number</mat-label>
-                        <input autocomplete="off" formControlName="insuranceNumber" matInput required>
+                        <input autocomplete="off" formControlName="insuranceNo" matInput required>
                         <mat-icon class="secondary-text" matSuffix>confirmation_number</mat-icon>
 
                         <mat-error>Insurance number is required</mat-error>

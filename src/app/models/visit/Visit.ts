@@ -53,17 +53,14 @@ export interface Checkin {
  */
 export interface NewVisit {
     payment: PaymentChannel;
-    insurance: Array<NewVisitInsurance>;
+    insurance: Array<Insurance>;
     /**
      * An id among the insurance array
      */
     selectedInsurance: number;
     description: string;
 }
-export interface NewVisitInsurance {
-    insuranceId: string;
-    insuranceNumber: string;
-}
+
 export const emptypatientvisit: Visit = {
     procedures: [],
     totalcost: 0,

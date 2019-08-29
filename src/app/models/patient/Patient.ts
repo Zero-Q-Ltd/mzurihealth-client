@@ -28,7 +28,7 @@ export interface Patient {
 }
 
 export interface Insurance {
-    _id: BSON.ObjectId;
+    id: string;
     insuranceNo: string;
 }
 

@@ -7,7 +7,7 @@ import { PaymentmethodService } from '../../services/paymentmethod.service';
 import { PaymentChannel, Paymentmethods } from '../../../models/payment/PaymentChannel';
 import { PatientService } from '../../services/patient.service';
 import { NotificationService } from '../../../shared/services/notifications.service';
-import { NewVisit, NewVisitInsurance } from 'app/models/visit/Visit';
+import { NewVisit } from 'app/models/visit/Visit';
 
 @Component({
     selector: 'app-pushqueue',
@@ -63,15 +63,15 @@ export class PushqueueComponent implements OnInit {
         this.queueForm = this._formBuilder.group<NewVisit>({
             description: ['', Validators.required],
             payment: [null, Validators.required],
-            insurance: this._formBuilder.array<NewVisitInsurance>([]),
+            insurance: this._formBuilder.array<Insurance>([]),
             selectedInsurance: null
         });
     }
     /**
      * Retruns the form array for dynamic manipulation
      */
-    getinsuranceArray(): FormArray<NewVisitInsurance> {
-        return this.queueForm.get('insurance') as FormArray<NewVisitInsurance>;
+    getinsuranceArray(): FormArray<Insurance> {
+        return this.queueForm.get('insurance') as FormArray<Insurance>;
     }
 
     removeInsurance(index: number): void {
@@ -124,17 +124,17 @@ export class PushqueueComponent implements OnInit {
                 this.patient.insurance.map((insuranceData: Insurance, index) => {
                     this.addInsurance();
 
-                    const mergedData = Object.assign({}, this.allInsurance[insuranceData._id],
-                        { id: insuranceData._id, insuranceno: insuranceData.insuranceNo });
+                    const mergedData = Object.assign({}, this.allInsurance[insuranceData.id],
+                        { id: insuranceData.id, insuranceno: insuranceData.insuranceNo });
 
-                    this.getinsuranceArray().controls[index].get('insuranceId').patchValue(mergedData.id, { emitEvent: false });
-                    this.getinsuranceArray().controls[index].get('insuranceNumber').patchValue(mergedData.insuranceno, { emitEvent: false });
+                    this.getinsuranceArray().controls[index].get('id').patchValue(mergedData.id, { emitEvent: false });
+                    this.getinsuranceArray().controls[index].get('insuranceNo').patchValue(mergedData.insuranceno, { emitEvent: false });
 
                     /*
                     * disable inputs
                     * **/
-                    this.getinsuranceArray().controls[index].get('insuranceId').disable({ emitEvent: false });
-                    this.getinsuranceArray().controls[index].get('insuranceNumber').disable({ emitEvent: false });
+                    this.getinsuranceArray().controls[index].get('id').disable({ emitEvent: false });
+                    this.getinsuranceArray().controls[index].get('insuranceNo').disable({ emitEvent: false });
                 });
 
             } else {
@@ -147,10 +147,10 @@ export class PushqueueComponent implements OnInit {
         });
     }
 
-    private createInsurance(): FormGroup<NewVisitInsurance> {
-        return this._formBuilder.group<NewVisitInsurance>({
-            insuranceId: new FormControl('', Validators.required),
-            insuranceNumber: new FormControl('', Validators.required)
+    private createInsurance(): FormGroup<Insurance> {
+        return this._formBuilder.group<Insurance>({
+            id: new FormControl('', Validators.required),
+            insuranceNo: new FormControl('', Validators.required)
         });
     }
 }

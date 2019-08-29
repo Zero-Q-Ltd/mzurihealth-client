@@ -88,7 +88,7 @@ export class PatientService {
          */
         const tempInsurance: Array<Insurance> = data.insurance ? data.insurance.map((value, index: number) => {
             const i: Insurance = {
-                _id: value._id,
+                id: value.id,
                 insuranceNo: value.insuranceNo
             };
             return i;
@@ -160,7 +160,7 @@ export class PatientService {
         /**
          * create a file number associated with that hospital only
          */
-        const i = this.stitch.db.collection<HospFile>('patientfiles')
+        const i = this.stitch.db.collection('patientfiles')
             .insertOne(hospitalFileNumber).catch(e => {
                 console.log(e);
             });
@@ -168,7 +168,7 @@ export class PatientService {
         /**
          * create the patient
          */
-        const j = this.stitch.db.collection<Patient>('patients')
+        const j = this.stitch.db.collection('patients')
             .insertOne(patientDoc).catch(e => {
                 console.log(e);
             });

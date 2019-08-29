@@ -16,6 +16,7 @@ import { HospFile } from 'app/models/hospital/HospFile';
 import { emptyqueue, Queue } from 'app/models/hospital/Queue';
 import { PaymentChannel } from 'app/models/payment/PaymentChannel';
 import { type } from 'os';
+import { Meta } from 'app/models/universal';
 
 @Injectable({
     providedIn: 'root'
@@ -51,6 +52,7 @@ export class QueueService {
             if (admin._id) {
                 this.adminid = admin._id;
                 this.filterqueue();
+                this.fetchQueuedPatients();
             }
         });
 
@@ -150,90 +152,95 @@ export class QueueService {
                         this.getqueue();
                     });
                 } else {
+                    this.queue.next(q);
                     const queuewatcher = await this.stitch.db.collection<Queue>('queues')
                         .watch([q._id]);
                     queuewatcher.onNext(k => {
-
-                        /**
-                         * Fetch the patient data
-                         * Magic code
-                         * Using the fetched queue data, fetch patientdata associated with it
-                         * Every change in the queue data triggers a new database query..... Maybe this can be optimized???
-                         * ---------------------@Todo Suggestion maybe just query the changed queue element id's
-                         * this can be achieved by comparing the array lenths first to determine the added/removed id, or compare the arrays to get
-                         * the mutated array pos and fetch just that
-                         * Then update the whole variable
-                         */
-
                         /**
                          * keep a local copy of the queue
                          */
-                        this.queue.next(k.fullDocument);
 
-                        this.fetchingpatientdata.next(true);
-                        /**
-                         * make every entry of the elements in the array create an independent Observable
-                         * Then, by using combinelatest, a value will only be emmitted when every Observable emits a value
-                         * There afterwards, whenever any of the observables changes, a new set of values is emitted
-                         * Although this is not the functionlity we are after... maybe this can be improved???
-                         * I don't see any side effects at this time anyway
-                         */
-                        return combineLatest(...k.fullDocument.queue.map(qq => {
-                            const patientfile = this.stitch.db.collection<HospFile>('patientfiles')
-                                .findOne({
-                                    _id: qq.fileId
-                                });
-                            const patient = this.stitch.db.collection<Patient>('patients')
-                                .findOne({
-                                    _id: qq.patientId
-                                });
-                            return combineLatest([patientfile, patient], (f: HospFile, p: Patient) => {
-                                const data: PatientQueue = {
-                                    patientdata: Object.assign(emptypatient, p, { fileInfo: f }),
-                                    queuedata: qq
-                                };
-                                return data;
-                            });
-                        })).subscribe(que => {
-                            this.fetchingpatientdata.next(true);
-                            const patientmap: Map<BSON.ObjectId, PatientQueue> = new Map();
-                            que.map(q => {
-                                patientmap.set(q._id, q);
-                            });
-                            this.mainpatientsqueue.next(patientmap);
-                        });
+                        this.queue.next(k.fullDocument);
                     });
                 }
             });
     }
 
-    addPatientToQueue(newvist: NewVisit, patient: Patient): Promise<void> {
+    /**
+     * Fetch the patient data
+     * Magic code
+     * Using the fetched queue data, fetch patientdata associated with it
+     * Every change in the queue data triggers a new database query..... Maybe this can be optimized???
+     * ---------------------@Todo Suggestion maybe just query the changed queue element id's, maybe use a temporary 
+     * this can be achieved by comparing the array lenths first to determine the added/removed id, or compare the arrays to get
+     * the mutated array pos and fetch just that
+     * Then update the whole variable
+     */
 
+    fetchQueuedPatients() {
+        this.queue.subscribe(qu3 => {
+            this.fetchingpatientdata.next(true);
+            /**
+             * make every entry of the elements in the array create an independent Observable
+             * Then, by using combinelatest, a value will only be emmitted when every Observable emits a value
+             * There afterwards, whenever any of the observables changes, a new set of values is emitted
+             * Although this is not the functionlity we are after... maybe this can be improved???
+             * I don't see any side effects at this time anyway
+             */
+            return combineLatest(...qu3.queue.map(qq => {
+                const patientfile = this.stitch.db.collection<HospFile>('patientfiles')
+                    .findOne({
+                        _id: qq.fileId
+                    });
+                const patient = this.stitch.db.collection<Patient>('patients')
+                    .findOne({
+                        _id: qq.patientId
+                    });
+                return combineLatest([patientfile, patient], (f: HospFile, p: Patient) => {
+                    const data: PatientQueue = {
+                        patientdata: Object.assign(emptypatient, p, { fileInfo: f }),
+                        queuedata: qq
+                    };
+                    return data;
+                });
+            })).subscribe((que: Array<PatientQueue>) => {
+                const patientmap: Map<BSON.ObjectId, PatientQueue> = new Map();
+                que.map(q => {
+                    patientmap.set(q.patientdata._id, q);
+                });
+                this.mainpatientsqueue.next(patientmap);
+                this.fetchingpatientdata.next(false);
+            });
+        })
+    }
+    addPatientToQueue(newvist: NewVisit, patient: Patient): Promise<any> {
+        const meta: Meta = {
+            date: moment().toDate(),
+            adminId: this.adminservice.userdata._id,
+            hospitalId: this.activehospitalid
+        };
+        const visitId = new BSON.ObjectId;
         const visitTemp: Visit = {
             visitDescription: newvist.description,
             patientId: patient._id,
             hospitalId: this.activehospitalid,
             metadata: {
-                edited: {
-                    date: moment().toDate(),
-                    adminId: this.adminservice.userdata._id,
-                    hospitalId: this.activehospitalid
-                }
+                edited: meta
             },
             payment: {
-                hasInsurance: type.name === 'insurance',
+                hasInsurance: newvist.payment.name === 'insurance',
                 splitPayment: false,
                 status: false,
                 total: 0,
                 singlePayment: {
                     channelId: newvist.payment._id,
                     amount: 0,
-                    methodId: type.name === 'insurance' ? selected.insuranceControl : null,
+                    methodId: newvist.insurance[newvist.selectedInsurance].id || null,
                     transactionId: null
                 }
 
             },
-            _id: new BSON.ObjectId,
+            _id: visitId,
             checkin: {
                 status: 0,
                 admin: null
@@ -245,36 +252,47 @@ export class QueueService {
             totalcost: 0
         };
 
-        const combineData = Object.assign({}, emptypatientvisit, visitTemp);
-        //
-        // // Get a new write batch
-        // const batch = this.stitch.db.firestore.batch();
-        // const hospitalVisitRef = this.stitch.db.firestore.collection('hospitalvisits').doc(queueID);
-        // batch.set(hospitalVisitRef, combineData);
-        //
-        //
-        // // const
-        // // store insurance
-        // const tempInsurance = insurance.map((value, index: number) => {
-        //     return {id: value.insuranceControl, insuranceno: value.insurancenumber};
-        // });
-        //
-        // const patientRef = this.stitch.db.firestore
-        //     .collection('patients').doc(patient._id);
-        //
-        // batch.update(patientRef, {patient, insurance: tempInsurance});
-        //
-        // // TODO: use transactions with promise.all
-        // // increment the visit count
-        // const hospitalFileRef = this.stitch.db.firestore.collection('hospitals')
-        //     .doc(this.activehospital._id).collection('filenumbers').doc(patient._id);
-        //
-        //
-        // batch.update(hospitalFileRef, Object.assign({}, patient.fileInfo, {visitcount: patient.fileInfo.visitCount + 1}));
-        //
-        // return batch.commit();
-        return true as any;
-
+        /**
+         * update the patient insurance if changed
+         */
+        patient.insurance = newvist.insurance;
+        patient.metadata.edited = meta;
+        /**
+         * insert the visit to db
+         */
+        const i = this.stitch.db.collection('visits')
+            .insertOne(visitTemp).catch(e => {
+                console.log(e);
+            });
+        /**
+         * potentially update the patient insurance
+         */
+        const j = this.stitch.db.collection('patients')
+            .updateOne({ _id: patient._id }, patient).catch(e => {
+                console.log(e);
+            });
+        /**
+         * update the hospital queue
+         */
+        /**
+         * Because of type safety, update the current queue then push it to db
+         */
+        const tempqueue: Queue = this.queue.value;
+        tempqueue.queue.push({
+            checkin: {
+                admin: this.adminservice.userdata._id,
+                status: 0,
+            },
+            fileId: patient.fileInfo._id,
+            patientId: patient._id,
+            visitId: visitId
+        })
+        console.log(tempqueue)
+        const k = this.stitch.db.collection('queues')
+            .updateOne({ _id: this.queue.value._id }, tempqueue).catch(e => {
+                console.log(e);
+            });
+        return Promise.all([i, j, k]);
     }
 
     /**

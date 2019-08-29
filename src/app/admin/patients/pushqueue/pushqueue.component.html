@@ -40,7 +40,7 @@
 
                     <mat-form-field appearance="outline" fxFlex>
                         <mat-label>Payment type</mat-label>
-                        <mat-select formControlName="type" required>
+                        <mat-select formControlName="payment" required>
                             <mat-option *ngFor="let option of paymentMethods" [value]="option">
                                 {{option.name}}
                             </mat-option>
@@ -56,12 +56,12 @@
 
                 <div [formGroupName]="i" fxFlex="1 0 auto" fxLayout="row" fxLayoutAlign="start center">
                     <div fxFlex="5">
-                        <mat-checkbox (change)="setSelectedInsurance($event.checked, item, i)"
-                            [checked]="selected === i"></mat-checkbox>
+                        <mat-checkbox (change)="setSelectedInsurance(i)" [checked]="selectedInsuranceId === i">
+                        </mat-checkbox>
                     </div>
                     <mat-form-field appearance="outline" class="mr-12" fxFlex="40">
                         <mat-label>Insurance name</mat-label>
-                        <mat-select formControlName="insuranceControl" required>
+                        <mat-select formControlName="insuranceId" required>
                             <mat-option *ngFor="let option of allInsurance | keyvalue" [value]="option?.key "
                                 class="text-truncate">
                                 {{option.value.name |titlecase}}
@@ -72,7 +72,7 @@
 
                     <mat-form-field appearance="outline" fxFlex="40">
                         <mat-label>Insurance number</mat-label>
-                        <input autocomplete="off" formControlName="insurancenumber" matInput required>
+                        <input autocomplete="off" formControlName="insuranceNumber" matInput required>
                         <mat-icon class="secondary-text" matSuffix>confirmation_number</mat-icon>
 
                         <mat-error>Insurance number is required</mat-error>
@@ -88,7 +88,7 @@
             </div>
 
 
-            <div *ngIf="insuranceSet" fxLayout="row" fxLayoutAlign="start start">
+            <div *ngIf="insuranceSelected" fxLayout="row" fxLayoutAlign="start start">
 
                 <div fxFlex="100" fxLayout="row" fxLayoutAlign="start start">
                     <button (click)="addInsurance()" color="basic" mat-mini-fab type="button">

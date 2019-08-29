@@ -1,11 +1,13 @@
 import { Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Validators } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, FormBuilder } from 'ngx-strongly-typed-forms';
 import { Insurance, Patient } from '../../../models/patient/Patient';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { PaymentmethodService } from '../../services/paymentmethod.service';
 import { PaymentChannel, Paymentmethods } from '../../../models/payment/PaymentChannel';
 import { PatientService } from '../../services/patient.service';
 import { NotificationService } from '../../../shared/services/notifications.service';
+import { NewVisit, NewVisitInsurance } from 'app/models/visit/Visit';
 
 @Component({
     selector: 'app-pushqueue',
@@ -15,25 +17,23 @@ import { NotificationService } from '../../../shared/services/notifications.serv
 })
 export class PushqueueComponent implements OnInit {
 
-    queueForm: FormGroup;
+    queueForm: FormGroup<NewVisit>;
     allInsurance: { [key: string]: Paymentmethods } = {};
     patient: Patient;
     dialogTitle: string;
     paymentMethods: Array<PaymentChannel>;
-    insurance: FormArray;
 
-    selected: number = null;
-    selectedInsurance: { insuranceControl: string, insurancenumber: string } = null;
-
-    insuranceSet: boolean;
-    private insuranceAvailable: boolean;
-
-    constructor(private _formBuilder: FormBuilder, @Inject(MAT_DIALOG_DATA) private _data: any,
-        public matDialogRef: MatDialogRef<PushqueueComponent>, private notificationService: NotificationService,
-        private paymentmethodService: PaymentmethodService, private patientService: PatientService) {
-
-        this.insuranceAvailable = false;
-        this.insuranceSet = false;
+    /**
+     * Important for our views
+     */
+    insuranceSelected: boolean;
+    selectedInsuranceId: number;
+    constructor(private _formBuilder: FormBuilder,
+        @Inject(MAT_DIALOG_DATA) private _data: any,
+        public matDialogRef: MatDialogRef<PushqueueComponent>,
+        private notificationService: NotificationService,
+        private paymentmethodService: PaymentmethodService,
+        private patientService: PatientService) {
 
         this.patient = _data.patient;
         this.dialogTitle = 'Queue Patient';
@@ -54,37 +54,37 @@ export class PushqueueComponent implements OnInit {
         /*
         * listen for insurance ArrayForm
         * **/
-        this.listenForInsuranceArrayChanges();
     }
 
     ngOnInit(): void {
     }
 
     createQueueForm(): void {
-        this.queueForm = this._formBuilder.group({
+        this.queueForm = this._formBuilder.group<NewVisit>({
             description: ['', Validators.required],
-            type: ['', Validators.required],
-            insurance: this._formBuilder.array([])
+            payment: [null, Validators.required],
+            insurance: this._formBuilder.array<NewVisitInsurance>([]),
+            selectedInsurance: null
         });
-
-        this.insurance = this.queueForm.get('insurance') as FormArray;
+    }
+    /**
+     * Retruns the form array for dynamic manipulation
+     */
+    getinsuranceArray(): FormArray<NewVisitInsurance> {
+        return this.queueForm.get('insurance') as FormArray<NewVisitInsurance>;
     }
 
     removeInsurance(index: number): void {
-        this.insurance.removeAt(index);
-        if (index === this.selected) {
-            this.selected = null;
-            this.selectedInsurance = null;
-        }
+        this.getinsuranceArray().removeAt(index);
     }
 
     addInsurance(): void {
-        this.insurance.push(this.createInsurance());
+        this.getinsuranceArray().push(this.createInsurance());
     }
 
     submitForm(): void {
-        if (this.insuranceEnabled()) {
-            if (this.insuranceSet && this.selected === null) {
+        if (this.queueForm.get('payment').value.name === 'insurance') {
+            if (this.queueForm.get('selectedInsurance').value === null) {
                 this.notificationService.notify({
                     alertType: 'info',
                     body: 'Please select Insurance',
@@ -93,7 +93,7 @@ export class PushqueueComponent implements OnInit {
                 });
                 return;
             }
-            this.matDialogRef.close({ data: this.queueForm, selected: this.selectedInsurance });
+            this.matDialogRef.close(this.queueForm.getRawValue());
         } else {
             this.notificationService.notify({
                 alertType: 'info',
@@ -104,94 +104,53 @@ export class PushqueueComponent implements OnInit {
         }
     }
 
-    /**
-     * function to listen to form controls changes
-     * */
-    listenForInsuranceArrayChanges(): void {
-        // make checkList select one value only
-        this.queueForm.get('insurance').valueChanges.subscribe(() => {
-            if (this.insurance.length !== 0) {
-                this.insuranceSet = true;
-                this.insuranceAvailable = true;
-            } else {
-                this.insuranceSet = false;
-                this.insuranceAvailable = false;
-            }
-        });
-    }
 
-    setSelectedInsurance(checked, selectedInsurance: FormGroup, index): void {
-        if (!checked && index === this.selected) {
-            this.selected = null;
-            this.selectedInsurance = null;
+
+    setSelectedInsurance(index: number): void {
+        if (index === this.queueForm.get('selectedInsurance').value) {
+            this.queueForm.get('selectedInsurance').patchValue(null);
             console.log('item unselected');
+            this.selectedInsuranceId = null;
             return;
         }
-        this.selected = index;
-        this.selectedInsurance = selectedInsurance.getRawValue();
+        this.selectedInsuranceId = index;
+        this.queueForm.get('selectedInsurance').patchValue(index);
     }
 
     private listenForInsurance(): void {
-        this.queueForm.get('type').valueChanges.subscribe((value: PaymentChannel) => {
+        this.queueForm.get('payment').valueChanges.subscribe((value) => {
             if (value.name === 'insurance') {
-                this.insuranceSet = true;
+                this.insuranceSelected = true;
+                this.patient.insurance.map((insuranceData: Insurance, index) => {
+                    this.addInsurance();
 
-                // this.patientService.
-                this.patientService.getpatientbyid(this.patient._id).then(pData => {
+                    const mergedData = Object.assign({}, this.allInsurance[insuranceData._id],
+                        { id: insuranceData._id, insuranceno: insuranceData.insuranceNo });
 
-                    if (pData.insurance.length === 0) {
-                        this.insuranceAvailable = false;
-                    }
-                    pData.insurance.map((insuranceData: Insurance, index) => {
-                        this.insuranceAvailable = true;
-                        this.addInsurance();
+                    this.getinsuranceArray().controls[index].get('insuranceId').patchValue(mergedData.id, { emitEvent: false });
+                    this.getinsuranceArray().controls[index].get('insuranceNumber').patchValue(mergedData.insuranceno, { emitEvent: false });
 
-                        const mergedData = Object.assign({}, this.allInsurance[insuranceData._id],
-                            { id: insuranceData._id, insuranceno: insuranceData.insuranceNo });
-
-                        this.insurance.controls[index].get('insuranceControl').patchValue(mergedData.id, { emitEvent: false });
-                        this.insurance.controls[index].get('insurancenumber').patchValue(mergedData.insuranceno, { emitEvent: false });
-
-                        /*
-                        * disable inputs
-                        * **/
-                        this.insurance.controls[index].get('insuranceControl').disable({ emitEvent: false });
-                        this.insurance.controls[index].get('insurancenumber').disable({ emitEvent: false });
-                    });
+                    /*
+                    * disable inputs
+                    * **/
+                    this.getinsuranceArray().controls[index].get('insuranceId').disable({ emitEvent: false });
+                    this.getinsuranceArray().controls[index].get('insuranceNumber').disable({ emitEvent: false });
                 });
 
             } else {
                 // clear formArray values
-                this.insurance.controls = [];
-                this.selected = null;
-                this.selectedInsurance = null;
+                this.insuranceSelected = false;
+                this.getinsuranceArray().controls = [];
+                this.queueForm.get('selectedInsurance').patchValue(null);
 
-
-                this.insuranceSet = false;
-                this.insuranceAvailable = false;
             }
         });
     }
 
-    private createInsurance(): FormGroup {
-        return this._formBuilder.group({
-            insuranceControl: new FormControl('', Validators.required),
-            insurancenumber: new FormControl('', Validators.required)
+    private createInsurance(): FormGroup<NewVisitInsurance> {
+        return this._formBuilder.group<NewVisitInsurance>({
+            insuranceId: new FormControl('', Validators.required),
+            insuranceNumber: new FormControl('', Validators.required)
         });
-    }
-
-    private createPayment(): FormGroup {
-        return this._formBuilder.group({
-            typeCtr: ['', Validators.required],
-            insurancenumber: ['', Validators.required]
-        });
-    }
-
-    private insuranceEnabled(): boolean {
-        if (this.insuranceSet) {
-            return this.insuranceAvailable;
-        } else {
-            return true;
-        }
     }
 }

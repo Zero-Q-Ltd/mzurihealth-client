@@ -1,7 +1,10 @@
-import {emptymetadata, Metadata} from '../universal';
-import {Procedureperformed} from '../procedure/Procedureperformed';
-import {BSON} from 'mongodb-stitch-browser-sdk';
-import {Prescription} from './Prescription';
+import { emptymetadata, Metadata } from '../universal';
+import { Procedureperformed } from '../procedure/Procedureperformed';
+import { BSON } from 'mongodb-stitch-browser-sdk';
+import { Prescription } from './Prescription';
+import { PaymentMethod } from '../payment/CustomPaymentMethod.model';
+import { Insurance } from '../patient/Patient';
+import { PaymentChannel } from '../payment/PaymentChannel';
 
 export interface Visit {
     procedures: Array<Procedureperformed>;
@@ -44,8 +47,23 @@ export interface Checkin {
      */
     status: 0 | 1 | 2 | 3 | 4;
 }
-
-
+/**
+ * During reg it is important to distinguish between cash and isurance patients
+ * In case it's a cash method, don't bother with details until during payment
+ */
+export interface NewVisit {
+    payment: PaymentChannel;
+    insurance: Array<NewVisitInsurance>;
+    /**
+     * An id among the insurance array
+     */
+    selectedInsurance: number;
+    description: string;
+}
+export interface NewVisitInsurance {
+    insuranceId: string;
+    insuranceNumber: string;
+}
 export const emptypatientvisit: Visit = {
     procedures: [],
     totalcost: 0,

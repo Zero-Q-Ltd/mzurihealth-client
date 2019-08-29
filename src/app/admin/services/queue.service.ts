@@ -5,7 +5,7 @@ import { AdminService } from './admin.service';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { HospitalAdmin } from '../../models/user/HospitalAdmin';
 import { PatientService } from './patient.service';
-import { emptypatientvisit, Visit } from '../../models/visit/Visit';
+import { emptypatientvisit, Visit, NewVisit } from '../../models/visit/Visit';
 import { CurrentPatient, MergedPatientQueueModel as PatientQueue } from '../../models/visit/MergedPatientQueueModel';
 import { ProceduresService } from './procedures.service';
 import * as moment from 'moment';
@@ -15,6 +15,7 @@ import { BSON, RemoteInsertOneResult } from 'mongodb-stitch-browser-sdk';
 import { HospFile } from 'app/models/hospital/HospFile';
 import { emptyqueue, Queue } from 'app/models/hospital/Queue';
 import { PaymentChannel } from 'app/models/payment/PaymentChannel';
+import { type } from 'os';
 
 @Injectable({
     providedIn: 'root'
@@ -206,30 +207,10 @@ export class QueueService {
             });
     }
 
-    addPatientToQueue({ type, description, insurance }: {
-        type: PaymentChannel,
-        description: string,
-        insurance: Array<{
-            insuranceControl: string;
-            insurancenumber: string;
-        }>
-    },
-        patient: Patient,
-        selected:
-            {
-                insuranceControl: string,
-                insurancenumber: string
-            }): Promise<void> {
-
-        /**
-         * steps
-         * 1. hospitalvisits
-         * 2. filenumber last visit -- maybe when everything is done
-         * 3.
-         * */
+    addPatientToQueue(newvist: NewVisit, patient: Patient): Promise<void> {
 
         const visitTemp: Visit = {
-            visitDescription: description,
+            visitDescription: newvist.description,
             patientId: patient._id,
             hospitalId: this.activehospitalid,
             metadata: {
@@ -245,7 +226,7 @@ export class QueueService {
                 status: false,
                 total: 0,
                 singlePayment: {
-                    channelId: type._id,
+                    channelId: newvist.payment._id,
                     amount: 0,
                     methodId: type.name === 'insurance' ? selected.insuranceControl : null,
                     transactionId: null

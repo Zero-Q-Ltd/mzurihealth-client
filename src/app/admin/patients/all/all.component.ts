@@ -17,6 +17,7 @@ import { Paymentmethods } from '../../../models/payment/PaymentChannel';
 import { QueueService } from '../../services/queue.service';
 import { ProfileComponent } from '../profile/profile.component';
 import { FuseConfirmDialogComponent } from '../../../../@fuse/components/confirm-dialog/confirm-dialog.component';
+import { NewVisit } from 'app/models/visit/Visit';
 
 @Component({
     selector: 'all-patients',
@@ -109,40 +110,30 @@ export class AllComponent implements OnInit, AfterViewInit {
         });
 
         this.dialogRef.afterClosed()
-            .subscribe(response => {
+            .subscribe((response: NewVisit) => {
                 if (!response) {
                     return;
                 }
-                const actionType: string = response[0];
-                const formData: { data: FormGroup, selected: { insuranceControl: string, insurancenumber: string } } = response[1];
 
-                console.log(formData.data.getRawValue());
+                console.log(response);
 
-                switch (actionType) {
-                    /**
-                     * Save
-                     */
-
-                    case 'save':
-                        this.queueService.addPatientToQueue(formData.data.getRawValue(), patient, formData.selected)
-                            .then(() => {
-                                // navigate to queues
-                                this.router.navigate(['admin/patients/queue']);
-                            }).catch(error => {
-                                console.log('form error');
-                                console.log(error);
+                this.queueService.addPatientToQueue(response, patient)
+                    .then(() => {
+                        // navigate to queues
+                        this.router.navigate(['admin/patients/queue']);
+                    }).catch(error => {
+                        console.log('form error');
+                        console.log(error);
 
 
-                                this.notificationservice.notify({
-                                    alertType: 'error',
-                                    body: 'An error occurred',
-                                    title: 'ERROR',
-                                    placement: { horizontal: 'right', vertical: 'top' }
-                                });
-                            });
+                        this.notificationservice.notify({
+                            alertType: 'error',
+                            body: 'An error occurred',
+                            title: 'ERROR',
+                            placement: { horizontal: 'right', vertical: 'top' }
+                        });
+                    });
 
-                        break;
-                }
             });
     }
 

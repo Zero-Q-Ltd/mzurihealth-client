@@ -1,34 +1,34 @@
-import {Component, OnInit} from '@angular/core';
-import {emptyproceduresperformed, ProcedureNotes, Procedureperformed} from '../../../../../models/procedure/Procedureperformed';
-import {HospitalAdmin} from '../../../../../models/user/HospitalAdmin';
-import {HospitalService} from '../../../../services/hospital.service';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {PatientService} from '../../../../services/patient.service';
-import {VisitService} from '../../../../services/visit.service';
-import {RawProcedure, RawProcedureCategory} from '../../../../../models/procedure/RawProcedure';
-import {CustomProcedure} from '../../../../../models/procedure/CustomProcedure';
-import {ProceduresService} from '../../../../services/procedures.service';
-import {fuseAnimations} from '../../../../../../@fuse/animations';
-import {ProcedureCategory} from '../../../../../models/procedure/ProcedureCategory';
-import {BehaviorSubject, Observable} from 'rxjs';
-import {MergedProcedureModel} from '../../../../../models/procedure/MergedProcedure.model';
-import {map, startWith} from 'rxjs/operators';
-import {allerytypearray} from '../../../../../models/procedure/Allergy.model';
-import {medicalconditionsarray} from '../../../../../models/procedure/MedicalConditions.model';
-import {QueueService} from '../../../../services/queue.service';
-import {CurrentPatient} from '../../../../../models/visit/MergedPatientQueueModel';
-import {AdminSelectionComponent} from '../../admin-selection/admin-selection.component';
-import {MatDialog, MatDialogRef, MatTableDataSource} from '@angular/material';
-import {LocalcommunicationService} from '../localcommunication.service';
-import {emptypatientvisit, Visit} from '../../../../../models/visit/Visit';
-import {NotificationService} from '../../../../../shared/services/notifications.service';
-import {PerformProcedureComponent} from '../perform-procedure/perform-procedure.component';
-import {SelectionModel} from '@angular/cdk/collections';
-import {AdminService} from '../../../../services/admin.service';
-import {ProcedurenotesComponent} from '../procedure-notes/procedurenotes.component';
-import {FuseConfirmDialogComponent} from '../../../../../../@fuse/components/confirm-dialog/confirm-dialog.component';
+import { Component, OnInit } from '@angular/core';
+import { emptyproceduresperformed, ProcedureNotes, Procedureperformed } from '../../../../../models/procedure/Procedureperformed';
+import { HospitalAdmin } from '../../../../../models/user/HospitalAdmin';
+import { HospitalService } from '../../../../services/hospital.service';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { PatientService } from '../../../../services/patient.service';
+import { VisitService } from '../../../../services/visit.service';
+import { RawProcedure, RawProcedureCategory } from '../../../../../models/procedure/RawProcedure';
+import { CustomProcedure } from '../../../../../models/procedure/CustomProcedure';
+import { ProceduresService } from '../../../../services/procedures.service';
+import { fuseAnimations } from '../../../../../../@fuse/animations';
+import { ProcedureCategory } from '../../../../../models/procedure/ProcedureCategory';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { MergedProcedureModel } from '../../../../../models/procedure/MergedProcedure.model';
+import { map, startWith } from 'rxjs/operators';
+import { allerytypearray } from '../../../../../models/procedure/Allergy.model';
+import { medicalconditionsarray } from '../../../../../models/procedure/MedicalConditions.model';
+import { QueueService } from '../../../../services/queue.service';
+import { CurrentPatient } from '../../../../../models/visit/MergedPatientQueueModel';
+import { AdminSelectionComponent } from '../../admin-selection/admin-selection.component';
+import { MatDialog, MatDialogRef, MatTableDataSource } from '@angular/material';
+import { LocalcommunicationService } from '../localcommunication.service';
+import { emptypatientvisit, Visit } from '../../../../../models/visit/Visit';
+import { NotificationService } from '../../../../../shared/services/notifications.service';
+import { PerformProcedureComponent } from '../perform-procedure/perform-procedure.component';
+import { SelectionModel } from '@angular/cdk/collections';
+import { AdminService } from '../../../../services/admin.service';
+import { ProcedurenotesComponent } from '../procedure-notes/procedurenotes.component';
+import { FuseConfirmDialogComponent } from '../../../../../../@fuse/components/confirm-dialog/confirm-dialog.component';
 import * as moment from 'moment';
-import {Meta} from 'app/models/universal';
+import { Meta } from 'app/models/universal';
 
 @Component({
     selector: 'patient-today',
@@ -54,21 +54,21 @@ export class TodayComponent implements OnInit {
     dialogRef: MatDialogRef<any>;
     imeanzilishwa: BehaviorSubject<boolean> = new BehaviorSubject(false);
     hospitaladmins: Array<HospitalAdmin> = [];
-    currentvisit: Visit = {...emptypatientvisit};
+    currentvisit: Visit = { ...emptypatientvisit };
     proceduresdatasource: MatTableDataSource<Procedureperformed> = new MatTableDataSource([]);
     procedurecolumns = ['name', 'practitioner', 'results', 'notes', 'action'];
     confirmDialogRef: MatDialogRef<FuseConfirmDialogComponent>;
 
     constructor(private hospitalservice: HospitalService,
-                private formBuilder: FormBuilder,
-                private patientservice: PatientService,
-                private procedureservice: ProceduresService,
-                private queue: QueueService,
-                public _matDialog: MatDialog,
-                private patientvisitservice: VisitService,
-                private communication: LocalcommunicationService,
-                private adminservice: AdminService,
-                private notifications: NotificationService) {
+        private formBuilder: FormBuilder,
+        private patientservice: PatientService,
+        private procedureservice: ProceduresService,
+        private queue: QueueService,
+        public _matDialog: MatDialog,
+        private patientvisitservice: VisitService,
+        private communication: LocalcommunicationService,
+        private adminservice: AdminService,
+        private notifications: NotificationService) {
 
         procedureservice.procedurecategories.subscribe(categories => {
             this.procedurecategories = categories;
@@ -298,16 +298,16 @@ export class TodayComponent implements OnInit {
             this.vitalsform.getRawValue(),
             this.medconditionsform.getRawValue().conditionsformArray,
             this.allergiesform.getRawValue().allergiesformArray).then(() => {
-            this.notifications.notify({
-                placement: {
-                    vertical: 'top',
-                    horizontal: 'right'
-                },
-                title: 'Success',
-                alertType: 'success',
-                body: 'Saved'
+                this.notifications.notify({
+                    placement: {
+                        vertical: 'top',
+                        horizontal: 'right'
+                    },
+                    title: 'Success',
+                    alertType: 'success',
+                    body: 'Saved'
+                });
             });
-        });
     }
 
     onSelect(selected: { rawprocedure: RawProcedure, customprocedure: CustomProcedure }): void {
@@ -346,8 +346,8 @@ export class TodayComponent implements OnInit {
         /**
          * first check if there's a next patient
          */
-        if (this.queue.mypatients.value[1]) {
-            this.queue.acceptpatient(this.queue.mypatients.value[1].queuedata);
+        if (this.queue.mypatientqueue.value[1]) {
+            this.queue.acceptpatient(this.queue.mypatientqueue.value[1].queuedata);
         } else {
 
         }
@@ -382,9 +382,9 @@ export class TodayComponent implements OnInit {
             x.get('type').valueChanges.subscribe(g => {
                 if (g) {
                     if (x.get('type').value.toString().length > -1) {
-                        x.get('detail').enable({emitEvent: false});
+                        x.get('detail').enable({ emitEvent: false });
                     } else {
-                        x.get('detail').disable({emitEvent: false});
+                        x.get('detail').disable({ emitEvent: false });
                     }
                 }
             });
@@ -411,9 +411,9 @@ export class TodayComponent implements OnInit {
             x.get('type').valueChanges.subscribe(g => {
                 if (g) {
                     if (x.get('type').value.toString().length > -1) {
-                        x.get('detail').enable({emitEvent: false});
+                        x.get('detail').enable({ emitEvent: false });
                     } else {
-                        x.get('detail').disable({emitEvent: false});
+                        x.get('detail').disable({ emitEvent: false });
                     }
                 }
             });
@@ -459,7 +459,7 @@ export class TodayComponent implements OnInit {
         // return console.log(this.procedureselection.getRawValue());
         if (this.procedureperformed.valid) {
             this.expand = false;
-            const procedure: Procedureperformed = Object.assign({}, {...emptyproceduresperformed}, this.procedureperformed.getRawValue());
+            const procedure: Procedureperformed = Object.assign({}, { ...emptyproceduresperformed }, this.procedureperformed.getRawValue());
             const originaldata: MergedProcedureModel = this.procedureselection.getRawValue().selection;
             this.patientvisitservice.addprocedure(this.currentvisit._id, originaldata, procedure).then(() => {
                 this.notifications.notify({

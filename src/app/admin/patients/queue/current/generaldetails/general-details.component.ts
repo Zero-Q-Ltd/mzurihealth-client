@@ -129,17 +129,17 @@ export class GeneralDetailsComponent implements OnInit {
 
     submitPatientsForm(): void {
         if (this.patientsForm.valid) {
-            this.patientservice.updatePatient(this.currentpatient._id, this.patientsForm.getRawValue()).then(() => {
-                this.notificationservice.notify({
-                    alertType: 'success',
-                    body: 'Patient successifully updated',
-                    title: 'Success',
-                    placement: {
-                        horizontal: 'right',
-                        vertical: 'top'
-                    }
-                });
-            });
+            // this.patientservice.updatePatient(this.currentpatient._id, this.patientsForm.getRawValue()).then(() => {
+            //     this.notificationservice.notify({
+            //         alertType: 'success',
+            //         body: 'Patient successifully updated',
+            //         title: 'Success',
+            //         placement: {
+            //             horizontal: 'right',
+            //             vertical: 'top'
+            //         }
+            //     });
+            // });
         } else {
             this.notificationservice.notify({
                 alertType: 'error',

@@ -1,13 +1,13 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import {MatDialog, MatDialogRef, MatTableDataSource} from '@angular/material';
-import {fuseAnimations} from '../../../../../@fuse/animations';
-import {QueueService} from '../../../services/queue.service';
-import {MergedPatientQueueModel} from '../../../../models/visit/MergedPatientQueueModel';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { MatDialog, MatDialogRef, MatTableDataSource } from '@angular/material';
+import { fuseAnimations } from '../../../../../@fuse/animations';
+import { QueueService } from '../../../services/queue.service';
+import { MergedPatientQueueModel } from '../../../../models/visit/MergedPatientQueueModel';
 import * as moment from 'moment';
-import {AdminSelectionComponent} from '../admin-selection/admin-selection.component';
-import {HospitalAdmin} from '../../../../models/user/HospitalAdmin';
-import {FuseConfirmDialogComponent} from '../../../../../@fuse/components/confirm-dialog/confirm-dialog.component';
-import {InvoiceComponent} from '../../invoice/invoice.component';
+import { AdminSelectionComponent } from '../admin-selection/admin-selection.component';
+import { HospitalAdmin } from '../../../../models/user/HospitalAdmin';
+import { FuseConfirmDialogComponent } from '../../../../../@fuse/components/confirm-dialog/confirm-dialog.component';
+import { InvoiceComponent } from '../../invoice/invoice.component';
 
 @Component({
     selector: 'queue-mine',
@@ -23,8 +23,8 @@ export class MineComponent implements OnInit {
     confirmDialogRef: MatDialogRef<FuseConfirmDialogComponent>;
 
     constructor(private queue: QueueService,
-                public _matDialog: MatDialog) {
-        queue.mypatients.subscribe(value => {
+        public _matDialog: MatDialog) {
+        queue.mypatientqueue.subscribe(value => {
             this.patientsdatasource.data = value.entries()[1].sort((a, b) => {
                 return a.queuedata.metadata.lastEdit.getMilliseconds() - b.queuedata.metadata.lastEdit.getMilliseconds();
             });

@@ -1,0 +1,22 @@
+{
+    "id": "5d673411eef6d5a465df26a9",
+    "database": "dev",
+    "collection": "visits",
+    "roles": [
+        {
+            "name": "default",
+            "apply_when": {},
+            "write": true,
+            "insert": true,
+            "delete": true,
+            "additional_fields": {}
+        }
+    ],
+    "schema": {
+        "properties": {
+            "_id": {
+                "bsonType": "objectId"
+            }
+        }
+    }
+}

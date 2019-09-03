@@ -135,19 +135,18 @@ export class ProfileComponent implements OnInit {
         if (this.patientsForm.valid) {
 
 
-            this.patientservice.updatePatient(this.currentpatient._id, this.patientsForm.getRawValue()).then(() => {
-                this.notificationservice.notify({
-                    alertType: 'success',
-                    body: 'Saved',
-                    title: 'Success',
-                    placement: {
-                        horizontal: 'right',
-                        vertical: 'top'
-                    }
-                });
-                this.dialogRef.close();
-
-            });
+            // this.patientservice.updatePatient(this.currentpatient._id, this.patientsForm.getRawValue()).then(() => {
+            //     this.notificationservice.notify({
+            //         alertType: 'success',
+            //         body: 'Saved',
+            //         title: 'Success',
+            //         placement: {
+            //             horizontal: 'right',
+            //             vertical: 'top'
+            //         }
+            //     });
+            //     this.dialogRef.close();
+            // });
         } else {
             this.notificationservice.notify({
                 alertType: 'error',

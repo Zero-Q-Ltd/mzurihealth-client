@@ -118,7 +118,6 @@ export class QueueService {
                 }
             });
     }
-
     /**
      * Fetch the patient data
      * Magic code
@@ -156,7 +155,7 @@ export class QueueService {
                          * The three dots below might cause you sleepless nights
                          * Be veeeery careful when refactoring any of this code
                          */
-                        patientdata: Object.assign({ ...emptypatient }, p, { fileInfo: f }),
+                        patientdata: Object.assign({}, emptypatient, p, { fileInfo: f }),
                         queuedata: qq
                     };
                     return data;

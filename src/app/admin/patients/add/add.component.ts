@@ -123,18 +123,6 @@ export class AddComponent implements OnInit {
         }
     }
 
-    createInsurance(): FormGroup<Insurance> {
-        const insurancenumber = new FormControl({
-            value: '',
-            disabled: true
-        });
-
-        return this.formBuilder.group<Insurance>({
-            id: [''],
-            insuranceNo: insurancenumber
-        });
-    }
-
     insurancechanges(): void {
         this.getinsuranceArray().controls.forEach(x => {
             x.get('id').valueChanges.subscribe(g => {
@@ -156,7 +144,13 @@ export class AddComponent implements OnInit {
     }
 
     addInsurance(): void {
-        this.getinsuranceArray().push(this.createInsurance());
+        this.getinsuranceArray().push(this.formBuilder.group<Insurance>({
+            id: [''],
+            insuranceNo: new FormControl({
+                value: '',
+                disabled: true
+            })
+        }));
         this.insurancechanges();
     }
 
@@ -178,7 +172,7 @@ export class AddComponent implements OnInit {
      * */
     private initFormBuilder(): void {
         this.patientsForm = this.formBuilder.group<NewPatientForm>({
-            // insurance: this.createInsurance() ,
+            insurance: this.formBuilder.array([]),
             nextofKin: this.formBuilder.group<NextofKin>({
                 name: ['', Validators.required],
                 relationship: ['', Validators.required],

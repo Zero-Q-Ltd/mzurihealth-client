@@ -1,0 +1,14 @@
+{
+    "app_id": "stitch-uyxfz",
+    "config_version": 20180301,
+    "name": "stitch",
+    "location": "US-VA",
+    "deployment_model": "GLOBAL",
+    "security": {},
+    "hosting": {
+        "enabled": true,
+        "app_default_domain": "stitch-uyxfz.mongodbstitch.com",
+        "default_response_code": 200,
+        "default_error_path": "/dist/index.html"
+    }
+}

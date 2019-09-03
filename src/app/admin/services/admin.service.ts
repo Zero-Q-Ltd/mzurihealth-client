@@ -1,12 +1,12 @@
-import {Injectable} from '@angular/core';
-import {BehaviorSubject, ReplaySubject} from 'rxjs';
-import {Router} from '@angular/router';
-import {emptyadmin, HospitalAdmin} from '../../models/user/HospitalAdmin';
-import {NotificationService} from '../../shared/services/notifications.service';
-import {AdminCategory} from '../../models/user/AdminCategory';
-import {AdminInvite} from '../../models/user/AdminInvite';
-import {StitchService} from './stitch/stitch.service';
-import {BSON, StitchUser,} from 'mongodb-stitch-browser-sdk';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, ReplaySubject } from 'rxjs';
+import { Router } from '@angular/router';
+import { emptyadmin, HospitalAdmin } from '../../models/user/HospitalAdmin';
+import { NotificationService } from '../../shared/services/notifications.service';
+import { AdminCategory } from '../../models/user/AdminCategory';
+import { AdminInvite } from '../../models/user/AdminInvite';
+import { StitchService } from './stitch/stitch.service';
+import { BSON, StitchUser, } from 'mongodb-stitch-browser-sdk';
 
 @Injectable({
     providedIn: 'root'
@@ -31,14 +31,18 @@ export class AdminService {
     subscriptions: Map<string, any> = new Map<string, any>();
 
     constructor(private router: Router,
-                private notificationservice: NotificationService,
-                private stitch: StitchService) {
+        private notificationservice: NotificationService,
+        private stitch: StitchService) {
         this.stitch.user.subscribe(value => {
             this.getuser(value);
         });
         this.observableuserdata.subscribe(value => {
             this.userdata = value;
         });
+        this.stitch.client.callFunction("searchpatient", ["test"]).then(f => {
+            console.log(f)
+        })
+
     }
 
     // The the status of the activeadmin
@@ -49,7 +53,7 @@ export class AdminService {
 
     getuser = async (user: StitchUser) => {
         this.stitch.db.collection<HospitalAdmin>('hospitaladmins')
-            .findOne({_id: new BSON.ObjectId(user.id)})
+            .findOne({ _id: new BSON.ObjectId(user.id) })
             .then(async userdata => {
                 this.observableuserdata.next(userdata);
                 console.log(userdata);
@@ -75,17 +79,17 @@ export class AdminService {
     }
 
     disableadmin(adminid: BSON.ObjectId): Promise<any> {
-        return this.stitch.db.collection('hospitaladmins').findOneAndUpdate({_id: adminid}, {status: false});
+        return this.stitch.db.collection('hospitaladmins').findOneAndUpdate({ _id: adminid }, { status: false });
         // return this.db.firestore.collection('hospitaladmins').doc(adminid).update({status: false});
     }
 
     enableadmin(adminid: BSON.ObjectId): Promise<any> {
-        return this.stitch.db.collection('hospitaladmins').findOneAndUpdate({_id: adminid}, {status: false});
+        return this.stitch.db.collection('hospitaladmins').findOneAndUpdate({ _id: adminid }, { status: false });
         // return this.db.firestore.collection('hospitaladmins').doc(adminid).update({status: true});
     }
 
     deleteinvite(inviteid: BSON.ObjectId): Promise<any> {
-        return this.stitch.db.collection('admininvites').findOneAndDelete({_id: inviteid});
+        return this.stitch.db.collection('admininvites').findOneAndDelete({ _id: inviteid });
 
         // return this.db.firestore.collection('admininvites').doc(inviteid).delete();
     }

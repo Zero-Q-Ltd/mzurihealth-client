@@ -5,8 +5,8 @@
         <div class="header p-12" fxLayout="row" fxLayoutAlign="start center">
             <!-- USER -->
             <img [alt]="patient.patientdata.personalInfo.name"
-                 [src]="patient.patientdata.personalInfo.photoURL || '/assets/images/avatars/patient.svg'"
-                 class="avatar mr-16"/>
+                [src]="patient.patientdata.personalInfo.photoURL || '/assets/images/avatars/patient.svg'"
+                class="avatar mr-16" />
             <span class="h5">{{patient.patientdata.personalInfo.name}}</span>
             <!-- / USER -->
         </div>
@@ -17,8 +17,7 @@
             <div class="nav material2">
                 <div class="nav-item">
                     <a (click)="changeactivepage('generaldetails')"
-                       [ngClass]="{'active accent':activepage ==='generaldetails'}" class="nav-link"
-                       matRipple>
+                        [ngClass]="{'active accent':activepage ==='generaldetails'}" class="nav-link" matRipple>
                         <mat-icon class="nav-link-icon">
                             account_box
                         </mat-icon>
@@ -66,64 +65,64 @@
         <!-- / SIDEBAR HEADER -->
 
         <!-- SIDEBAR CONTENT -->
-        <mat-accordion fusePerfectScrollbar>
-            <mat-expansion-panel [disabled]="!patient.patientdata.medicalInfo.metadata.edited">
-                <mat-expansion-panel-header>
-                    <!-- Vitals ({{patient.patientdata.medicalInfo.metadata.lastEdit || 'Empty'}}) -->
-                </mat-expansion-panel-header>
-                <ng-template matExpansionPanelContent>
+        <!-- <mat-accordion fusePerfectScrollbar> -->
+        <!-- <mat-expansion-panel [disabled]="!patient.patientdata.medicalInfo.metadata.edited"> -->
+        <!-- <mat-expansion-panel-header> -->
+        <!-- Vitals ({{patient.patientdata.medicalInfo.metadata.lastEdit || 'Empty'}}) -->
+        <!-- </mat-expansion-panel-header> -->
+        <!-- <ng-template matExpansionPanelContent> -->
 
-                    <div class=" py-8">
-                        <span class="w-100"> Blood Pressure</span>
-                        <h3>{{patient.patientdata.medicalInfo.vitals.pressure}}</h3>
-                        <!--<mat-progress-bar mode="determinate" value="40"></mat-progress-bar>-->
-                    </div>
-                    <div class=" py-8">
-                        <span class="w-100"> Heart Beat </span>
-                        <h3>{{patient.patientdata.medicalInfo.vitals.heartRate}}</h3>
-                        <!--<mat-progress-bar mode="determinate" value="50"></mat-progress-bar>-->
-                    </div>
-                    <div class=" py-8">
-                        <span class="w-100"> Haemoglobin </span>
-                        <h3>{{patient.patientdata.medicalInfo.vitals.hb}}</h3>
-                        <!--<mat-progress-bar mode="determinate" value="95"></mat-progress-bar>-->
-                    </div>
-                    <div class=" py-8">
-                        <span class="w-100"> Sugar </span>
-                        <h3>{{patient.patientdata.medicalInfo.vitals.sugar}}</h3>
-                        <!--<mat-progress-bar mode="determinate" value="12"></mat-progress-bar>-->
-                    </div>
-                    <div class="pt-8">
-                    <span class="w-100">
-                        Weight: {{patient.patientdata.medicalInfo.vitals.weight}} &nbsp;&nbsp;&nbsp;&nbsp;
-                        Height: {{patient.patientdata.medicalInfo.vitals.height}} </span>
-                    </div>
-                    <div class=" pb-8">
-                        <span class="w-100"> BMI </span>
-                        <!--Calculated as kg/m squared -->
-                        <h3>{{patient.patientdata.medicalInfo.vitals.weight /
-                        (patient.patientdata.medicalInfo.vitals.height * patient.patientdata.medicalInfo.vitals.height)}}</h3>
-                        <!--<mat-progress-bar mode="determinate" value="40"></mat-progress-bar>-->
-                    </div>
-                </ng-template>
-            </mat-expansion-panel>
-            <mat-expansion-panel>
-                <mat-expansion-panel-header>
-                    Allergies ({{ patient.patientdata.medicalInfo.allergies.length}})
-                </mat-expansion-panel-header>
-                <span *ngFor="let allergy of patient.patientdata.medicalInfo.allergies"
-                      class="text-truncate">{{allergy.type}}=> {{allergy.detail}}</span>
-            </mat-expansion-panel>
+        <!-- <div class=" py-8"> -->
+        <!-- <span class="w-100"> Blood Pressure</span> -->
+        <!-- <h3>{{patient.patientdata.medicalInfo.vitals.pressure}}</h3> -->
+        <!--<mat-progress-bar mode="determinate" value="40"></mat-progress-bar>-->
+        <!-- </div> -->
+        <!-- <div class=" py-8"> -->
+        <!-- <span class="w-100"> Heart Beat </span> -->
+        <!-- <h3>{{patient.patientdata.medicalInfo.vitals.heartRate}}</h3> -->
+        <!-- <mat-progress-bar mode="determinate" value="50"></mat-progress-bar> -->
+        <!-- </div> -->
+        <!-- <div class=" py-8"> -->
+        <!-- <span class="w-100"> Haemoglobin </span> -->
+        <!-- <h3>{{patient.patientdata.medicalInfo.vitals.hb}}</h3> -->
+        <!--<mat-progress-bar mode="determinate" value="95"></mat-progress-bar>-->
+        <!-- </div> -->
+        <!-- <div class=" py-8"> -->
+        <!-- <span class="w-100"> Sugar </span> -->
+        <!-- <h3>{{patient.patientdata.medicalInfo.vitals.sugar}}</h3> -->
+        <!--<mat-progress-bar mode="determinate" value="12"></mat-progress-bar>-->
+        <!-- </div> -->
+        <!-- <div class="pt-8"> -->
+        <!-- <span class="w-100"> -->
+        <!-- Weight: {{patient.patientdata.medicalInfo.vitals.weight}} &nbsp;&nbsp;&nbsp;&nbsp; -->
+        <!-- Height: {{patient.patientdata.medicalInfo.vitals.height}} </span> -->
+        <!-- </div> -->
+        <!-- <div class=" pb-8"> -->
+        <!-- <span class="w-100"> BMI </span> -->
+        <!--Calculated as kg/m squared -->
+        <!-- <h3>{{patient.patientdata.medicalInfo.vitals.weight / -->
+        <!-- (patient.patientdata.medicalInfo.vitals.height * patient.patientdata.medicalInfo.vitals.height)}}</h3> -->
+        <!--<mat-progress-bar mode="determinate" value="40"></mat-progress-bar>-->
+        <!-- </div> -->
+        <!-- </ng-template> -->
+        <!-- </mat-expansion-panel> -->
+        <!-- <mat-expansion-panel> -->
+        <!-- <mat-expansion-panel-header> -->
+        <!-- Allergies ({{ patient.patientdata.medicalInfo.allergies.length}}) -->
+        <!-- </mat-expansion-panel-header> -->
+        <!-- <span *ngFor="let allergy of patient.patientdata.medicalInfo.allergies" -->
+        <!-- class="text-truncate">{{allergy.type}}=> {{allergy.detail}}</span> -->
+        <!-- </mat-expansion-panel> -->
 
-            <mat-expansion-panel>
-                <mat-expansion-panel-header>
-                    Conditions ({{patient.patientdata.medicalInfo.conditions.length}})
-                </mat-expansion-panel-header>
-                <span *ngFor="let condition of patient.patientdata.medicalInfo.conditions">{{condition.type}}
-                    =>{{condition.detail}}</span>
-            </mat-expansion-panel>
+        <!-- <mat-expansion-panel> -->
+        <!-- <mat-expansion-panel-header> -->
+        <!-- Conditions ({{patient.patientdata.medicalInfo.conditions.length}}) -->
+        <!-- </mat-expansion-panel-header> -->
+        <!-- <span *ngFor="let condition of patient.patientdata.medicalInfo.conditions">{{condition.type}} -->
+        <!-- =>{{condition.detail}}</span> -->
+        <!-- </mat-expansion-panel> -->
 
-        </mat-accordion>
+        <!-- </mat-accordion> -->
 
     </div>
 

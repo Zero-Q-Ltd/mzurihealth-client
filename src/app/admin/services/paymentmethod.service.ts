@@ -6,6 +6,8 @@ import { BehaviorSubject } from 'rxjs';
 
 // import * as paymentchannels from 'assets/paymentchannels.json';
 import { StitchService } from './stitch/stitch.service';
+import { Stream } from 'mongodb-stitch-core-sdk';
+import { ChangeEvent } from 'mongodb-stitch-core-services-mongodb-remote';
 
 @Injectable({
     providedIn: 'root'
@@ -14,6 +16,12 @@ export class PaymentmethodService {
     activehospital: Hospital;
     allpaymentchannels: BehaviorSubject<Array<PaymentChannel>> = new BehaviorSubject<Array<PaymentChannel>>([]);
     allinsurance: BehaviorSubject<{ [key: string]: Paymentmethods }> = new BehaviorSubject({});
+
+    /**
+     * This keeps a list of all the subscriptions TO THE DATABASE that have been made by this service
+     * It's to be maintined as a standard across all services
+     */
+    subscriptions: Map<string, Stream<ChangeEvent<any>>> = new Map();
 
     constructor(private hospitalservice: HospitalService,
         private stitch: StitchService) {

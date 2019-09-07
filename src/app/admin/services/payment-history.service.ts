@@ -1,10 +1,11 @@
-import {Injectable} from '@angular/core';
-import {BehaviorSubject} from 'rxjs';
-import {MergedPatientQueueModel} from '../../models/visit/MergedPatientQueueModel';
-import {HospitalService} from './hospital.service';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+import { MergedPatientQueueModel } from '../../models/visit/MergedPatientQueueModel';
+import { HospitalService } from './hospital.service';
 import * as moment from 'moment';
 
-import {BSON} from 'mongodb-stitch-browser-sdk';
+import { BSON, Stream } from 'mongodb-stitch-browser-sdk';
+import { ChangeEvent } from 'mongodb-stitch-core-services-mongodb-remote';
 
 @Injectable({
     providedIn: 'root'
@@ -12,6 +13,12 @@ import {BSON} from 'mongodb-stitch-browser-sdk';
 export class PaymentHistoryService {
     activehospitalid: BSON.ObjectId;
     paymentshistory: BehaviorSubject<Array<MergedPatientQueueModel>> = new BehaviorSubject([]);
+
+    /**
+     * This keeps a list of all the subscriptions TO THE DATABASE that have been made by this service
+     * It's to be maintined as a standard across all services
+     */
+    subscriptions: Map<string, Stream<ChangeEvent<any>>> = new Map();
 
     constructor(private hospitalservice: HospitalService) {
         this.hospitalservice.activehospital.subscribe(hospital => {
@@ -53,13 +60,13 @@ export class PaymentHistoryService {
 
     private timeframetodate(timeframe: 'day' | 'week' | 'month' | 'year'): Date {
         switch (timeframe) {
-            case 'day' :
+            case 'day':
                 return moment().startOf('day').toDate();
-            case 'week' :
+            case 'week':
                 return moment().startOf('week').toDate();
             case 'month':
                 return moment().startOf('month').toDate();
-            default :
+            default:
                 return moment().startOf('year').toDate();
         }
     }

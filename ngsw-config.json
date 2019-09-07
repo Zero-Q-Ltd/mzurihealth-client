@@ -5,7 +5,7 @@
     {
       "name": "api-performance",
       "urls": [
-        "https://stitch.mongodb.com/api/**"
+        "**/api/**"
       ],
       "cacheConfig": {
         "strategy": "freshness",

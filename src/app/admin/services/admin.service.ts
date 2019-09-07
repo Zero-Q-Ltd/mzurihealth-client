@@ -6,7 +6,8 @@ import { NotificationService } from '../../shared/services/notifications.service
 import { AdminCategory } from '../../models/user/AdminCategory';
 import { AdminInvite } from '../../models/user/AdminInvite';
 import { StitchService } from './stitch/stitch.service';
-import { BSON, StitchUser, } from 'mongodb-stitch-browser-sdk';
+import { BSON, StitchUser, Stream, } from 'mongodb-stitch-browser-sdk';
+import { ChangeEvent } from 'mongodb-stitch-core-services-mongodb-remote';
 
 @Injectable({
     providedIn: 'root'
@@ -25,10 +26,12 @@ export class AdminService {
     firstlogin = false;
     validuser: boolean;
     admincategories: BehaviorSubject<Array<AdminCategory>> = new BehaviorSubject<Array<AdminCategory>>([]);
+
     /**
-     * this keeps a local copy of all the subscriptions within this service
+     * This keeps a list of all the subscriptions TO THE DATABASE that have been made by this service
+     * It's to be maintined as a standard across all services
      */
-    subscriptions: Map<string, any> = new Map<string, any>();
+    subscriptions: Map<string, Stream<ChangeEvent<any>>> = new Map();
 
     constructor(private router: Router,
         private notificationservice: NotificationService,
@@ -180,7 +183,7 @@ export class AdminService {
 
     unsubscribeAll(): void {
         this.subscriptions.forEach(value => {
-            value();
+            value.close();
         });
     }
 }

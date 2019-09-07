@@ -2,6 +2,7 @@
 
 # compiled output
 /dist
+/stitch/hosting
 /tmp
 /out-tsc
 functions/dist

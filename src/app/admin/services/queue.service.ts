@@ -10,14 +10,15 @@ import { CurrentPatient, MergedPatientQueueModel } from '../../models/visit/Merg
 import { ProceduresService } from './procedures.service';
 import * as moment from 'moment';
 import { StitchService } from './stitch/stitch.service';
-import { skipWhile } from 'rxjs/operators';
-import { RemoteInsertOneResult } from 'mongodb-stitch-browser-sdk';
+import { skipWhile, distinctUntilKeyChanged, distinctUntilChanged } from 'rxjs/operators';
+import { RemoteInsertOneResult, Stream } from 'mongodb-stitch-browser-sdk';
 import { HospFile } from 'app/models/hospital/HospFile';
 import { emptyqueue, Queue } from 'app/models/hospital/Queue';
 import { PaymentChannel } from 'app/models/payment/PaymentChannel';
 import * as equal from 'deep-equal';
 import { Meta } from 'app/models/universal';
 import * as BSON from 'bson'
+import { ChangeEvent } from 'mongodb-stitch-core-services-mongodb-remote';
 
 @Injectable({
     providedIn: 'root'
@@ -36,26 +37,42 @@ export class QueueService {
     adminid: BSON.ObjectId;
     fetchingpatientdata: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
+
+    /**
+     * This keeps a list of all the subscriptions TO THE DATABASE that have been made by this service
+     * It's to be maintined as a standard across all services
+     */
+    subscriptions: Map<string, Stream<ChangeEvent<any>>> = new Map();
+
     constructor(private hospitalservice: HospitalService,
         private adminservice: AdminService,
         private patientservice: PatientService,
         private procedureservice: ProceduresService,
         private stitch: StitchService) {
-        this.hospitalservice.activehospital.subscribe(hospital => {
+
+        /**
+         * Only re-subscribe to hospital queue when the hospital id changes
+         * Maybe the admin has been moved to another hospital
+         */
+        this.hospitalservice.activehospital.pipe(distinctUntilChanged((prev, curr) => equal(prev._id, curr._id))).subscribe(hospital => {
             if (hospital._id) {
                 this.activehospitalid = hospital._id;
                 this.getqueue();
             }
         });
 
-        adminservice.observableuserdata.subscribe((admin: HospitalAdmin) => {
+        /**
+         * Only filter if the admin id has changed, ignore every other admin change
+         */
+        adminservice.observableuserdata.pipe(distinctUntilChanged((prev, curr) => equal(prev._id, curr._id))).subscribe((admin: HospitalAdmin) => {
             if (admin._id) {
                 this.adminid = admin._id;
                 this.fetchQueuedPatients();
             }
         });
 
-    }
+    } ls
+
 
     /**
      * From reception to rest of admins or admins to admins
@@ -95,6 +112,9 @@ export class QueueService {
      * patient data and queue info can be made
      */
     getqueue() {
+        if (this.subscriptions.get('queuewatcher')) {
+            this.subscriptions.get('queuewatcher').close();
+        }
         this.stitch.db.collection<Queue>('queues')
             .findOne({ hospitalId: this.activehospitalid })
             .then(async q => {
@@ -107,9 +127,9 @@ export class QueueService {
                     });
                 } else {
                     this.queue.next(q);
-                    const queuewatcher = await this.stitch.db.collection<Queue>('queues')
-                        .watch([q._id]);
-                    queuewatcher.onNext(k => {
+                    this.subscriptions.set('queuewatcher', await this.stitch.db.collection<Queue>('queues')
+                        .watch([q._id]))
+                    this.subscriptions.get('queuewatcher').onNext(k => {
                         /**
                          * keep a local copy of the queue
                          */

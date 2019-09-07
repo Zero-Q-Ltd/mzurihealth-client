@@ -11,23 +11,23 @@
     "disabled": false,
     "metadata_fields": [
         {
-            "required": false,
+            "required": true,
             "name": "name"
         },
         {
-            "required": false,
+            "required": true,
             "name": "first_name"
         },
         {
-            "required": false,
+            "required": true,
             "name": "last_name"
         },
         {
-            "required": false,
+            "required": true,
             "name": "picture"
         },
         {
-            "required": false,
+            "required": true,
             "name": "gender"
         },
         {
@@ -43,11 +43,12 @@
             "name": "max_age"
         },
         {
-            "required": false,
+            "required": true,
             "name": "email"
         }
     ],
     "redirect_uris": [
-        "http://localhost:4200/admin"
+        "http://localhost:4200/admin",
+        "https://stitch-uyxfz.mongodbstitch.com/admin"
     ]
 }

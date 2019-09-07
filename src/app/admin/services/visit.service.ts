@@ -1,14 +1,16 @@
-import {Injectable} from '@angular/core';
-import {QueueService} from './queue.service';
-import {HospitalService} from './hospital.service';
-import {emptypatientvisit, Visit} from '../../models/visit/Visit';
-import {BehaviorSubject} from 'rxjs';
-import {Procedureperformed} from '../../models/procedure/Procedureperformed';
-import {MergedProcedureModel} from '../../models/procedure/MergedProcedure.model';
-import {AdminService} from './admin.service';
+import { Injectable } from '@angular/core';
+import { QueueService } from './queue.service';
+import { HospitalService } from './hospital.service';
+import { emptypatientvisit, Visit } from '../../models/visit/Visit';
+import { BehaviorSubject } from 'rxjs';
+import { Procedureperformed } from '../../models/procedure/Procedureperformed';
+import { MergedProcedureModel } from '../../models/procedure/MergedProcedure.model';
+import { AdminService } from './admin.service';
 import * as moment from 'moment';
-import {Meta} from 'app/models/universal';
-import {Prescription} from 'app/models/visit/Prescription';
+import { Meta } from 'app/models/universal';
+import { Prescription } from 'app/models/visit/Prescription';
+import { Stream } from 'mongodb-stitch-core-sdk';
+import { ChangeEvent } from 'mongodb-stitch-core-services-mongodb-remote';
 
 @Injectable({
     providedIn: 'root'
@@ -17,12 +19,18 @@ export class VisitService {
     patientid: string;
     hospitalid: string;
     visithistory: BehaviorSubject<Array<Visit>> = new BehaviorSubject<Array<Visit>>([]);
-    currentvisit: BehaviorSubject<Visit> = new BehaviorSubject<Visit>({...emptypatientvisit});
+    currentvisit: BehaviorSubject<Visit> = new BehaviorSubject<Visit>({ ...emptypatientvisit });
     adminid: string;
 
+    /**
+     * This keeps a list of all the subscriptions TO THE DATABASE that have been made by this service
+     * It's to be maintined as a standard across all services
+     */
+    subscriptions: Map<string, Stream<ChangeEvent<any>>> = new Map();
+
     constructor(private queue: QueueService,
-                private adminservice: AdminService,
-                private hospitalService: HospitalService) {
+        private adminservice: AdminService,
+        private hospitalService: HospitalService) {
         /*** DANGEROUS TERRITORY ****
          * the order of calling these functions is very important,
          * because if hospitalId is missing some queries that execute later might fail

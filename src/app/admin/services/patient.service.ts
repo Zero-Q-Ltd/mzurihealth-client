@@ -9,10 +9,11 @@ import { emptyfile, HospFile } from '../../models/hospital/HospFile';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import 'rxjs/add/observable/empty';
 
-import { BSON } from 'mongodb-stitch-browser-sdk';
+import { BSON, Stream } from 'mongodb-stitch-browser-sdk';
 import { StitchService } from './stitch/stitch.service';
 import { NewPatientForm } from 'app/models/patient/NewPatientForm';
 import * as equal from 'deep-equal';
+import { ChangeEvent } from 'mongodb-stitch-core-services-mongodb-remote';
 @Injectable({
     providedIn: 'root'
 })
@@ -21,6 +22,12 @@ export class PatientService {
     activehospital: Hospital;
     userdata: HospitalAdmin;
     hospitalpatients: BehaviorSubject<Array<Patient>> = new BehaviorSubject([]);
+
+    /**
+     * This keeps a list of all the subscriptions TO THE DATABASE that have been made by this service
+     * It's to be maintined as a standard across all services
+     */
+    subscriptions: Map<string, Stream<ChangeEvent<any>>> = new Map();
 
     constructor(
         private hospitalservice: HospitalService,
@@ -177,7 +184,18 @@ export class PatientService {
          * Update the patient count in that hospital
          */
         const k = this.stitch.db.collection('hospitals')
-            .updateOne({ _id: this.activehospital._id }, { $inc: { patientCount: 1 } }, { upsert: true });
+            .updateOne(
+                {
+                    _id: this.activehospital._id
+                },
+                {
+                    $inc: {
+                        patientCount: 1
+                    }
+                },
+                {
+                    upsert: true
+                });
 
         return Promise.all([i, j, k]);
 
@@ -190,14 +208,25 @@ export class PatientService {
      * */
     getHospitalPatients(): void {
         const patientdata = this.stitch.db.collection<Patient>('patients')
-            .find({
-                'metadata.created.hospitalId': this.activehospital._id,
-            }, { limit: 25 })
+            .find(
+                {
+                    'metadata.created.hospitalId': this.activehospital._id,
+                },
+                {
+                    limit: 25
+                })
             .asArray();
         const patientfiles = this.stitch.db.collection<HospFile>('patientfiles')
-            .find({
-                'metadata.created.hospitalId': this.activehospital._id,
-            }, { limit: 25, sort: { 'metadata.created.date': 1 } })
+            .find(
+                {
+                    'metadata.created.hospitalId': this.activehospital._id,
+                },
+                {
+                    limit: 25,
+                    sort: {
+                        'metadata.created.date': 1
+                    }
+                })
             .asArray();
 
         combineLatest<Array<Patient>>([patientfiles, patientdata], (f: Array<HospFile>, p: Array<Patient>) => {
@@ -399,5 +428,9 @@ export class PatientService {
 
     }
 
-
+    unsubscribeAll(): void {
+        this.subscriptions.forEach(value => {
+            value.close();
+        });
+    }
 }

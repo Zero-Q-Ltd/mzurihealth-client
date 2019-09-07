@@ -1,29 +1,10 @@
-<mat-table #table
-           [dataSource]="patientsdatasource"
-           class="patients-table"
-           fusePerfectScrollbar
-           matSort>
+<mat-table #table [dataSource]="patientsdatasource" class="patients-table" fusePerfectScrollbar matSort>
 
     <!-- fileNo Column -->
     <ng-container matColumnDef="FileNo">
         <mat-header-cell *matHeaderCellDef mat-sort-header>FileNo</mat-header-cell>
         <mat-cell *matCellDef="let patient">
-            <p class="text-truncate">{{patient.patientdata.fileinfo?.no}}</p>
-        </mat-cell>
-    </ng-container>
-
-    <!-- Image Column -->
-    <ng-container matColumnDef="Photo">
-        <mat-header-cell *matHeaderCellDef></mat-header-cell>
-        <mat-cell *matCellDef="let patient">
-            <img *ngIf="patient.patientdata.personalinfo.gender == 1"
-                 [src]="patient.patientdata.personalinfo.photoURL || 'assets/images/avatars/male.png'"
-                 alt=""
-                 class="avatar">
-            <img *ngIf="patient.patientdata.personalinfo.gender == 0"
-                 [src]="patient.patientdata.personalinfo.photoURL || 'assets/images/avatars/female.png'"
-                 alt=""
-                 class="avatar">
+            <p class="text-truncate">{{patient.patientdata.fileInfo.no}}</p>
         </mat-cell>
     </ng-container>
 
@@ -31,7 +12,7 @@
     <ng-container matColumnDef="Name">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
         <mat-cell *matCellDef="let patient">
-            <p class="text-truncate">{{patient.patientdata.personalinfo.name}}</p>
+            <p class="text-truncate">{{patient.patientdata.personalInfo.name}}</p>
         </mat-cell>
     </ng-container>
 
@@ -42,20 +23,16 @@
         </mat-header-cell>
         <mat-cell *matCellDef="let patient">
             <p class="price text-truncate">
-                {{patient.patientdata.personalinfo.dob | age}}
+                {{patient.patientdata.personalInfo.dob | age}}
             </p>
         </mat-cell>
     </ng-container>
 
-
-    <!-- Price Column -->
-    <ng-container matColumnDef="ID">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>ID Number
-        </mat-header-cell>
+    <!-- Name Column -->
+    <ng-container matColumnDef="Last Visit">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Last Visit</mat-header-cell>
         <mat-cell *matCellDef="let patient">
-            <p class="price text-truncate">
-                {{patient.patientdata.personalinfo.idno}}
-            </p>
+            <p class="text-truncate">{{patient.patientdata.fileInfo.lastVisit |date}}</p>
         </mat-cell>
     </ng-container>
 
@@ -66,17 +43,7 @@
         </mat-header-cell>
         <mat-cell *matCellDef="let patient">
             <p class="price text-truncate">
-                {{patient.patientdata.personalinfo.phone}}
-            </p>
-        </mat-cell>
-    </ng-container>
-
-    <ng-container matColumnDef="Last Visit">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Last Visit
-        </mat-header-cell>
-        <mat-cell *matCellDef="let patient">
-            <p class="price text-truncate">
-                {{patient.patientdata.fileinfo?.lastvisit.toDate().toDateString()}}
+                {{patient.patientdata.personalInfo.phone}}
             </p>
         </mat-cell>
     </ng-container>
@@ -116,16 +83,12 @@
 
     <mat-header-row *matHeaderRowDef="patientsheaders; sticky:true"></mat-header-row>
 
-    <mat-row (click)="viewinvoice(patient)"
-             *matRowDef="let patient; columns: patientsheaders;" class="product"
-             matRipple>
+    <mat-row (click)="viewinvoice(patient)" *matRowDef="let patient; columns: patientsheaders;" class="product"
+        matRipple>
     </mat-row>
 
 </mat-table>
 
-<mat-paginator #paginator
-               [length]="patientsdatasource.data.length"
-               [pageIndex]="0"
-               [pageSizeOptions]="[5, 10, 25, 100]"
-               [pageSize]="10">
+<mat-paginator #paginator [length]="patientsdatasource.data.length" [pageIndex]="0" [pageSizeOptions]="[5, 10, 25, 100]"
+    [pageSize]="10">
 </mat-paginator>

@@ -18,15 +18,15 @@ import { InvoiceComponent } from '../../invoice/invoice.component';
 })
 export class MineComponent implements OnInit {
     patientsdatasource = new MatTableDataSource<MergedPatientQueueModel>();
-    patientsheaders = ['FileNo', 'Photo', 'Name', 'ID', 'Age', 'Phone', 'Last Visit', 'Status', 'Action'];
+    patientsheaders = ['FileNo', 'Name', 'Age', 'Phone', 'Last Visit', 'Status', 'Action'];
     dialogRef: MatDialogRef<any>;
     confirmDialogRef: MatDialogRef<FuseConfirmDialogComponent>;
 
     constructor(private queue: QueueService,
         public _matDialog: MatDialog) {
         queue.mypatientqueue.subscribe(value => {
-            this.patientsdatasource.data = value.entries()[1].sort((a, b) => {
-                return a.queuedata.metadata.lastEdit.getMilliseconds() - b.queuedata.metadata.lastEdit.getMilliseconds();
+            this.patientsdatasource.data = (Array.from(value.values()) || []).sort((a, b) => {
+                return a.queuedata.metadata.edited.date.getMilliseconds() - b.queuedata.metadata.edited.date.getMilliseconds();
             });
         });
     }

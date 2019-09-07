@@ -1,5 +1,6 @@
-import {BSON} from 'mongodb-stitch-browser-sdk';
-import {Checkin} from '../visit/Visit';
+import { BSON } from 'mongodb-stitch-browser-sdk';
+import { Checkin } from '../visit/Visit';
+import { Metadata } from '../universal';
 
 /**
  * This is kept in an independent collection and keeps a reference to the hospital whole queue
@@ -25,6 +26,7 @@ export interface QueueRef {
     fileId: BSON.ObjectId;
     patientId: BSON.ObjectId;
     visitId: BSON.ObjectId;
+    metadata: Metadata;
 }
 
 export const emptyqueue: Queue = {

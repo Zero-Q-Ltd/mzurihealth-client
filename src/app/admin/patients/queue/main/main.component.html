@@ -23,13 +23,20 @@
     </ng-container>
 
     <!-- Name Column -->
+    <ng-container matColumnDef="Last Visit">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Last Visit</mat-header-cell>
+        <mat-cell *matCellDef="let patient">
+            <p class="text-truncate">{{patient.patientdata.fileInfo.lastVisit | date}}</p>
+        </mat-cell>
+    </ng-container>
+
+    <!-- Name Column -->
     <ng-container matColumnDef="Name">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
         <mat-cell *matCellDef="let patient">
             <p class="text-truncate">{{patient.patientdata.personalInfo.name}}</p>
         </mat-cell>
     </ng-container>
-
 
     <!-- Price Column -->
     <ng-container matColumnDef="Age">

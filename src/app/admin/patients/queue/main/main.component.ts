@@ -18,7 +18,7 @@ import { InvoiceCustomizationComponent } from '../../invoice-customization/invoi
 })
 export class MainComponent implements OnInit, AfterViewInit {
     patientsdatasource = new MatTableDataSource<MergedPatientQueueModel>();
-    patientsheaders = ['FileNo', 'Photo', 'Name', 'ID', 'Age', 'Phone', 'Status', 'Action'];
+    patientsheaders = ['FileNo', 'Name', 'Age', 'Phone', 'Last Visit', 'Status', 'Action'];
     dialogRef: MatDialogRef<any>;
     confirmDialogRef: MatDialogRef<FuseConfirmDialogComponent>;
     hospitaladmins: Array<HospitalAdmin>;
@@ -31,7 +31,6 @@ export class MainComponent implements OnInit, AfterViewInit {
         private hospitalservice: HospitalService,
         public _matDialog: MatDialog) {
         queue.mainpatientsqueue.subscribe(value => {
-            console.log()
             this.patientsdatasource.data = Array.from(value.values()) || [];
         });
         hospitalservice.hospitaladmins.subscribe(admins => {

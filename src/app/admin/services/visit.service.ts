@@ -11,6 +11,7 @@ import { Meta } from 'app/models/universal';
 import { Prescription } from 'app/models/visit/Prescription';
 import { Stream } from 'mongodb-stitch-core-sdk';
 import { ChangeEvent } from 'mongodb-stitch-core-services-mongodb-remote';
+import { StitchService } from './stitch/stitch.service';
 
 @Injectable({
     providedIn: 'root'
@@ -28,9 +29,10 @@ export class VisitService {
      */
     subscriptions: Map<string, Stream<ChangeEvent<any>>> = new Map();
 
-    constructor(private queue: QueueService,
+    constructor(
         private adminservice: AdminService,
-        private hospitalService: HospitalService) {
+        private hospitalService: HospitalService,
+        private stitch: StitchService) {
         /*** DANGEROUS TERRITORY ****
          * the order of calling these functions is very important,
          * because if hospitalId is missing some queries that execute later might fail
@@ -41,12 +43,12 @@ export class VisitService {
         hospitalService.activehospital.subscribe(value => {
             this.hospitalid = value._id;
         });
-        queue.currentpatient.subscribe(value => {
-            if (value.patientdata._id) {
-                this.patientid = value.patientdata._id;
-                this.fetchvisithistory();
-            }
-        });
+        // this.queue.currentpatient.subscribe(value => {
+        //     if (value.patientdata._id) {
+        //         this.patientid = value.patientdata._id;
+        //         this.fetchvisithistory();
+        //     }
+        // });
 
     }
 
@@ -118,6 +120,11 @@ export class VisitService {
         //             return visit;
         //         }));
         //     });
+    }
+
+    addVisit(visit: Visit) {
+        this.stitch.db.collection('visits')
+            .insertOne(visit)
     }
 
     editpatientvisit(visit: Visit) {

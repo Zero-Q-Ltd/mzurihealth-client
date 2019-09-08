@@ -2,16 +2,17 @@ import { Injectable } from '@angular/core';
 import { QueueService } from './queue.service';
 import { HospitalService } from './hospital.service';
 import { emptypatientvisit, Visit } from '../../models/visit/Visit';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription, Subject } from 'rxjs';
 import { Procedureperformed } from '../../models/procedure/Procedureperformed';
 import { MergedProcedureModel } from '../../models/procedure/MergedProcedure.model';
 import { AdminService } from './admin.service';
 import * as moment from 'moment';
 import { Meta } from 'app/models/universal';
 import { Prescription } from 'app/models/visit/Prescription';
-import { Stream } from 'mongodb-stitch-core-sdk';
+import { Stream, BSON } from 'mongodb-stitch-core-sdk';
 import { ChangeEvent } from 'mongodb-stitch-core-services-mongodb-remote';
 import { StitchService } from './stitch/stitch.service';
+import { Patient } from 'app/models/patient/Patient';
 
 @Injectable({
     providedIn: 'root'
@@ -24,10 +25,15 @@ export class VisitService {
     adminid: string;
 
     /**
-     * This keeps a list of all the subscriptions TO THE DATABASE that have been made by this service
+     * This keeps a list of all the DATABASE SUBSCRIPTIONS that have been made by this service
      * It's to be maintined as a standard across all services
      */
-    subscriptions: Map<string, Stream<ChangeEvent<any>>> = new Map();
+    dbSubscriptions: Map<string | BSON.ObjectId, Stream<ChangeEvent<any>>> = new Map();
+    /**
+     * This keeps a copy of all the internal subscriptions to INTERNAL OBSERVABLES
+     * It's to be maintined as a standard across all services
+     */
+    internalSubscriptions: Map<string, Subscription> = new Map();
 
     constructor(
         private adminservice: AdminService,
@@ -87,7 +93,26 @@ export class VisitService {
         return true as any;
 
     }
+    async watchId(id: BSON.ObjectId): Promise<Subject<Visit>> {
+        const query = {
+            _id: id
+        };
+        const response: Subject<Visit> = new Subject();
+        this.dbSubscriptions.set(id, await this.stitch.db.collection<Visit>('visits').watch(query));
+        this.stitch.db.collection<Visit>('visits').findOne(query)
+            .then(async value => {
+                response.next(value);
+            })
+            .catch(e => response.error(e));
 
+        this.dbSubscriptions.get(id).onNext(data => {
+            response.next(data.fullDocument);
+        });
+        this.dbSubscriptions.get(id).onError(e => {
+            response.error(e);
+        });
+        return response;
+    }
     /**
      * @param visitid
      * @param procedure

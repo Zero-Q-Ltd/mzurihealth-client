@@ -6,7 +6,7 @@ import { HospitalService } from './hospital.service';
 import { AdminService } from './admin.service';
 import * as moment from 'moment';
 import { emptyfile, HospFile } from '../../models/hospital/HospFile';
-import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, Subscription, ReplaySubject, Subject } from 'rxjs';
 import 'rxjs/add/observable/empty';
 
 import { BSON, Stream } from 'mongodb-stitch-browser-sdk';
@@ -23,11 +23,18 @@ export class PatientService {
     userdata: HospitalAdmin;
     hospitalpatients: BehaviorSubject<Array<Patient>> = new BehaviorSubject([]);
 
+
+
     /**
-     * This keeps a list of all the subscriptions TO THE DATABASE that have been made by this service
+     * This keeps a list of all the DATABASE SUBSCRIPTIONS that have been made by this service
      * It's to be maintined as a standard across all services
      */
-    subscriptions: Map<string, Stream<ChangeEvent<any>>> = new Map();
+    dbSubscriptions: Map<string | BSON.ObjectId, Stream<ChangeEvent<any>>> = new Map();
+    /**
+     * This keeps a copy of all the internal subscriptions to INTERNAL OBSERVABLES
+     * It's to be maintined as a standard across all services
+     */
+    internalSubscriptions: Map<string, Subscription> = new Map();
 
     constructor(
         private hospitalservice: HospitalService,
@@ -60,10 +67,32 @@ export class PatientService {
             .findOne({ _id: patientid });
 
         const pt = combineLatest([patientfile, patientwatcher], (file, patient) => {
-            return Object.assign(emptypatient, patient, { fileInfo: file }) as Patient;
+            return Object.assign({}, { ...emptypatient }, patient, { fileInfo: file }) as Patient;
         });
 
         return pt.toPromise();
+    }
+
+    async watchId(id: BSON.ObjectId): Promise<Subject<Patient>> {
+        const query = {
+            _id: id
+        };
+        const response: Subject<Patient> = new Subject();
+        this.dbSubscriptions.set(id, await this.stitch.db.collection<Patient>('patients').watch(query));
+        this.stitch.db.collection<Patient>('patients').findOne(query)
+            .then(async value => {
+                response.next(value);
+            })
+            .catch(e => response.error(e));
+
+        this.dbSubscriptions.get(id).onNext(data => {
+            response.next(data.fullDocument);
+        });
+        this.dbSubscriptions.get(id).onError(e => {
+            response.error(e);
+        });
+        return response;
+
     }
 
     deletepatient(patientid: string): Promise<void> {
@@ -162,7 +191,7 @@ export class PatientService {
             patientId: patientID,
         };
 
-        const hospitalFileNumber = Object.assign({}, emptyfile, hospitalFileNumberTemp);
+        const hospitalFileNumber = Object.assign({}, { ...emptyfile }, hospitalFileNumberTemp);
 
         /**
          * create a file number associated with that hospital only
@@ -312,7 +341,7 @@ export class PatientService {
     }
 
     unsubscribeAll(): void {
-        this.subscriptions.forEach(value => {
+        this.dbSubscriptions.forEach(value => {
             value.close();
         });
     }

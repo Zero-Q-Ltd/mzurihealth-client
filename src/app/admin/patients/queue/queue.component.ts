@@ -42,7 +42,7 @@ export class QueueComponent implements OnInit {
             this.myQueue = mine.size;
         });
         this.queueservice.currentpatient.subscribe(current => {
-            if (!current) {
+            if (!current || !current.patientdata) {
                 return;
             }
             this.currentpatient = !current.patientdata._id;

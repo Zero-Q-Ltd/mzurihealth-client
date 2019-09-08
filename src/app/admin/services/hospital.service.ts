@@ -59,7 +59,7 @@ export class HospitalService {
                  * from a previous version
                  */
                 this.invitedadmins.next(invitesdata.map(inviteedata => {
-                    return Object.assign(emptyadmininvite, inviteedata);
+                    return Object.assign({}, { ...emptyadmininvite }, inviteedata);
                 }));
             });
     }
@@ -84,13 +84,13 @@ export class HospitalService {
         }
         this.stitch.db.collection<Hospital>('hospitals').findOne({ _id: this.userdata.config.hospitalId })
             .then(async value => {
-                this.activehospital.next(Object.assign(emptyhospital, value));
+                this.activehospital.next(Object.assign({}, { ...emptyhospital }, value));
                 /**
                  * ensnure that there's only one source of truth
                  */
                 this.subscriptions.set('hospitaldetails', await this.stitch.db.collection<Hospital>('hospitals').watch([this.userdata.config.hospitalId]))
                 this.subscriptions.get('hospitaldetails').onNext(data => {
-                    this.activehospital.next(Object.assign(emptyhospital, data.fullDocument));
+                    this.activehospital.next(Object.assign({}, { ...emptyhospital }, data.fullDocument));
                 });
             });
     }

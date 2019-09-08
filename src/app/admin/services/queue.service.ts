@@ -2,7 +2,7 @@ import { emptypatient, Patient } from './../../models/patient/Patient';
 import { Injectable } from '@angular/core';
 import { HospitalService } from './hospital.service';
 import { AdminService } from './admin.service';
-import { BehaviorSubject, combineLatest, Observable, Subscription, of, } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, Subscription, of, Subject, } from 'rxjs';
 import { HospitalAdmin } from '../../models/user/HospitalAdmin';
 import { PatientService } from './patient.service';
 import { Visit, NewVisit } from '../../models/visit/Visit';
@@ -19,6 +19,7 @@ import * as BSON from 'bson';
 import { ChangeEvent } from 'mongodb-stitch-core-services-mongodb-remote';
 import { VisitService } from './visit.service';
 import { MedicalInfo } from 'app/models/patient/MedicalInfo';
+import { MedicalinfoService } from './medicalinfo.service';
 
 @Injectable({
     providedIn: 'root'
@@ -43,7 +44,7 @@ export class QueueService {
      * This keeps a list of all the DATABASE SUBSCRIPTIONS that have been made by this service
      * It's to be maintined as a standard across all services
      */
-    dbSubscriptions: Map<string, Stream<ChangeEvent<any>>> = new Map();
+    dbSubscriptions: Map<string | BSON.ObjectId, Stream<ChangeEvent<any>>> = new Map();
     /**
      * This keeps a copy of all the internal subscriptions to INTERNAL OBSERVABLES
      * It's to be maintined as a standard across all services
@@ -54,6 +55,7 @@ export class QueueService {
         private adminservice: AdminService,
         private patientservice: PatientService,
         private visitService: VisitService,
+        private medInfoService: MedicalinfoService,
         private stitch: StitchService) {
 
         /**
@@ -83,7 +85,10 @@ export class QueueService {
                 });
             }
         });
-        this.currentpatient.pipe(distinctUntilChanged((x, y) => equal(x.queuedata.patientId, y.queuedata.patientId))).subscribe(() => {
+        this.currentpatient.subscribe((t) => {
+            if (!t) {
+                return;
+            }
             this.fetchCurrentpatient();
         });
     }
@@ -189,7 +194,7 @@ export class QueueService {
                      * The three dots below might cause you sleepless nights
                      * Be veeeery careful when refactoring any of this code
                      */
-                    patientdata: Object.assign({}, emptypatient, p, { fileInfo: f }),
+                    patientdata: Object.assign({}, { ...emptypatient }, p, { fileInfo: f }),
                     queuedata: qq
                 };
                 return data;
@@ -206,24 +211,31 @@ export class QueueService {
 
                 if (equality) {
                     mypatientsmap.set(q.patientdata._id, q);
-                }
-                if (equality && q.queuedata.checkin.status === 2) {
                     /**
-                     * There's only one source of truth for the queue data
-                     * It is obvious that when the current patient changes there must be a refetch of the currentpatient info
-                     * for the rest of the objects
-                     * make sure that this only happens when the patientID changes
-                     * It is safe to make the rest of the objects null since this is the first point of interaction
-                     * This MUST work hand in hand with the variable that checks whether fetchingCurrentpatientdata is complete
-                     */
-                    this.fetchingCurrentpatientdata.next(true);
-                    this.currentpatient.next({
-                        medicalInfo: null,
-                        patientdata: null,
-                        queuedata: q.queuedata,
-                        visitdata: null
-                    });
+                       * There's only one source of truth for the queue data
+                       * It is obvious that when the current patient changes there must be a refetch of the currentpatient info
+                       * for the rest of the objects
+                       * make sure that this only happens when the patientID changes
+                       * It is safe to make the rest of the objects null since this is the first point of interaction
+                       * This MUST work hand in hand with the variable that checks whether fetchingCurrentpatientdata is complete
+                       */
+                    if (q.queuedata.checkin.status === 2) {
+                        console.log('Current Patient Found')
+                        this.fetchingCurrentpatientdata.next(true);
+                        this.currentpatient.next({
+                            medicalInfo: null,
+                            patientdata: null,
+                            queuedata: q.queuedata,
+                            visitdata: null
+                        });
+                    } else {
+                        /**
+                         * possibly remove the patient from current patient in case they left that stage from this Doc
+                         *  
+                         */
+                    }
                 }
+
             });
             this.mainpatientsqueue.next(patientmap);
             this.mypatientqueue.next(mypatientsmap);
@@ -232,63 +244,32 @@ export class QueueService {
     }
 
     async fetchCurrentpatient() {
+        console.log('Fetching Current Patient Data')
 
-        /**
-         * unsubscribe from previous subsriptions in case 
-         */
-        if (this.dbSubscriptions.get('livePatient')) {
-            this.dbSubscriptions.get('livePatient').close();
-        }
-        if (this.dbSubscriptions.get('liveVisitdata')) {
-            this.dbSubscriptions.get('liveVisitdata').close();
-        }
-        if (this.dbSubscriptions.get('liveMedicalInfo')) {
-            this.dbSubscriptions.get('liveMedicalInfo').close();
-        }
-        this.dbSubscriptions.set('livePatient', await this.stitch.db.collection<Patient>('patients')
-            .watch({
-                _id: this.currentpatient.value.queuedata.patientId
-            }));
 
-        this.dbSubscriptions.set('liveVisitdata', await this.stitch.db.collection<Visit>('visits ')
-            .watch({
-                _id: this.currentpatient.value.queuedata.visitId
-            }));
-        /**
-         * @TODO Medical info changes with thime
-         * Figure out a way of fetching only the most recent object
-         */
-        this.dbSubscriptions.set('liveMedicalInfo', await this.stitch.db.collection<MedicalInfo>('patientfiles').watch({
-            _id: this.currentpatient.value.queuedata.patientId
-        }));
+        const liveMedicalInfoobs: Subject<MedicalInfo> = await this.medInfoService.watchLatest(this.currentpatient.value.queuedata.patientId);
+        const liveVisitdataObs: Subject<Visit> = await this.visitService.watchId(this.currentpatient.value.queuedata.visitId);
+        const livePatientObs: Subject<Patient> = await this.patientservice.watchId(this.currentpatient.value.queuedata.patientId);
 
-        /**
-         * @TODO Look for another alternative for achieving the same behaviour
-         */
-        const livePatientObs: Observable<Patient> = new Observable(obs => {
-            this.dbSubscriptions.get('livePatient').onNext(data => {
-                obs.next(data.fullDocument);
-            });
-        });
-        const liveVisitdataObs: Observable<Visit> = new Observable(obs => {
-            this.dbSubscriptions.get('liveVisitdata').onNext(data => {
-                obs.next(data.fullDocument);
-            });
-        });
-        const liveMedicalInfoobs: Observable<MedicalInfo> = new Observable(obs => {
-            this.dbSubscriptions.get('liveMedicalInfo').onNext(data => {
-                obs.next(data.fullDocument);
-            });
-        });
+        livePatientObs.subscribe(res => {
+            console.log(res)
+        })
+        liveVisitdataObs.subscribe(res => {
+            console.log(res)
+        })
+        liveMedicalInfoobs.subscribe(res => {
+            console.log(res)
+        })
         return combineLatest([livePatientObs, liveVisitdataObs, liveMedicalInfoobs]).subscribe((data) => {
-            this.fetchingCurrentpatientdata.next(false)
+            console.log('Current Patient data fetched');
+            this.fetchingCurrentpatientdata.next(false);
 
             this.currentpatient.next({
                 medicalInfo: data[2],
                 patientdata: data[0],
                 queuedata: this.currentpatient.value.queuedata,
                 visitdata: data[1]
-            })
+            });
         })
     }
 
@@ -380,7 +361,7 @@ export class QueueService {
             /**
              * make sure to assign the correct hospitalID
              */
-            .insertOne(Object.assign(emptyqueue, { hospitalId: this.activehospitalid }));
+            .insertOne(Object.assign({}, { ...emptyqueue }, { hospitalId: this.activehospitalid }));
     }
 
 } 

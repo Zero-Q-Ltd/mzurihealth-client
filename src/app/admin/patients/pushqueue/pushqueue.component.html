@@ -9,13 +9,13 @@
 
         <mat-toolbar-row class="toolbar-bottom py-16" fxLayout="column" fxLayoutAlign="center center">
             <p>
-                <img *ngIf="patient.personalInfo.gender == 1" [src]="patient.personalInfo.photoURL || 'assets/images/avatars/male.png'"
-                     alt="male avatar"
-                     class="avatar contact-avatar huge m-0"/>
+                <img *ngIf="patient.personalInfo.gender == 1"
+                    [src]="patient.personalInfo.photoURL || 'assets/images/avatars/male.png'" alt="male avatar"
+                    class="avatar contact-avatar huge m-0" />
 
-                <img *ngIf="patient.personalInfo.gender == 0" [src]="patient.personalInfo.photoURL || 'assets/images/avatars/female.png'"
-                     alt="female avatar"
-                     class="avatar contact-avatar huge m-0"/>
+                <img *ngIf="patient.personalInfo.gender == 0"
+                    [src]="patient.personalInfo.photoURL || 'assets/images/avatars/female.png'" alt="female avatar"
+                    class="avatar contact-avatar huge m-0" />
             </p>
             <div class="contact-name mt-8">{{patient.personalInfo.name}}</div>
         </mat-toolbar-row>
@@ -40,7 +40,7 @@
 
                     <mat-form-field appearance="outline" fxFlex>
                         <mat-label>Payment type</mat-label>
-                        <mat-select formControlName="type" required>
+                        <mat-select formControlName="payment" required>
                             <mat-option *ngFor="let option of paymentMethods" [value]="option">
                                 {{option.name}}
                             </mat-option>
@@ -52,18 +52,18 @@
             </div>
 
             <div *ngFor="let item of queueForm.get('insurance')['controls']; let i = index;" formArrayName="insurance"
-                 fxLayout="row" fxLayoutAlign="start start">
+                fxLayout="row" fxLayoutAlign="start start">
 
                 <div [formGroupName]="i" fxFlex="1 0 auto" fxLayout="row" fxLayoutAlign="start center">
                     <div fxFlex="5">
-                        <mat-checkbox (change)="setSelectedInsurance($event.checked, item, i)"
-                                      [checked]="selected === i"></mat-checkbox>
+                        <mat-checkbox (change)="setSelectedInsurance(i)" [checked]="selectedInsuranceId === i">
+                        </mat-checkbox>
                     </div>
                     <mat-form-field appearance="outline" class="mr-12" fxFlex="40">
                         <mat-label>Insurance name</mat-label>
-                        <mat-select formControlName="insuranceControl" required>
+                        <mat-select formControlName="id" required>
                             <mat-option *ngFor="let option of allInsurance | keyvalue" [value]="option?.key "
-                                        class="text-truncate">
+                                class="text-truncate">
                                 {{option.value.name |titlecase}}
                             </mat-option>
                         </mat-select>
@@ -72,24 +72,23 @@
 
                     <mat-form-field appearance="outline" fxFlex="40">
                         <mat-label>Insurance number</mat-label>
-                        <input autocomplete="off" formControlName="insurancenumber" matInput required>
+                        <input autocomplete="off" formControlName="insuranceNo" matInput required>
                         <mat-icon class="secondary-text" matSuffix>confirmation_number</mat-icon>
 
                         <mat-error>Insurance number is required</mat-error>
                     </mat-form-field>
 
                     <span fxFlex="10">
-                         <button (click)="removeInsurance(i)" class="mb-20 ml-8" color="warn" mat-mini-fab
-                                 type="button">
-                                    <mat-icon *ngIf="i !== 0">clear</mat-icon>
-                                    <mat-icon *ngIf="i === 0">delete</mat-icon>
-                         </button>
+                        <button (click)="removeInsurance(i)" class="mb-20 ml-8" color="warn" mat-mini-fab type="button">
+                            <mat-icon *ngIf="i !== 0">clear</mat-icon>
+                            <mat-icon *ngIf="i === 0">delete</mat-icon>
+                        </button>
                     </span>
                 </div>
             </div>
 
 
-            <div *ngIf="insuranceSet" fxLayout="row" fxLayoutAlign="start start">
+            <div *ngIf="insuranceSelected" fxLayout="row" fxLayoutAlign="start start">
 
                 <div fxFlex="100" fxLayout="row" fxLayoutAlign="start start">
                     <button (click)="addInsurance()" color="basic" mat-mini-fab type="button">
@@ -107,11 +106,7 @@
     <div class="m-0 p-16" fxLayout="row" fxLayoutAlign="end center" mat-dialog-actions>
 
 
-        <button (click)="submitForm()"
-                [disabled]="queueForm.invalid"
-                aria-label="SAVE"
-                class="save-button"
-                mat-button>
+        <button (click)="submitForm()" [disabled]="queueForm.invalid" aria-label="SAVE" class="save-button" mat-button>
             SAVE
         </button>
 

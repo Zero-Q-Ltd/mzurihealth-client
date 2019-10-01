@@ -183,13 +183,13 @@
 
 
                         <ng-container matColumnDef="name">
-                            <th mat-header-cell *matHeaderCellDef> Procedure</th>
-                            <td mat-cell *matCellDef="let procedure"> {{procedure.name}} </td>
+                            <th *matHeaderCellDef mat-header-cell> Procedure</th>
+                            <td *matCellDef="let procedure" mat-cell> {{procedure.name}} </td>
                         </ng-container>
 
                         <ng-container matColumnDef="practitioner">
-                            <th mat-header-cell *matHeaderCellDef> Practitioner</th>
-                            <td mat-cell *matCellDef="let procedure">
+                            <th *matHeaderCellDef mat-header-cell> Practitioner</th>
+                            <td *matCellDef="let procedure" mat-cell>
                                 {{hospitaladmins| adminName : procedure.adminid }}
                                 : {{procedure.metadata.lastedit?.toDate().toDateString()}}
                             </td>
@@ -197,13 +197,13 @@
 
                         <ng-container matColumnDef="results">
                             <th *matHeaderCellDef mat-header-cell> Results</th>
-                            <td mat-cell *matCellDef="let procedure">
+                            <td *matCellDef="let procedure" mat-cell>
                                 {{procedure.results}}
                             </td>
                         </ng-container>
 
                         <ng-container matColumnDef="notes">
-                            <th mat-header-cell *matHeaderCellDef> Notes</th>
+                            <th *matHeaderCellDef mat-header-cell> Notes</th>
                             <td *matCellDef="let procedure; let i = index" mat-cell>
                                 <mat-chip-list>
                                     <mat-chip color="primary" selected>{{procedure.notes.length}}</mat-chip>
@@ -211,16 +211,16 @@
                             </td>
                         </ng-container>
                         <ng-container matColumnDef="action">
-                            <th mat-header-cell *matHeaderCellDef> Action</th>
-                            <td mat-cell *matCellDef="let procedure; let i = index">
-                                <button mat-raised-button color="warn" (click)="deleteprocedure($event,i)">DELETE
+                            <th *matHeaderCellDef mat-header-cell> Action</th>
+                            <td *matCellDef="let procedure; let i = index" mat-cell>
+                                <button (click)="deleteprocedure($event,i)" color="warn" mat-raised-button>DELETE
                                 </button>
                             </td>
                         </ng-container>
 
-                        <tr mat-header-row *matHeaderRowDef="procedurecolumns"></tr>
-                        <tr mat-row *matRowDef="let row; columns: procedurecolumns; let i = index "
-                            (click)="viewnotes(i)"></tr>
+                        <tr *matHeaderRowDef="procedurecolumns" mat-header-row></tr>
+                        <tr (click)="viewnotes(i)" *matRowDef="let row; columns: procedurecolumns; let i = index "
+                            mat-row></tr>
                     </table>
                 </div>
                 <div class="row">

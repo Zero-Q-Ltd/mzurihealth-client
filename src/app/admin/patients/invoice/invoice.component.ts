@@ -2,7 +2,7 @@ import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {Subject} from 'rxjs';
 import {HospitalService} from '../../services/hospital.service';
 import {Hospital} from '../../../models/hospital/Hospital';
-import {PatientvisitService} from '../../services/patientvisit.service';
+import {VisitService} from '../../services/visit.service';
 import {emptymergedQueueModel, MergedPatientQueueModel} from '../../../models/visit/MergedPatientQueueModel';
 import {QueueService} from '../../services/queue.service';
 import {MAT_DIALOG_DATA} from '@angular/material';
@@ -24,7 +24,7 @@ export class InvoiceComponent implements OnInit, OnDestroy {
     constructor(private hospitalservice: HospitalService,
                 private queue: QueueService,
                 private paymentmethodService: PaymentmethodService,
-                private patientvisit: PatientvisitService,
+                private patientvisit: VisitService,
                 @Inject(MAT_DIALOG_DATA) public patientid: string) {
         // Set the private defaults
         this._unsubscribeAll = new Subject();
@@ -34,12 +34,12 @@ export class InvoiceComponent implements OnInit, OnDestroy {
         /**
          * Subscribe so that other admin changes are immediately reflected
          */
-        queue.mainpatientqueue.subscribe(queuedata => {
-            queuedata.filter(value => {
-                if (value.patientdata._id === this.patientid) {
-                    this.patientdata = value;
-                }
-            });
+        queue.mainpatientsqueue.subscribe(queuedata => {
+            // queuedata.filter(value => {
+            //     if (value.patientdata._id === this.patientid) {
+            //         this.patientdata = value;
+            //     }
+            // });
         });
         this.paymentmethodService.allpaymentchannels.subscribe(channels => {
             this.allpaymentchannels = channels;
@@ -59,7 +59,7 @@ export class InvoiceComponent implements OnInit, OnDestroy {
 
     getmethodname(channelid: string, methodid: string): string {
         return this.allpaymentchannels.find(value => {
-            return value.id === channelid;
+            return value._id === channelid;
         }).methods[methodid].name;
     }
 

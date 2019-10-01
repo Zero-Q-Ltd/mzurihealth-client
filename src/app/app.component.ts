@@ -7,12 +7,12 @@ import {Angulartics2GoogleAnalytics} from 'angulartics2/ga';
     styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit, OnDestroy {
-    ngOnDestroy(): void {
-    }
-
     constructor(angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics) {
         angulartics2GoogleAnalytics.startTracking();
 
+    }
+
+    ngOnDestroy(): void {
     }
 
     ngOnInit(): void {

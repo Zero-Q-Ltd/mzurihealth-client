@@ -1,9 +1,13 @@
-import {Injectable} from '@angular/core';
-import {QueueService} from './queue.service';
-import {BehaviorSubject} from 'rxjs';
-import {emptynote, Patientnote} from '../../models/patient/Patientnote';
-import {AdminService} from './admin.service';
+import { HospitalService } from './hospital.service';
+import { Injectable } from '@angular/core';
+import { QueueService } from './queue.service';
+import { BehaviorSubject } from 'rxjs';
+import { Patientnote } from '../../models/patient/Patientnote';
+import { AdminService } from './admin.service';
 import * as moment from 'moment';
+import { BSON, Stream } from 'mongodb-stitch-browser-sdk';
+import { Meta } from 'app/models/universal';
+import { ChangeEvent } from 'mongodb-stitch-core-services-mongodb-remote';
 
 @Injectable({
     providedIn: 'root'
@@ -12,8 +16,15 @@ export class PatientnotesService {
     patientnotes: BehaviorSubject<Array<Patientnote>> = new BehaviorSubject<Array<Patientnote>>([]);
     patientid: string;
 
+    /**
+     * This keeps a list of all the subscriptions TO THE DATABASE that have been made by this service
+     * It's to be maintined as a standard across all services
+     */
+    subscriptions: Map<string, Stream<ChangeEvent<any>>> = new Map();
+
     constructor(private queueservice: QueueService,
-                private admiservice: AdminService) {
+        private hospitalservice: HospitalService,
+        private adminservice: AdminService) {
         queueservice.currentpatient.subscribe(value => {
             if (value.patientdata._id) {
                 this.patientid = value.patientdata._id;
@@ -22,7 +33,7 @@ export class PatientnotesService {
         });
     }
 
-    fetchpatientnotes(id: string): void {
+    fetchpatientnotes(_id: BSON.ObjectId): void {
         // this.stitch.db.collection('patientnotes')
         //     .where('patientId', '==', id)
         //     .limit(100)
@@ -36,13 +47,18 @@ export class PatientnotesService {
 
     addnote(note: Patientnote): any {
         note.admin = {
-            id: this.admiservice.userdata._id,
-            name: this.admiservice.userdata.data.displayName
+            _id: this.adminservice.userdata._id,
+            name: this.adminservice.userdata.data.displayName
         };
         note.patientId = this.patientid;
+        const meta: Meta = {
+            date: moment().toDate(),
+            adminId: this.adminservice.userdata._id,
+            hospitalId: this.hospitalservice.activehospital.value._id
+        };
         note.metadata = {
-            lastEdit: moment().toDate(),
-            date: moment().toDate()
+            created: meta,
+            edited: meta,
         };
         // return this.db.collection('patientnotes').add(note);
 

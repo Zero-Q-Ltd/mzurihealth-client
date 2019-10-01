@@ -10,6 +10,7 @@ export class AdminNamePipe implements PipeTransform {
      * @param admins
      * @param adminid
      */
+
     transform(admins: Array<HospitalAdmin>, adminid: string): string {
         if (admins.filter(admin => {
             return admin._id === adminid;

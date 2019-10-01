@@ -1,14 +1,17 @@
-import {Injectable} from '@angular/core';
-import {HospitalService} from './hospital.service';
-import {BehaviorSubject} from 'rxjs';
-import {Hospital} from '../../models/hospital/Hospital';
-import {CustomProcedure} from '../../models/procedure/CustomProcedure';
-import {ProcedureCategory} from '../../models/procedure/ProcedureCategory';
-import {NotificationService} from '../../shared/services/notifications.service';
-import {HospitalAdmin} from '../../models/user/HospitalAdmin';
-import {AdminService} from './admin.service';
+import { Injectable } from '@angular/core';
+import { HospitalService } from './hospital.service';
+import { BehaviorSubject } from 'rxjs';
+import { Hospital } from '../../models/hospital/Hospital';
+import { CustomProcedure } from '../../models/procedure/CustomProcedure';
+import { ProcedureCategory } from '../../models/procedure/ProcedureCategory';
+import { NotificationService } from '../../shared/services/notifications.service';
+import { HospitalAdmin } from '../../models/user/HospitalAdmin';
+import { AdminService } from './admin.service';
 import * as moment from 'moment';
-import {MergedProcedureModel} from '../../models/procedure/MergedProcedure.model';
+import { MergedProcedureModel } from '../../models/procedure/MergedProcedure.model';
+import { Meta } from 'app/models/universal';
+import { Stream } from 'mongodb-stitch-core-sdk';
+import { ChangeEvent } from 'mongodb-stitch-core-services-mongodb-remote';
 
 @Injectable({
     providedIn: 'root'
@@ -20,9 +23,15 @@ export class ProceduresService {
     procedurecategories: BehaviorSubject<Array<ProcedureCategory>> = new BehaviorSubject<Array<ProcedureCategory>>([]);
     userdata: HospitalAdmin;
 
+    /**
+     * This keeps a list of all the subscriptions TO THE DATABASE that have been made by this service
+     * It's to be maintined as a standard across all services
+     */
+    subscriptions: Map<string, Stream<ChangeEvent<any>>> = new Map();
+
     constructor(private hospitalservice: HospitalService,
-                private notificationservice: NotificationService,
-                private adminservice: AdminService) {
+        private notificationservice: NotificationService,
+        private adminservice: AdminService) {
         this.hospitalservice.activehospital.subscribe(hospital => {
             if (hospital._id) {
                 this.activehospital = hospital;
@@ -161,9 +170,16 @@ export class ProceduresService {
         customprocedure.hospitalId = this.activehospital._id;
         customprocedure.status = true;
         customprocedure.creatorid = this.userdata._id;
+
+        const meta: Meta = {
+            date: moment().toDate(),
+            adminId: this.adminservice.userdata._id,
+            hospitalId: this.hospitalservice.activehospital.value._id
+        };
+
         customprocedure.metadata = {
-            lastEdit: moment().toDate(),
-            date: moment().toDate()
+            created: meta,
+            edited: meta,
         };
         /**
          * remove insurance prices set to 0
@@ -178,9 +194,15 @@ export class ProceduresService {
 
     editcustomprocedure(customprocedure: CustomProcedure): any {
         customprocedure.creatorid = this.userdata._id;
+
+        const meta: Meta = {
+            date: moment().toDate(),
+            adminId: this.adminservice.userdata._id,
+            hospitalId: this.hospitalservice.activehospital.value._id
+        };
+
         customprocedure.metadata = {
-            lastEdit: moment().toDate(),
-            date: customprocedure.metadata.date
+            edited: meta,
         };
         /**
          * remove insurance prices set to 0

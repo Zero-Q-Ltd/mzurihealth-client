@@ -2,7 +2,7 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {HospitalService} from '../../services/hospital.service';
 import {QueueService} from '../../services/queue.service';
 import {PaymentmethodService} from '../../services/paymentmethod.service';
-import {PatientvisitService} from '../../services/patientvisit.service';
+import {VisitService} from '../../services/visit.service';
 import {MAT_DIALOG_DATA} from '@angular/material';
 import {emptymergedQueueModel, MergedPatientQueueModel} from '../../../models/visit/MergedPatientQueueModel';
 import {PaymentChannel} from '../../../models/payment/PaymentChannel';
@@ -24,7 +24,7 @@ export class PrescriptionComponent implements OnInit {
     constructor(private hospitalservice: HospitalService,
                 private queue: QueueService,
                 private paymentmethodService: PaymentmethodService,
-                private patientvisit: PatientvisitService,
+                private patientvisit: VisitService,
                 @Inject(MAT_DIALOG_DATA) public patientid: string) {
 
     }

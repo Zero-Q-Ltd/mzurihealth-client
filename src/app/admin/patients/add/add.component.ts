@@ -1,19 +1,22 @@
-import {Component, Inject, OnInit, Optional, ViewEncapsulation} from '@angular/core';
-import {MAT_DIALOG_DATA} from '@angular/material';
-import {NotificationService} from '../../../shared/services/notifications.service';
-import {AdminService} from '../../services/admin.service';
-import {PatientService} from '../../services/patient.service';
-import {HospitalService} from '../../services/hospital.service';
-import {emptyhospital, Hospital} from '../../../models/hospital/Hospital';
-import {emptyfile, HospFile} from '../../../models/hospital/file';
+import { Component, Inject, OnInit, Optional, ViewEncapsulation } from '@angular/core';
+import { MAT_DIALOG_DATA } from '@angular/material';
+import { NotificationService } from '../../../shared/services/notifications.service';
+import { AdminService } from '../../services/admin.service';
+import { PatientService } from '../../services/patient.service';
+import { HospitalService } from '../../services/hospital.service';
+import { emptyhospital, Hospital } from '../../../models/hospital/Hospital';
+import { emptyfile, HospFile } from '../../../models/hospital/HospFile';
 import * as moment from 'moment';
-import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {fuseAnimations} from '../../../../@fuse/animations';
-import {Router} from '@angular/router';
-import {Paymentmethods} from '../../../models/payment/PaymentChannel';
-import {PaymentmethodService} from '../../services/paymentmethod.service';
-import {NumberValidator} from '../../validators/number.validator';
-import {FilenumberValidator} from '../../validators/filenumber.validator';
+import { FormArray, FormControl, FormGroup, FormBuilder } from 'ngx-strongly-typed-forms';
+import { Validators } from '@angular/forms';
+import { fuseAnimations } from '../../../../@fuse/animations';
+import { Router } from '@angular/router';
+import { Paymentmethods } from '../../../models/payment/PaymentChannel';
+import { PaymentmethodService } from '../../services/paymentmethod.service';
+import { NumberValidator } from '../../validators/number.validator';
+import { FilenumberValidator } from 'app/admin/validators/filenumber.validator';
+import { PersonalInfo, Patient, NextofKin, Insurance } from 'app/models/patient/Patient';
+import { NewPatientForm } from 'app/models/patient/NewPatientForm';
 
 @Component({
     selector: 'app-add',
@@ -23,30 +26,24 @@ import {FilenumberValidator} from '../../validators/filenumber.validator';
     animations: fuseAnimations
 })
 export class AddComponent implements OnInit {
+
     patientfileno: HospFile = Object.assign({}, emptyfile);
     activehospital: Hospital = Object.assign({}, emptyhospital);
     allInsurance: { [key: string]: Paymentmethods } = {};
-    patientsForm: FormGroup;
-
-    personalinfo: FormGroup;
-    nextofkin: FormGroup;
-    insurance: FormArray;
-    // doctor will do this
-    // private medicalInfo: FormGroup;
-
+    patientsForm: FormGroup<NewPatientForm>;
     savingUser: Boolean = false;
 
 
     maxDate: Date;
 
     constructor(private adminservice: AdminService,
-                private patientservice: PatientService,
-                private formBuilder: FormBuilder,
-                private hospitalservice: HospitalService,
-                private router: Router,
-                private paymentethods: PaymentmethodService,
-                private notificationservice: NotificationService,
-                @Optional() @Inject(MAT_DIALOG_DATA) public data?: any) {
+        private patientservice: PatientService,
+        private formBuilder: FormBuilder,
+        private hospitalservice: HospitalService,
+        private router: Router,
+        private paymentethods: PaymentmethodService,
+        private notificationservice: NotificationService,
+        @Optional() @Inject(MAT_DIALOG_DATA) public data?: any) {
 
         this.maxDate = moment().toDate();
 
@@ -69,8 +66,7 @@ export class AddComponent implements OnInit {
                 /**
                  * set the form data and disable it
                  * */
-                this.patientsForm.controls['personaLinfo']
-                    .get('fileno').patchValue(this.patientfileno.no);
+                this.patientsForm.get('fileNo').patchValue(this.patientfileno.no);
 
                 // this.patientsForm.controls['personaLinfo']
                 //     .get('fileno').disable({onlySelf: true});
@@ -81,7 +77,8 @@ export class AddComponent implements OnInit {
         /**
          *
          * */
-        this.insurancechanges();
+        // this.insurancechanges();
+        // this.addInsurance()
 
     }
 
@@ -97,7 +94,7 @@ export class AddComponent implements OnInit {
         console.log(this.patientsForm);
 
         if (this.patientsForm.valid) {
-            this.savingUser = true;
+            // this.savingUser = true;
 
             this.patientservice.savePatient(this.patientsForm.getRawValue()).then(() => {
                 console.log('patient added successfully');
@@ -106,7 +103,7 @@ export class AddComponent implements OnInit {
                     alertType: 'success',
                     body: 'User was successfully added',
                     title: 'Success',
-                    placement: {horizontal: 'right', vertical: 'top'}
+                    placement: { horizontal: 'right', vertical: 'top' }
                 });
 
                 // clear inputs
@@ -121,144 +118,88 @@ export class AddComponent implements OnInit {
                 alertType: 'error',
                 body: 'Please fill all the required inputs',
                 title: 'ERROR',
-                placement: {horizontal: 'right', vertical: 'top'}
+                placement: { horizontal: 'right', vertical: 'top' }
             });
         }
     }
 
-    createInsurance(): FormGroup {
-        const insurancex = new FormControl('');
-
-        const insurancenumber = new FormControl({
-            value: '',
-            disabled: true
-        });
-
-        return this.formBuilder.group({
-            id: insurancex,
-            insurancenumber: insurancenumber
-        });
-    }
-
     insurancechanges(): void {
-
-        this.insurance.controls.forEach(x => {
-            x.get('_id').valueChanges.subscribe(g => {
+        this.getinsuranceArray().controls.forEach(x => {
+            x.get('id').valueChanges.subscribe(g => {
                 if (g) {
-                    if (x.get('_id').value.toString().length > -1) {
-                        x.get('insurancenumber').enable({emitEvent: false});
+                    if (x.get('id').value.toString().length > -1) {
+                        x.get('insuranceNo').enable({ emitEvent: false });
                     } else {
-                        x.get('insurancenumber').disable({emitEvent: false});
+                        x.get('insuranceNo').disable({ emitEvent: false });
                     }
                 }
             });
         });
     }
+    /**
+     * Retruns the form array for dynamic manipulation
+     */
+    getinsuranceArray(): FormArray<Insurance> {
+        return this.patientsForm.get('insurance') as FormArray<Insurance>;
+    }
 
     addInsurance(): void {
-        this.insurance.push(this.createInsurance());
+        this.getinsuranceArray().push(this.formBuilder.group<Insurance>({
+            id: [''],
+            insuranceNo: new FormControl({
+                value: '',
+                disabled: true
+            })
+        }));
         this.insurancechanges();
     }
 
     removeInsurance(index: number): void {
         if (index === 0) {
             // clear the insurance input
-            this.insurance.at(index).get('_id').patchValue(undefined);
-            this.insurance.at(index).get('_id').markAsUntouched();
-            this.insurance.at(index).get('insurancenumber').patchValue(undefined);
-            this.insurance.at(index).get('insurancenumber').disable();
+            this.getinsuranceArray().at(index).get('id').patchValue(undefined);
+            this.getinsuranceArray().at(index).get('id').markAsUntouched();
+            this.getinsuranceArray().at(index).get('insuranceNo').patchValue(undefined);
+            this.getinsuranceArray().at(index).get('insuranceNo').disable();
             return;
         }
 
-        this.insurance.removeAt(index);
+        this.getinsuranceArray().removeAt(index);
     }
 
     /**
      * Init form values inside a here.
      * */
     private initFormBuilder(): void {
-
-        /**
-         * personal information
-         * */
-        const firstname = new FormControl('', Validators.required);
-        const lastname = new FormControl('', Validators.required);
-        const occupation = new FormControl('');
-        const idno = new FormControl('', Validators.required);
-        const gender = new FormControl('', Validators.required);
-        const birth = new FormControl('', Validators.required);
-        const email = new FormControl('', Validators.compose([
-            Validators.email
-        ]));
-        const userWorkplace = new FormControl('', Validators.required);
-        const userPhone = new FormControl('', Validators.compose([
-            Validators.required,
-            NumberValidator.validate()
-        ]));
-        const address = new FormControl('', Validators.compose([
-            Validators.required
-
-        ]));
-
-
-        // const fileno = new FormControl('', {
-        //     validators: [Validators.required],
-        //     asyncValidators: [FilenumberValidator.validate(this.patientservice)]
-        // });
-
-        const fileno = new FormControl('',
-            Validators.required,
-            FilenumberValidator.validate(this.patientservice));
-
-
-        this.personalinfo = new FormGroup({
-            firstname: firstname,
-            lastname: lastname,
-            occupation: occupation,
-            idno: idno,
-            gender: gender,
-            birth: birth,
-            email: email,
-            workplace: userWorkplace,
-            phone: userPhone,
-            address: address,
-            fileno: fileno
-        });
-
-
-        /**
-         * next of kin
-         * **/
-
-        const relationship = new FormControl('', Validators.required);
-        const kinName = new FormControl('', Validators.required);
-        const kinPhone = new FormControl('', Validators.required);
-        const kinWorkplace = new FormControl('', Validators.compose([
-            Validators.required
-        ]));
-
-        this.nextofkin = new FormGroup({
-            relationship: relationship,
-            name: kinName,
-            phone: kinPhone,
-            workplace: kinWorkplace
-        });
-
-        /*
-        * insurance initial
-        * https://alligator.io/angular/reactive-forms-formarray-dynamic-fields/
-        * **/
-
-        this.patientsForm = this.formBuilder.group({
-            insurance: this.formBuilder.array([this.createInsurance()]),
-            nextofkin: this.nextofkin,
-            personalinfo: this.personalinfo
+        this.patientsForm = this.formBuilder.group<NewPatientForm>({
+            insurance: this.formBuilder.array([]),
+            nextofKin: this.formBuilder.group<NextofKin>({
+                name: ['', Validators.required],
+                relationship: ['', Validators.required],
+                phone: ['', Validators.compose([Validators.required, NumberValidator.validate()])],
+                workplace: ['', Validators.required]
+            }),
+            personalInfo: this.formBuilder.group<PersonalInfo>({
+                name: ['', Validators.required],
+                occupation: '',
+                idno: ['', Validators.required],
+                gender: [0, Validators.required],
+                dob: [null, Validators.required],
+                email: ['', Validators.compose([Validators.email])],
+                workplace: ['', Validators.required],
+                phone: ['', Validators.compose([Validators.required, NumberValidator.validate()])],
+                address: ['', Validators.compose([Validators.required])],
+                photoURL: ''
+            }),
+            fileNo: ['',
+                Validators.required,
+                FilenumberValidator.validate(this.patientservice)]
         });
 
 
         /*
         * init the insurance list
         * **/
-        this.insurance = this.patientsForm.get('insurance') as FormArray;
+        // this.insurance = this.patientsForm.get('insurance') as FormArray;
     }
 }

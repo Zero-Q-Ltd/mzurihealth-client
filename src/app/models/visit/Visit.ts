@@ -1,25 +1,23 @@
-import {emptymetadata, Metadata} from '../universal';
-import {Procedureperformed} from '../procedure/Procedureperformed';
+import { emptymetadata, Metadata } from '../universal';
+import { Procedureperformed } from '../procedure/Procedureperformed';
+import { BSON } from 'mongodb-stitch-browser-sdk';
+import { Prescription } from './Prescription';
+import { PaymentMethod } from '../payment/CustomPaymentMethod.model';
+import { Insurance } from '../patient/Patient';
+import { PaymentChannel } from '../payment/PaymentChannel';
 
-export interface PatientVisit {
+export interface Visit {
     procedures: Array<Procedureperformed>;
     totalcost: number;
     visitDescription: string;
-    vitals: {
-        height: number,
-        weight: number,
-        pressure: number,
-        sugar: number,
-        heartrate: number,
-        respiration: number
-    };
+
     generalNotes: Array<{
         adminid: string,
         notes: string
     }>;
-    patientid: string;
-    hospitalid: string;
-    prescription: string;
+    patientId: BSON.ObjectId;
+    hospitalId: BSON.ObjectId;
+    prescription: Prescription;
     metadata: Metadata;
     payment: {
         splitPayment: boolean;
@@ -27,13 +25,13 @@ export interface PatientVisit {
         status: boolean,
         hasInsurance: boolean,
         singlePayment?: {
-            channelId: string;
+            channelId: BSON.ObjectId;
             amount: number;
             methodId: string;
             transactionId: string
         }
     };
-    id: string;
+    _id: BSON.ObjectId;
     invoiceId: number;
     checkin: Checkin;
 }
@@ -49,19 +47,25 @@ export interface Checkin {
      */
     status: 0 | 1 | 2 | 3 | 4;
 }
+/**
+ * During reg it is important to distinguish between cash and isurance patients
+ * In case it's a cash method, don't bother with details until during payment
+ */
+export interface NewVisit {
+    payment: PaymentChannel;
+    insurance: Array<Insurance>;
+    /**
+     * An id among the insurance array
+     */
+    selectedInsurance: number;
+    description: string;
+}
 
-export const emptypatientvisit: PatientVisit = {
+export const emptypatientvisit: Visit = {
     procedures: [],
     totalcost: 0,
     visitDescription: null,
-    vitals: {
-        height: null,
-        weight: null,
-        pressure: null,
-        sugar: null,
-        heartrate: null,
-        respiration: null
-    },
+
     invoiceId: 0,
     generalNotes: [],
     checkin: {
@@ -74,10 +78,10 @@ export const emptypatientvisit: PatientVisit = {
         status: false,
         hasInsurance: false,
     },
-    patientid: null,
-    hospitalid: null,
+    patientId: null,
+    hospitalId: null,
     prescription: null,
     metadata: emptymetadata,
-    id: null
+    _id: null
 };
 

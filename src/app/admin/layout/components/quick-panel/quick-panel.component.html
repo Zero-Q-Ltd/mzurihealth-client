@@ -1,8 +1,8 @@
-<div fxLayout="column" fxFlex fusePerfectScrollbar>
+<div fusePerfectScrollbar fxFlex fxLayout="column">
 
-    <mat-list class="date" cdkFocusRegionStart>
+    <mat-list cdkFocusRegionStart class="date">
 
-        <h3 matSubheader cdkFocusInit>
+        <h3 cdkFocusInit matSubheader>
             <span>Today</span>
         </h3>
 
@@ -27,7 +27,7 @@
 
         <mat-list-item *ngFor="let event of events">
             <h3 matLine>{{event.title}}</h3>
-            <p matLine class="secondary-text">{{event.detail}}</p>
+            <p class="secondary-text" matLine>{{event.detail}}</p>
         </mat-list-item>
     </mat-list>
 
@@ -40,7 +40,7 @@
 
         <mat-list-item *ngFor="let note of notes">
             <h3 matLine>{{note.title}}</h3>
-            <p matLine class="secondary-text">{{note.detail}}</p>
+            <p class="secondary-text" matLine>{{note.detail}}</p>
         </mat-list-item>
     </mat-list>
 
@@ -52,21 +52,21 @@
         </h3>
 
         <mat-list-item>
-            <mat-slide-toggle fxFlex class="mat-primary" [(ngModel)]="settings.notify" aria-label="Notifications"
+            <mat-slide-toggle [(ngModel)]="settings.notify" aria-label="Notifications" class="mat-primary" fxFlex
                               labelPosition="before">
                 <h3>Notifications</h3>
             </mat-slide-toggle>
         </mat-list-item>
 
         <mat-list-item>
-            <mat-slide-toggle fxFlex class="mat-accent" [(ngModel)]="settings.cloud" aria-label="Cloud"
+            <mat-slide-toggle [(ngModel)]="settings.cloud" aria-label="Cloud" class="mat-accent" fxFlex
                               labelPosition="before">
                 <h3>Cloud Sync</h3>
             </mat-slide-toggle>
         </mat-list-item>
 
         <mat-list-item>
-            <mat-slide-toggle fxFlex class="mat-warn" [(ngModel)]="settings.retro" aria-label="Retro Thrusters"
+            <mat-slide-toggle [(ngModel)]="settings.retro" aria-label="Retro Thrusters" class="mat-warn" fxFlex
                               labelPosition="before">
                 <h3>Retro Thrusters</h3>
             </mat-slide-toggle>

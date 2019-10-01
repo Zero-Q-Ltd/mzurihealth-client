@@ -1,6 +1,8 @@
+import {BSON} from 'mongodb-stitch-browser-sdk';
+
 export interface RawProcedure {
     name: string;
-    id: string;
+    _id: BSON.ObjectId;
     pricing: {
         max: number | string,
         min: number | string,
@@ -10,21 +12,21 @@ export interface RawProcedure {
 }
 
 export interface RawProcedureCategory {
-    id: string;
+    _id: BSON.ObjectId;
     code: string;
     subCategoryId: string | null;
 }
 
 export const emptyprawrocedure: RawProcedure = {
     name: null,
-    id: null,
+    _id: null,
     pricing: {
         min: 0,
         max: 0
     },
     numericid: null,
     category: {
-        id: null,
+        _id: null,
         code: null,
         subCategoryId: null
     },

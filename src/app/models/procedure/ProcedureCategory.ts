@@ -1,7 +1,9 @@
+import {BSON} from 'mongodb-stitch-browser-sdk';
+
 export interface ProcedureCategory {
     name: string;
     code: string;
-    id: string;
+    _id: BSON.ObjectId;
     status: boolean;
     subcategories: {
         /**
@@ -17,7 +19,7 @@ export interface ProcedureCategory {
 export const emptyprocedurecategory: ProcedureCategory = {
     name: null,
     code: null,
-    id: null,
+    _id: null,
     status: null,
     subcategories: {}
 };

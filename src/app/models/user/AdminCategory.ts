@@ -1,5 +1,3 @@
-import {BSON} from 'bson';
-
 export interface AdminCategory {
     name: string;
     description: string;

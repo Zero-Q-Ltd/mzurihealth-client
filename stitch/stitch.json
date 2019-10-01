@@ -4,5 +4,11 @@
     "name": "stitch",
     "location": "US-VA",
     "deployment_model": "GLOBAL",
-    "security": {}
+    "security": {},
+    "hosting": {
+        "enabled": true,
+        "app_default_domain": "stitch-uyxfz.mongodbstitch.com",
+        "default_error_path": "/index.html",
+        "default_error_code": "404"
+    }
 }

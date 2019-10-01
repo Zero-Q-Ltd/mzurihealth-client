@@ -1,13 +1,13 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import {MatDialog, MatDialogRef, MatTableDataSource} from '@angular/material';
-import {fuseAnimations} from '../../../../../@fuse/animations';
-import {QueueService} from '../../../services/queue.service';
-import {MergedPatientQueueModel} from '../../../../models/visit/MergedPatientQueueModel';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { MatDialog, MatDialogRef, MatTableDataSource } from '@angular/material';
+import { fuseAnimations } from '../../../../../@fuse/animations';
+import { QueueService } from '../../../services/queue.service';
+import { MergedPatientQueueModel } from '../../../../models/visit/MergedPatientQueueModel';
 import * as moment from 'moment';
-import {AdminSelectionComponent} from '../admin-selection/admin-selection.component';
-import {HospitalAdmin} from '../../../../models/user/HospitalAdmin';
-import {FuseConfirmDialogComponent} from '../../../../../@fuse/components/confirm-dialog/confirm-dialog.component';
-import {InvoiceComponent} from '../../invoice/invoice.component';
+import { AdminSelectionComponent } from '../admin-selection/admin-selection.component';
+import { HospitalAdmin } from '../../../../models/user/HospitalAdmin';
+import { FuseConfirmDialogComponent } from '../../../../../@fuse/components/confirm-dialog/confirm-dialog.component';
+import { InvoiceComponent } from '../../invoice/invoice.component';
 
 @Component({
     selector: 'queue-mine',
@@ -18,15 +18,15 @@ import {InvoiceComponent} from '../../invoice/invoice.component';
 })
 export class MineComponent implements OnInit {
     patientsdatasource = new MatTableDataSource<MergedPatientQueueModel>();
-    patientsheaders = ['FileNo', 'Photo', 'Name', 'ID', 'Age', 'Phone', 'Last Visit', 'Status', 'Action'];
+    patientsheaders = ['FileNo', 'Name', 'Age', 'Phone', 'Last Visit', 'Status', 'Action'];
     dialogRef: MatDialogRef<any>;
     confirmDialogRef: MatDialogRef<FuseConfirmDialogComponent>;
 
     constructor(private queue: QueueService,
-                public _matDialog: MatDialog) {
+        public _matDialog: MatDialog) {
         queue.mypatientqueue.subscribe(value => {
-            this.patientsdatasource.data = value.sort((a, b) => {
-                return a.queuedata.metadata.lastEdit.getMilliseconds() - b.queuedata.metadata.lastEdit.getMilliseconds();
+            this.patientsdatasource.data = (Array.from(value.values()) || []).sort((a, b) => {
+                return a.queuedata.metadata.edited.date.getMilliseconds() - b.queuedata.metadata.edited.date.getMilliseconds();
             });
         });
     }
@@ -41,7 +41,7 @@ export class MineComponent implements OnInit {
 
     acceptpatient(data: MergedPatientQueueModel): void {
         event.stopPropagation();
-        this.queue.acceptpatient(data.queuedata);
+        // this.queue.acceptpatient(data.queuedata);
 
         // this.confirmDialogRef = this._matDialog.open(FuseConfirmDialogComponent, {
         //     disableClose: false
@@ -81,7 +81,7 @@ export class MineComponent implements OnInit {
                 this.dialogRef.afterClosed().subscribe((res: HospitalAdmin) => {
                     console.log(res);
                     if (res) {
-                        this.queue.assignadmin(data.queuedata, res._id);
+                        // this.queue.assignadmin(data.queuedata, res._id);
                     }
                 });
             }

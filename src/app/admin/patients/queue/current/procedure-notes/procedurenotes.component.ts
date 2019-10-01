@@ -3,8 +3,8 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {ProcedureNotes} from '../../../../../models/procedure/Procedureperformed';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 import {AdminService} from '../../../../services/admin.service';
-import {PatientVisit} from '../../../../../models/visit/PatientVisit';
-import {PatientvisitService} from '../../../../services/patientvisit.service';
+import {Visit} from '../../../../../models/visit/Visit';
+import {VisitService} from '../../../../services/visit.service';
 
 @Component({
     selector: 'app-procedurenotes',
@@ -14,11 +14,11 @@ import {PatientvisitService} from '../../../../services/patientvisit.service';
 export class ProcedurenotesComponent implements OnInit {
     procedurenores: Array<ProcedureNotes>;
     newnoteform: FormGroup;
-    patientvisit: PatientVisit;
+    patientvisit: Visit;
 
     constructor(
         private adminservice: AdminService,
-        private patientvisitservice: PatientvisitService,
+        private patientvisitservice: VisitService,
         @Inject(MAT_DIALOG_DATA) private procedureid: number,
         private dialogRef: MatDialogRef<ProcedurenotesComponent>
     ) {
@@ -43,7 +43,7 @@ export class ProcedurenotesComponent implements OnInit {
                         note: value.procedures[this.procedureid].notes,
                         admin: {
                             name: 'unknown',
-                            id: null
+                            _id: null
                         }
                     };
                 } else {

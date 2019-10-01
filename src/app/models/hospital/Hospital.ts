@@ -1,11 +1,12 @@
-import {emptymetadata, Metadata} from '../universal';
-import {PaymentMethod} from '../payment/CustomPaymentMethod.model';
+import { emptymetadata, Metadata } from '../universal';
+import { PaymentMethod } from '../payment/CustomPaymentMethod.model';
+import { BSON } from 'mongodb-stitch-core-sdk';
 
 export interface Hospital {
     location: any;
     name: string;
     userid: string;
-    _id: string;
+    _id: BSON.ObjectId;
     description: string;
     status: boolean;
     contactperson: {

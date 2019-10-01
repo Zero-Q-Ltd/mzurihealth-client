@@ -79,7 +79,7 @@ export class ProcedureconfigComponent implements OnInit {
         if (!this.regularpricecontrol.errors) {
             this.selectecustomprocedure.customprocedure.regularPrice = this.regularpricecontrol.value;
             if (this.communicatioservice.onprocedureselected.value.selectiontype === 'newprocedure') {
-                this.selectecustomprocedure.customprocedure.parentProcedureId = this.selectecustomprocedure.rawprocedure.id;
+                this.selectecustomprocedure.customprocedure.parentProcedureId = this.selectecustomprocedure.rawprocedure._id;
                 this.procedureservice.addcustomprocedure(this.selectecustomprocedure.customprocedure).then(() => {
                     this.notificationservice.notify({
                         placement: {

@@ -75,7 +75,7 @@ export class AlladminComponent implements OnInit {
         this.confirmDialogRef.componentInstance.confirmMessage = 'Are you sure you want to cancel this invite?';
         this.confirmDialogRef.afterClosed().subscribe(result => {
             if (result) {
-                this.adminservice.deleteinvite(user.id).then(() => {
+                this.adminservice.deleteinvite(user._id).then(() => {
                     this.communicationService.resetall();
 
                     this.notificationservice.notify({

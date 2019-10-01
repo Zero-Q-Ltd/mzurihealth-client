@@ -1,13 +1,13 @@
-import {Component, Inject, OnInit, Optional} from '@angular/core';
-import {Paymentmethods} from '../../../models/payment/PaymentChannel';
-import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {Insurance, Patient} from '../../../models/patient/Patient';
-import {AdminService} from '../../services/admin.service';
-import {PatientService} from '../../services/patient.service';
-import {NotificationService} from '../../../shared/services/notifications.service';
-import {PaymentmethodService} from '../../services/paymentmethod.service';
-import {QueueService} from '../../services/queue.service';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
+import { Component, Inject, OnInit, Optional } from '@angular/core';
+import { Paymentmethods } from '../../../models/payment/PaymentChannel';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Insurance, Patient } from '../../../models/patient/Patient';
+import { AdminService } from '../../services/admin.service';
+import { PatientService } from '../../services/patient.service';
+import { NotificationService } from '../../../shared/services/notifications.service';
+import { PaymentmethodService } from '../../services/paymentmethod.service';
+import { QueueService } from '../../services/queue.service';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import * as moment from 'moment';
 
 @Component({
@@ -27,13 +27,13 @@ export class ProfileComponent implements OnInit {
     private insurance: FormArray;
 
     constructor(private adminservice: AdminService,
-                private patientservice: PatientService,
-                private formBuilder: FormBuilder,
-                private notificationservice: NotificationService,
-                private paymentethods: PaymentmethodService,
-                private queue: QueueService,
-                public dialogRef: MatDialogRef<any>,
-                @Optional() @Inject(MAT_DIALOG_DATA) private data: string) {
+        private patientservice: PatientService,
+        private formBuilder: FormBuilder,
+        private notificationservice: NotificationService,
+        private paymentethods: PaymentmethodService,
+        private queue: QueueService,
+        public dialogRef: MatDialogRef<any>,
+        @Optional() @Inject(MAT_DIALOG_DATA) private data: string) {
 
         this.paymentethods.allinsurance.subscribe(insurance => {
             this.allInsurance = insurance;
@@ -135,19 +135,18 @@ export class ProfileComponent implements OnInit {
         if (this.patientsForm.valid) {
 
 
-            this.patientservice.updatePatient(this.currentpatient._id, this.patientsForm.getRawValue()).then(() => {
-                this.notificationservice.notify({
-                    alertType: 'success',
-                    body: 'Saved',
-                    title: 'Success',
-                    placement: {
-                        horizontal: 'right',
-                        vertical: 'top'
-                    }
-                });
-                this.dialogRef.close();
-
-            });
+            // this.patientservice.updatePatient(this.currentpatient._id, this.patientsForm.getRawValue()).then(() => {
+            //     this.notificationservice.notify({
+            //         alertType: 'success',
+            //         body: 'Saved',
+            //         title: 'Success',
+            //         placement: {
+            //             horizontal: 'right',
+            //             vertical: 'top'
+            //         }
+            //     });
+            //     this.dialogRef.close();
+            // });
         } else {
             this.notificationservice.notify({
                 alertType: 'error',
@@ -196,9 +195,9 @@ export class ProfileComponent implements OnInit {
             x.get('_id').valueChanges.subscribe(g => {
                 if (g) {
                     if (x.get('_id').value.toString().length > -1) {
-                        x.get('insurancenumber').enable({emitEvent: false});
+                        x.get('insurancenumber').enable({ emitEvent: false });
                     } else {
-                        x.get('insurancenumber').disable({emitEvent: false});
+                        x.get('insurancenumber').disable({ emitEvent: false });
                     }
                 }
             });

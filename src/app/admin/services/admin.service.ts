@@ -5,10 +5,9 @@ import { emptyadmin, HospitalAdmin } from '../../models/user/HospitalAdmin';
 import { NotificationService } from '../../shared/services/notifications.service';
 import { AdminCategory } from '../../models/user/AdminCategory';
 import { AdminInvite } from '../../models/user/AdminInvite';
-import { Apollo } from 'apollo-angular';
-import gql from 'graphql-tag';
-import { Subscription } from 'apollo-client/util/Observable';
-import { Patient } from 'app/models/patient/Patient';
+import { StitchService } from './stitch/stitch.service';
+import { BSON, StitchUser, Stream, } from 'mongodb-stitch-browser-sdk';
+import { ChangeEvent } from 'mongodb-stitch-core-services-mongodb-remote';
 
 @Injectable({
     providedIn: 'root'
@@ -27,59 +26,75 @@ export class AdminService {
     firstlogin = false;
     validuser: boolean;
     admincategories: BehaviorSubject<Array<AdminCategory>> = new BehaviorSubject<Array<AdminCategory>>([]);
-    // We use the gql tag to parse our query string into a query document
-    CurrentUserForProfile = gql`
-    mutation {
-  createAdmin(input :  {email:  "kisinga@zero-q.com"}){
-    _id
-  }
-}
-    `;
-    private querySubscription: Subscription;
+
+    /**
+     * This keeps a list of all the subscriptions TO THE DATABASE that have been made by this service
+     * It's to be maintined as a standard across all services
+     */
+    subscriptions: Map<string, Stream<ChangeEvent<any>>> = new Map();
 
     constructor(private router: Router,
         private notificationservice: NotificationService,
-        private apollo: Apollo
-    ) {
-        console.log('sending query');
+        private stitch: StitchService) {
+        this.stitch.user.subscribe(value => {
+            this.getuser(value);
+        });
+        this.observableuserdata.subscribe(value => {
+            this.userdata = value;
+        });
+        this.stitch.client.callFunction("searchpatient", ["test"]).then(f => {
+            console.log(f)
+        })
 
-        this.apollo.mutate<Patient>({ mutation: this.CurrentUserForProfile })
-            .subscribe(({ data, loading }) => {
-                console.log(data);
-            });
     }
 
     // The the status of the activeadmin
     setstatus(availability: number): void {
         const config = this.userdata.config;
         config.availability = availability;
-
     }
+
+    getuser = async (user: StitchUser) => {
+        this.stitch.db.collection<HospitalAdmin>('hospitaladmins')
+            .findOne({ _id: new BSON.ObjectId(user.id) })
+            .then(async userdata => {
+                this.observableuserdata.next(userdata);
+                console.log(userdata);
+                const stream = await this.stitch.db.collection<HospitalAdmin>('hospitaladmins')
+                    .watch([new BSON.ObjectId(user.id)]);
+                stream.onNext(data => {
+                    console.log(data.fullDocument);
+                    this.observableuserdata.next(data.fullDocument);
+                });
+                stream.onError(error => {
+                    console.log(error);
+                });
+            });
+    };
 
     getadmincategories(): void {
-        // this.db.firestore.collection('admincategories').onSnapshot(allcategorydata => {
-        //     this.admincategories.next(allcategorydata.docs.map(categorydata => {
-        //         const category = categorydata.data() as AdminCategory;
-        //         category._id = categorydata._id;
-        //         return category;
-        //     }));
-        // });
+        this.stitch.db.collection<AdminCategory>('admincategories')
+            .find()
+            .asArray()
+            .then(values => {
+                this.admincategories.next(values);
+            });
     }
 
-    disableadmin(adminid: string): any {
+    disableadmin(adminid: BSON.ObjectId): Promise<any> {
+        return this.stitch.db.collection('hospitaladmins').findOneAndUpdate({ _id: adminid }, { status: false });
         // return this.db.firestore.collection('hospitaladmins').doc(adminid).update({status: false});
     }
 
-    enableadmin(adminid: string): any {
+    enableadmin(adminid: BSON.ObjectId): Promise<any> {
+        return this.stitch.db.collection('hospitaladmins').findOneAndUpdate({ _id: adminid }, { status: false });
         // return this.db.firestore.collection('hospitaladmins').doc(adminid).update({status: true});
     }
 
-    deleteinvite(inviteid: string): any {
-        // return this.db.firestore.collection('admininvites').doc(inviteid).delete();
-    }
+    deleteinvite(inviteid: BSON.ObjectId): Promise<any> {
+        return this.stitch.db.collection('admininvites').findOneAndDelete({ _id: inviteid });
 
-    signout(): void {
-        // this.afAuth.auth.signOut();
+        // return this.db.firestore.collection('admininvites').doc(inviteid).delete();
     }
 
     initusertypes(): void {
@@ -97,12 +112,7 @@ export class AdminService {
         // });
     }
 
-    logout(): void {
-        // this.afAuth.auth.signOut();
-        this.router.navigate(['/admin/authentication/login']);
-    }
-
-    checkinvite(): void {
+    checkinvite(user: StitchUser): void {
         // const invitequery = this.db.firestore.collection('admininvites')
         // .where('email', '==', user.email)
         // .limit(1)
@@ -169,5 +179,11 @@ export class AdminService {
         //     this.db.firestore.collection('admininvites').add(userdata);
         // });
 
+    }
+
+    unsubscribeAll(): void {
+        this.subscriptions.forEach(value => {
+            value.close();
+        });
     }
 }

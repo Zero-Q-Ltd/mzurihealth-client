@@ -1,0 +1,22 @@
+{
+    "id": "5d66cfadf394788cbee83b4a",
+    "database": "dev",
+    "collection": "patients",
+    "roles": [
+        {
+            "name": "default",
+            "apply_when": {},
+            "write": true,
+            "insert": true,
+            "delete": true,
+            "additional_fields": {}
+        }
+    ],
+    "schema": {
+        "properties": {
+            "_id": {
+                "bsonType": "objectId"
+            }
+        }
+    }
+}

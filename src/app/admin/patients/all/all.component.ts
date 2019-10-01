@@ -1,22 +1,23 @@
-import {AfterViewInit, Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
-import {fuseAnimations} from '../../../../@fuse/animations';
-import {MatDialog, MatDialogRef, MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
-import {Patient} from '../../../models/patient/Patient';
+import { AfterViewInit, Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { fuseAnimations } from '../../../../@fuse/animations';
+import { MatDialog, MatDialogRef, MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
+import { Patient } from '../../../models/patient/Patient';
 import * as moment from 'moment';
-import {HospitalAdmin} from '../../../models/user/HospitalAdmin';
-import {emptyhospital, Hospital} from '../../../models/hospital/Hospital';
-import {AdminService} from '../../services/admin.service';
-import {PatientService} from '../../services/patient.service';
-import {HospitalService} from '../../services/hospital.service';
-import {PushqueueComponent} from '../pushqueue/pushqueue.component';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {NotificationService} from '../../../shared/services/notifications.service';
-import {Router} from '@angular/router';
-import {PaymentmethodService} from '../../services/paymentmethod.service';
-import {Paymentmethods} from '../../../models/payment/PaymentChannel';
-import {QueueService} from '../../services/queue.service';
-import {ProfileComponent} from '../profile/profile.component';
-import {FuseConfirmDialogComponent} from '../../../../@fuse/components/confirm-dialog/confirm-dialog.component';
+import { HospitalAdmin } from '../../../models/user/HospitalAdmin';
+import { emptyhospital, Hospital } from '../../../models/hospital/Hospital';
+import { AdminService } from '../../services/admin.service';
+import { PatientService } from '../../services/patient.service';
+import { HospitalService } from '../../services/hospital.service';
+import { PushqueueComponent } from '../pushqueue/pushqueue.component';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { NotificationService } from '../../../shared/services/notifications.service';
+import { Router } from '@angular/router';
+import { PaymentmethodService } from '../../services/paymentmethod.service';
+import { Paymentmethods } from '../../../models/payment/PaymentChannel';
+import { QueueService } from '../../services/queue.service';
+import { ProfileComponent } from '../profile/profile.component';
+import { FuseConfirmDialogComponent } from '../../../../@fuse/components/confirm-dialog/confirm-dialog.component';
+import { NewVisit } from 'app/models/visit/Visit';
 
 @Component({
     selector: 'all-patients',
@@ -41,21 +42,21 @@ export class AllComponent implements OnInit, AfterViewInit {
 
 
     constructor(private adminservice: AdminService,
-                private patientservice: PatientService,
-                private hospitalservice: HospitalService,
-                private paymentethods: PaymentmethodService,
-                private notificationservice: NotificationService,
-                private dialog: MatDialog,
-                private queueService: QueueService,
-                private formBuilder: FormBuilder,
-                public _matDialog: MatDialog, private router: Router) {
+        private patientservice: PatientService,
+        private hospitalservice: HospitalService,
+        private paymentethods: PaymentmethodService,
+        private notificationservice: NotificationService,
+        private dialog: MatDialog,
+        private queueService: QueueService,
+        private formBuilder: FormBuilder,
+        public _matDialog: MatDialog, private router: Router) {
 
         this.hospitalservice.activehospital.subscribe(hospital => {
             if (hospital._id) {
                 this.activehospital = hospital;
             }
         });
-        this.queueService.mainpatientqueue.subscribe();
+        this.queueService.mainpatientsqueue.subscribe();
 
         this.paymentethods.allinsurance.subscribe(insurance => {
             this.allInsurance = insurance;
@@ -88,16 +89,16 @@ export class AllComponent implements OnInit, AfterViewInit {
 
     addToQueue(patient: Patient): void {
 
-        const fil = this.queueService.mainpatientqueue.value.filter(value => {
-            return value.patientdata._id === patient._id;
-        });
-
-        if (fil.length !== 0) {
+        const fil = this.queueService.mainpatientsqueue.value.has(patient._id);
+        console.log(patient._id)
+        console.log(Array.from(this.queueService.mainpatientsqueue.value.keys()))
+        console.log(this.queueService.mainpatientsqueue.value.get(patient._id))
+        if (fil) {
             this.notificationservice.notify({
                 alertType: 'warning',
                 body: 'The patient is already in the queue',
                 title: 'Warning',
-                placement: {horizontal: 'center', vertical: 'top'}
+                placement: { horizontal: 'center', vertical: 'top' }
             });
             return;
         }
@@ -110,40 +111,30 @@ export class AllComponent implements OnInit, AfterViewInit {
         });
 
         this.dialogRef.afterClosed()
-            .subscribe(response => {
+            .subscribe((response: NewVisit) => {
                 if (!response) {
                     return;
                 }
-                const actionType: string = response[0];
-                const formData: { data: FormGroup, selected: { insuranceControl: string, insurancenumber: string } } = response[1];
 
-                console.log(formData.data.getRawValue());
+                console.log(response);
 
-                switch (actionType) {
-                    /**
-                     * Save
-                     */
-
-                    case 'save':
-                        this.patientservice.addPatientToQueue(formData.data.getRawValue(), patient, formData.selected)
-                            .then(() => {
-                                // navigate to queues
-                                this.router.navigate(['admin/patients/queue']);
-                            }).catch(error => {
-                            console.log('form error');
-                            console.log(error);
+                this.queueService.addPatientToQueue(response, patient)
+                    .then(() => {
+                        // navigate to queues
+                        this.router.navigate(['admin/patients/queue']);
+                    }).catch(error => {
+                        console.log('form error');
+                        console.log(error);
 
 
-                            this.notificationservice.notify({
-                                alertType: 'error',
-                                body: 'An error occurred',
-                                title: 'ERROR',
-                                placement: {horizontal: 'right', vertical: 'top'}
-                            });
+                        this.notificationservice.notify({
+                            alertType: 'error',
+                            body: 'An error occurred',
+                            title: 'ERROR',
+                            placement: { horizontal: 'right', vertical: 'top' }
                         });
+                    });
 
-                        break;
-                }
             });
     }
 
@@ -157,16 +148,14 @@ export class AllComponent implements OnInit, AfterViewInit {
 
     deletepatient(patient: Patient): void {
         event.stopPropagation();
-        const fil = this.queueService.mainpatientqueue.value.filter(value => {
-            return value.patientdata._id === patient._id;
-        });
+        const fil = this.queueService.mainpatientsqueue.value.get(patient._id);
 
-        if (fil.length !== 0) {
+        if (fil) {
             this.notificationservice.notify({
                 alertType: 'error',
                 body: 'You must first exit the patient from queue to delete them',
                 title: 'ERROR',
-                placement: {horizontal: 'center', vertical: 'top'}
+                placement: { horizontal: 'center', vertical: 'top' }
             });
             return;
         }
@@ -186,7 +175,7 @@ export class AllComponent implements OnInit, AfterViewInit {
             return;
         }
 
-        const {field, fieldValue} = this.searchForm.value;
+        const { field, fieldValue } = this.searchForm.value;
         this.patientservice.searchPatient(field, fieldValue);
     }
 

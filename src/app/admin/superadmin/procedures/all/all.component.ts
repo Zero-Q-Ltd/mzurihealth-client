@@ -23,8 +23,8 @@ export class AllComponent implements OnInit, AfterViewInit {
     selectedprocedure: CustomProcedure = {...emptycustomprocedure};
     confirmDialogRef: MatDialogRef<FuseConfirmDialogComponent>;
     disableripple: boolean;
-    @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
-    @ViewChild(MatSort, { static: false }) sort: MatSort;
+    @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
+    @ViewChild(MatSort, {static: false}) sort: MatSort;
 
     constructor(private procedureservice: ProceduresService,
                 private communicationservice: LocalcommunicationService,
@@ -53,7 +53,7 @@ export class AllComponent implements OnInit, AfterViewInit {
     getcategory(category: RawProcedureCategory): string {
         if (category.subCategoryId) {
             return this.procedurecategories.find(cat => {
-                return cat.id === category.id;
+                return cat._id === category._id;
             }).subcategories[category.subCategoryId].name;
         } else {
             return '';
@@ -68,7 +68,7 @@ export class AllComponent implements OnInit, AfterViewInit {
         this.confirmDialogRef.componentInstance.confirmMessage = 'Are you sure you want to disable this procedure?';
         this.confirmDialogRef.afterClosed().subscribe(result => {
             if (result) {
-                this.procedureservice.disableprocedure(procedure.id).then(() => {
+                this.procedureservice.disableprocedure(procedure._id).then(() => {
                     this.communicationservice.resetall();
 
                     this.notificationservice.notify({

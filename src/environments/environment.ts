@@ -1,6 +1,19 @@
-import { defaultEnvironmentConfig } from './defaults';
 import { AppEnvironment } from './model';
 
+const production = false;
+
 export const environment: AppEnvironment = {
-  ...defaultEnvironmentConfig,
-};
+  /**
+   * Production environment
+   */
+  production: production,
+  hmr: false,
+
+  /**
+   * MongoDB Stitch settings
+   */
+  mongo: {
+    stitchAppId: 'stitch-uyxfz',
+    database:  'dev',
+  },
+}

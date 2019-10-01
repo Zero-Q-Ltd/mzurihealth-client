@@ -1,4 +1,5 @@
 import {emptymetadata, Metadata} from '../universal';
+import {BSON} from 'mongodb-stitch-browser-sdk';
 
 export interface AdminInvite {
     email: string;
@@ -6,10 +7,10 @@ export interface AdminInvite {
     phone: string;
     categoyId: string;
     level: number;
-    inviterId: string;
-    hospitalId: string;
+    inviterId: BSON.ObjectId;
+    hospitalId: BSON.ObjectId;
     metadata: Metadata;
-    id: string;
+    _id: BSON.ObjectId;
 }
 
 export const emptyadmininvite: AdminInvite = {
@@ -20,6 +21,6 @@ export const emptyadmininvite: AdminInvite = {
     level: null,
     inviterId: null,
     hospitalId: null,
-    id: null,
+    _id: null,
     metadata: emptymetadata
 };

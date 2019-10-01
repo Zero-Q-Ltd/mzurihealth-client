@@ -1,26 +1,44 @@
-import {Injectable} from '@angular/core';
-import {QueueService} from './queue.service';
-import {HospitalService} from './hospital.service';
-import {emptypatientvisit, PatientVisit} from '../../models/visit/PatientVisit';
-import {BehaviorSubject} from 'rxjs';
-import {Procedureperformed} from '../../models/procedure/Procedureperformed';
-import {MergedProcedureModel} from '../../models/procedure/MergedProcedure.model';
-import {AdminService} from './admin.service';
+import { Injectable } from '@angular/core';
+import { QueueService } from './queue.service';
+import { HospitalService } from './hospital.service';
+import { emptypatientvisit, Visit } from '../../models/visit/Visit';
+import { BehaviorSubject, Observable, Subscription, Subject } from 'rxjs';
+import { Procedureperformed } from '../../models/procedure/Procedureperformed';
+import { MergedProcedureModel } from '../../models/procedure/MergedProcedure.model';
+import { AdminService } from './admin.service';
 import * as moment from 'moment';
+import { Meta } from 'app/models/universal';
+import { Prescription } from 'app/models/visit/Prescription';
+import { Stream, BSON } from 'mongodb-stitch-core-sdk';
+import { ChangeEvent } from 'mongodb-stitch-core-services-mongodb-remote';
+import { StitchService } from './stitch/stitch.service';
+import { Patient } from 'app/models/patient/Patient';
 
 @Injectable({
     providedIn: 'root'
 })
-export class PatientvisitService {
+export class VisitService {
     patientid: string;
     hospitalid: string;
-    visithistory: BehaviorSubject<Array<PatientVisit>> = new BehaviorSubject<Array<PatientVisit>>([]);
-    currentvisit: BehaviorSubject<PatientVisit> = new BehaviorSubject<PatientVisit>({...emptypatientvisit});
+    visithistory: BehaviorSubject<Array<Visit>> = new BehaviorSubject<Array<Visit>>([]);
+    currentvisit: BehaviorSubject<Visit> = new BehaviorSubject<Visit>({ ...emptypatientvisit });
     adminid: string;
 
-    constructor(private queue: QueueService,
-                private adminservice: AdminService,
-                private hospitalService: HospitalService) {
+    /**
+     * This keeps a list of all the DATABASE SUBSCRIPTIONS that have been made by this service
+     * It's to be maintined as a standard across all services
+     */
+    dbSubscriptions: Map<string | BSON.ObjectId, Stream<ChangeEvent<any>>> = new Map();
+    /**
+     * This keeps a copy of all the internal subscriptions to INTERNAL OBSERVABLES
+     * It's to be maintined as a standard across all services
+     */
+    internalSubscriptions: Map<string, Subscription> = new Map();
+
+    constructor(
+        private adminservice: AdminService,
+        private hospitalService: HospitalService,
+        private stitch: StitchService) {
         /*** DANGEROUS TERRITORY ****
          * the order of calling these functions is very important,
          * because if hospitalId is missing some queries that execute later might fail
@@ -31,12 +49,12 @@ export class PatientvisitService {
         hospitalService.activehospital.subscribe(value => {
             this.hospitalid = value._id;
         });
-        queue.currentpatient.subscribe(value => {
-            if (value.patientdata._id) {
-                this.patientid = value.patientdata._id;
-                this.fetchvisithistory();
-            }
-        });
+        // this.queue.currentpatient.subscribe(value => {
+        //     if (value.patientdata._id) {
+        //         this.patientid = value.patientdata._id;
+        //         this.fetchvisithistory();
+        //     }
+        // });
 
     }
 
@@ -50,9 +68,16 @@ export class PatientvisitService {
     addprocedure(visitid: string, procedure: MergedProcedureModel, per: Procedureperformed) {
         per.name = procedure.rawProcedure.name;
         per.category = procedure.rawProcedure.category;
+
+        const meta: Meta = {
+            date: moment().toDate(),
+            adminId: this.adminservice.userdata._id,
+            hospitalId: this.hospitalService.activehospital.value._id
+        };
+
         per.metadata = {
-            lastEdit: moment().toDate(),
-            date: moment().toDate()
+            created: meta,
+            edited: meta,
         };
         per.adminid = this.adminid;
         per.payment = {
@@ -60,15 +85,34 @@ export class PatientvisitService {
             hasInsurance: false,
             methods: []
         };
-        per.originalProcedureId = procedure.rawProcedure.id;
-        per.customProcedureId = procedure.customProcedure.id;
+        per.originalProcedureId = procedure.rawProcedure._id;
+        per.customProcedureId = procedure.customProcedure._id;
         // return this.db.collection('hospitalvisits').doc(visitid).update({
         //     procedures: firestore.FieldValue.arrayUnion(per)
         // });
         return true as any;
 
     }
+    async watchId(id: BSON.ObjectId): Promise<Subject<Visit>> {
+        const query = {
+            _id: id
+        };
+        const response: Subject<Visit> = new Subject();
+        this.dbSubscriptions.set(id, await this.stitch.db.collection<Visit>('visits').watch(query));
+        this.stitch.db.collection<Visit>('visits').findOne(query)
+            .then(async value => {
+                response.next(value);
+            })
+            .catch(e => response.error(e));
 
+        this.dbSubscriptions.get(id).onNext(data => {
+            response.next(data.fullDocument);
+        });
+        this.dbSubscriptions.get(id).onError(e => {
+            response.error(e);
+        });
+        return response;
+    }
     /**
      * @param visitid
      * @param procedure
@@ -103,7 +147,12 @@ export class PatientvisitService {
         //     });
     }
 
-    editpatientvisit(visit: PatientVisit) {
+    addVisit(visit: Visit) {
+        this.stitch.db.collection('visits')
+            .insertOne(visit)
+    }
+
+    editpatientvisit(visit: Visit) {
         // return this.db.collection('hospitalvisits').doc(visit.id).update(visit);
     }
 
@@ -118,7 +167,7 @@ export class PatientvisitService {
 
     }
 
-    payandexit(visit: PatientVisit) {
+    payandexit(visit: Visit) {
         visit.checkin = {
             status: 4,
             admin: null,
@@ -127,13 +176,14 @@ export class PatientvisitService {
         // return this.db.collection('hospitalvisits').doc(visit.id).update(visit);
     }
 
-    setprescription(visitid: string, prescription: string) {
+    setprescription(visitid: string, prescription: Prescription) {
         // return this.db.collection('hospitalvisits').doc(visitid).update({
         //     prescription: prescription
         // });
         return true as any;
 
     }
+
 
     terminatepatientvisit(visitid) {
         // return this.db.collection('hospitalvisits').doc(visitid).update({

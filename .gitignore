@@ -2,10 +2,11 @@
 
 # compiled output
 /dist
+/stitch/hosting
 /tmp
 /out-tsc
 functions/dist
-
+/public
 
 functions/e2e
 
@@ -29,7 +30,7 @@ functions/node_modules
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-
+/.history
 # misc
 /.sass-cache
 /connect.lock

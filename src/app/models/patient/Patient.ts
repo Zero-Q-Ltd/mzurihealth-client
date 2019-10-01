@@ -1,53 +1,22 @@
-import {Customfields, emptymetadata, Metadata} from '../universal';
-import {HospFile} from '../hospital/file';
-import {Condition} from '../procedure/MedicalConditions.model';
-import {Allegy} from '../procedure/Allergy.model';
+import { Customfields, emptymetadata, Metadata } from '../universal';
+import { HospFile } from '../hospital/HospFile';
+import { BSON } from 'mongodb-stitch-browser-sdk';
 
 export interface Patient {
-    personalInfo: {
-        address: string,
-        photoURL: string
-        name: string,
-        gender: number,
-        occupation: string,
-        workplace: string,
-        phone: number,
-        email: string,
-        idno: string,
-        dob: Date,
-    };
+    _id: BSON.ObjectId;
+    personalInfo: PersonalInfo;
     fileInfo?: HospFile;
-    _id: string;
     /**
-     * Optional parent _id number for minors
+     * Optional parent id number for minors
      */
     parentid?: string;
 
-    nextofKin: {
-        name: string,
-        relationship: string,
-        phone: number,
-        workplace: string
-    };
+    nextofKin: NextofKin;
     /**
      * A patient can have several insurances at the same time
      */
     insurance: Array<Insurance>;
-    medicalInfo: {
-        bloodType: string,
-        conditions: Array<Condition>
-        allergies: Array<Allegy>;
-        vitals: {
-            height: number,
-            weight: number,
-            pressure: number,
-            sugar: number,
-            heartRate: number,
-            respiration: number,
-            hb: string,
-        };
-        metadata: Metadata;
-    };
+
     /**
      * used in queries so that you can optionally disable some patients
      */
@@ -61,6 +30,26 @@ export interface Patient {
 export interface Insurance {
     id: string;
     insuranceNo: string;
+}
+
+export interface NextofKin {
+    name: string;
+    relationship: string;
+    phone: string;
+    workplace: string;
+}
+
+export interface PersonalInfo {
+    address: string;
+    photoURL: string;
+    name: string;
+    gender: number;
+    occupation: string;
+    workplace: string;
+    phone: string;
+    email: string;
+    idno: string;
+    dob: Date;
 }
 
 export const emptypatient: Patient = {
@@ -84,21 +73,6 @@ export const emptypatient: Patient = {
         workplace: null
     },
     insurance: [],
-    medicalInfo: {
-        bloodType: null,
-        conditions: [],
-        allergies: [],
-        vitals: {
-            height: null,
-            weight: null,
-            pressure: null,
-            sugar: null,
-            heartRate: null,
-            respiration: null,
-            hb: null
-        },
-        metadata: emptymetadata
-    },
     status: true,
     exrainfo: null,
     primaryHosp: null,

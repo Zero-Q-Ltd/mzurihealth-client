@@ -81,9 +81,10 @@ export class TodayComponent implements OnInit {
             this.hospitalprocedures = mergedprocedures;
         });
         queue.currentpatient.subscribe(value => {
+            console.log(value)
             this.currentpatient = value;
-            this.anzisha();
-            this.imeanzilishwa.next(true);
+            // this.anzisha();
+            this.imeanzilishwa.next(false);
         });
         patientvisitservice.currentvisit.subscribe(visit => {
             console.log(visit);

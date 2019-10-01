@@ -97,18 +97,20 @@ export class VisitService {
         const query = {
             _id: id
         };
+        const queryid = + new Date();
+
         const response: Subject<Visit> = new Subject();
-        this.dbSubscriptions.set(id, await this.stitch.db.collection<Visit>('visits').watch(query));
-        this.stitch.db.collection<Visit>('visits').findOne(query)
+        this.dbSubscriptions.set(queryid, await this.stitch.db.collection<Visit>('patients').watch(query));
+        this.stitch.db.collection<Visit>('patients').findOne(query)
             .then(async value => {
                 response.next(value);
             })
             .catch(e => response.error(e));
 
-        this.dbSubscriptions.get(id).onNext(data => {
+        this.dbSubscriptions.get(queryid).onNext(data => {
             response.next(data.fullDocument);
         });
-        this.dbSubscriptions.get(id).onError(e => {
+        this.dbSubscriptions.get(queryid).onError(e => {
             response.error(e);
         });
         return response;

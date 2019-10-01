@@ -1,33 +1,16 @@
-<div class="page-layout simple left-sidebar inner-sidebar ">
+<div class="page-layout simple ">
 
-    <div class="content">
-
-        <!-- SIDEBAR -->
-        <fuse-sidebar class="sidebar" foldedWidth="" lockedOpen="gt-sm" name="current-patients-sidebar" position="left">
-
-            <!-- SIDEBAR CONTENT -->
-            <div class="content" fusePerfectScrollbar>
-                <current-patients-sidebar [@animate]="{value:'*'}"></current-patients-sidebar>
-            </div>
-            <!-- / SIDEBAR CONTENT -->
-
-        </fuse-sidebar>
-        <!-- / SIDEBAR -->
-
-        <!-- CENTER -->
-        <div class="center pl-12 pb-56 pr-4">
-
-            <!-- CONTENT -->
-            <div [ngSwitch]="activepage" class="content ">
-                <general-details *ngSwitchCase="'generaldetails'"></general-details>
-                <patient-notes *ngSwitchCase="'notes'"></patient-notes>
-                <patient-history *ngSwitchCase="'history'"></patient-history>
-                <patient-today *ngSwitchCase="'today'"></patient-today>
-            </div>
-            <!-- / CONTENT -->
-
+    <div class="content"  fxLayout="column">
+        <div  fxLayout="row">
+            <general-details fxFlex="50"></general-details>
+            <patient-history fxFlex="50"></patient-history>
         </div>
-        <!-- / CENTER -->
+      
+        <div  fxLayout="row">
+            <!-- <patient-notes fxFlex="50"></patient-notes> -->
 
+            <patient-today  fxFlex="100"></patient-today>
+        </div>
+      
     </div>
 </div>

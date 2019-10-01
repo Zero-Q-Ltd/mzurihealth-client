@@ -23,8 +23,8 @@ export class MedicalinfoService {
 
   constructor(
     private stitch: StitchService) {
-
   }
+  
   /**
    * @TODO Medical info changes with thime
    * Figure out a way of fetching only the most recent object
@@ -33,18 +33,19 @@ export class MedicalinfoService {
     const query = {
       _id: patientid
     };
+    const queryid = + new Date();
     const response: Subject<MedicalInfo> = new Subject()
-    this.dbSubscriptions.set(patientid, await this.stitch.db.collection<MedicalInfo>('medinfo').watch(query));
+    this.dbSubscriptions.set(queryid, await this.stitch.db.collection<MedicalInfo>('medinfo').watch(query));
     this.stitch.db.collection<MedicalInfo>('medinfo').findOne(query)
       .then(async value => {
         response.next(value);
       })
       .catch(e => response.error(e));
 
-    this.dbSubscriptions.get(patientid).onNext(data => {
+    this.dbSubscriptions.get(queryid).onNext(data => {
       response.next(data.fullDocument);
     });
-    this.dbSubscriptions.get(patientid).onError(e => {
+    this.dbSubscriptions.get(queryid).onError(e => {
       response.error(e);
     });
     return response;

@@ -77,18 +77,20 @@ export class PatientService {
         const query = {
             _id: id
         };
+        const queryid = + new Date();
+
         const response: Subject<Patient> = new Subject();
-        this.dbSubscriptions.set(id, await this.stitch.db.collection<Patient>('patients').watch(query));
+        this.dbSubscriptions.set(queryid, await this.stitch.db.collection<Patient>('patients').watch(query));
         this.stitch.db.collection<Patient>('patients').findOne(query)
             .then(async value => {
                 response.next(value);
             })
             .catch(e => response.error(e));
 
-        this.dbSubscriptions.get(id).onNext(data => {
+        this.dbSubscriptions.get(queryid).onNext(data => {
             response.next(data.fullDocument);
         });
-        this.dbSubscriptions.get(id).onError(e => {
+        this.dbSubscriptions.get(queryid).onError(e => {
             response.error(e);
         });
         return response;

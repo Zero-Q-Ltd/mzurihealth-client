@@ -63,14 +63,9 @@ export class GeneralDetailsComponent implements OnInit {
                     .get('fileno').disable({ onlySelf: true });
 
                 this.patientsForm.controls['personaLinfo']
-                    .get('firstName').patchValue(value.patientdata.personalInfo.name.split(' ')[0]);
+                    .get('name').patchValue(value.patientdata.personalInfo.name.split(' ')[0]);
 
-                this.patientsForm.controls['personaLinfo']
-                    .get('lastName').patchValue(value.patientdata.personalInfo.name.split(' ')[1]);
-
-                this.patientsForm.controls['personaLinfo']
-                    .get('idNo').patchValue(value.patientdata.personalInfo.idno);
-
+             
                 this.patientsForm.controls['personaLinfo']
                     .get('gender').patchValue(value.patientdata.personalInfo.gender);
 
@@ -91,19 +86,6 @@ export class GeneralDetailsComponent implements OnInit {
 
                 this.patientsForm.controls['personaLinfo']
                     .get('occupation').patchValue(value.patientdata.personalInfo.occupation);
-
-                this.patientsForm.controls['nextofKin']
-                    .get('relationship').patchValue(value.patientdata.nextofKin.relationship);
-
-                this.patientsForm.controls['nextofKin']
-                    .get('name').patchValue(value.patientdata.nextofKin.name);
-
-                this.patientsForm.controls['nextofKin']
-                    .get('phone').patchValue(value.patientdata.nextofKin.phone);
-
-                this.patientsForm.controls['nextofKin']
-                    .get('workplace').patchValue(value.patientdata.nextofKin.workplace);
-
 
                 value.patientdata.insurance.forEach(i => {
                     this.insurance.push(this.replicateInsurance(i));
@@ -209,10 +191,8 @@ export class GeneralDetailsComponent implements OnInit {
         /**
          * personal information
          * */
-        const firstname = new FormControl('', Validators.required);
-        const lastname = new FormControl('', Validators.required);
+        const name = new FormControl('', Validators.required);
         const occupation = new FormControl('');
-        const idno = new FormControl('', Validators.required);
         const gender = new FormControl('', Validators.required);
         const birth = new FormControl('', Validators.required);
         const email = new FormControl('', Validators.compose([
@@ -228,10 +208,8 @@ export class GeneralDetailsComponent implements OnInit {
         const fileno = new FormControl('', Validators.required);
 
         this.personalinfo = new FormGroup({
-            firstname: firstname,
-            lastname: lastname,
+            firstname: name,
             occupation: occupation,
-            idno: idno,
             gender: gender,
             birth: birth,
             email: email,

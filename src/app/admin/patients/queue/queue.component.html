@@ -100,8 +100,17 @@
 
                 <mat-tab [disabled]="!!currentpatient">
                     <ng-template matTabLabel>
-                        <span [matBadgeHidden]="!!currentpatient" matBadge="..." matBadgeColor="warn"
-                              matBadgeOverlap="false" matBadgePosition="above after">Current Patient</span>
+                        <span>
+                            <mat-chip-list [ngSwitch]="!!currentpatient">
+                                <mat-chip *ngSwitchCase="true"  color="accent" selected>
+                                    Current Patient
+                                </mat-chip>
+                                <mat-chip *ngSwitchCase="false">
+                                    Current Patient
+                                </mat-chip>
+                             </mat-chip-list>
+                        </span>
+                               
                     </ng-template>
                     <ng-template matTabContent>
 

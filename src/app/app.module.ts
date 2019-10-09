@@ -33,6 +33,7 @@ import { AdminSharedModule } from './admin/shared/admin-shared.module';
 import { DashboardComponent } from './admin/dashboard/dashboard.component';
 import { AdminlayoutComponent } from './admin/adminlayout.component';
 import { AdminprofileComponent } from './admin/adminprofile/adminprofile.component';
+import { MainLayoutComponent } from './pages/main-layout/main-layout.component';
 
 @NgModule({
     declarations: [
@@ -41,6 +42,7 @@ import { AdminprofileComponent } from './admin/adminprofile/adminprofile.compone
         DashboardComponent,
         AdminlayoutComponent,
         AdminprofileComponent,
+        MainLayoutComponent,
     ],
     imports: [
         BrowserModule,

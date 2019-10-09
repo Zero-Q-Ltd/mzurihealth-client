@@ -1,7 +1,8 @@
-@import "../../../../@fuse/scss/fuse";
+@import "../../../@fuse/scss/fuse";
 
 * {
-    background: url('../../../../assets/images/backgrounds/dark-material-bg.jpg') orange;
+    background: url("../../../assets/images/backgrounds/dark-material-bg.jpg")
+        orange;
 
     #login {
         width: auto;
@@ -9,11 +10,10 @@
         overflow: hidden;
         background-size: contain;
 
-
         #login-intro {
             padding: 128px;
 
-            @include media-breakpoint('sm') {
+            @include media-breakpoint("sm") {
                 padding: 128px 64px;
             }
 
@@ -46,13 +46,13 @@
 
             @include mat-elevation(16);
 
-            @include media-breakpoint('sm') {
+            @include media-breakpoint("sm") {
                 width: 360px;
                 min-width: 360px;
                 max-width: 360px;
             }
 
-            @include media-breakpoint('xs') {
+            @include media-breakpoint("xs") {
                 width: 100%;
                 min-width: 100%;
                 max-width: 100%;
@@ -61,7 +61,7 @@
             #login-form {
                 padding: 128px 48px 48px 48px;
 
-                @include media-breakpoint('xs') {
+                @include media-breakpoint("xs") {
                     text-align: center;
                     padding: 24px;
                 }
@@ -74,7 +74,6 @@
                 .title {
                     font-size: 21px;
                     color: #fff;
-
                 }
 
                 .description {
@@ -88,7 +87,7 @@
                     mat-form-field {
                         width: 100%;
 
-                        @include media-breakpoint('xs') {
+                        @include media-breakpoint("xs") {
                             width: 80%;
                         }
                     }
@@ -102,13 +101,13 @@
                         margin-top: 8px;
 
                         .remember-me {
-                            margin-bottom: 16px
+                            margin-bottom: 16px;
                         }
 
                         .forgot-password {
                             font-size: 13px;
                             font-weight: 600;
-                            margin-bottom: 16px
+                            margin-bottom: 16px;
                         }
                     }
 
@@ -117,7 +116,7 @@
                         margin: 16px auto;
                         display: block;
 
-                        @include media-breakpoint('xs') {
+                        @include media-breakpoint("xs") {
                             width: 80%;
                         }
                     }
@@ -140,7 +139,7 @@
 
                         &:before,
                         &:after {
-                            content: '';
+                            content: "";
                             display: block;
                             width: 30px;
                             position: absolute;
@@ -163,21 +162,21 @@
                     &.facebook {
                         width: 70%;
                         text-transform: none;
-                        color: #FFFFFF;
+                        color: #ffffff;
                         font-size: 13px;
 
-                        @include media-breakpoint('xs') {
+                        @include media-breakpoint("xs") {
                             width: 60%;
                         }
 
                         mat-icon {
-                            color: #FFFFFF;
+                            color: #ffffff;
                             margin: 0 8px 0 0;
                         }
                     }
 
                     &.google {
-                        background-color: #D73D32;
+                        background-color: #d73d32;
                         margin-bottom: 8px;
                     }
 
@@ -196,7 +195,6 @@
                     }
 
                     .link {
-
                     }
                 }
             }
@@ -204,18 +202,17 @@
     }
 }
 
-
 .my-btn {
-    background-color: #D73D32 !important;
-    border: #D73D32;
+    background-color: #d73d32 !important;
+    border: #d73d32;
     color: wheat;
     padding: 15px 32px;
     text-align: center;
     //display: inline-block;
     //font-size: 16px;
     &:hover {
-        background-color: #D73D32 !important;
+        background-color: #d73d32 !important;
         border: #fff;
-        color: #D73D32;
+        color: #d73d32;
     }
 }

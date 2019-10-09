@@ -27,7 +27,7 @@ import { NgxStronglyTypedFormsModule } from 'ngx-strongly-typed-forms';
 import { AdminRoutingModule } from './admin/admin-routing.module';
 import { LayoutModule } from '@angular/cdk/layout';
 import { DocumentationModule } from './admin/documentation/documentation.module';
-import { AuthenticationModule } from './admin/authentication/authentication.module';
+import { AuthenticationModule } from './authentication/authentication.module';
 import { CalendarModule } from 'angular-calendar';
 import { AdminSharedModule } from './admin/shared/admin-shared.module';
 import { DashboardComponent } from './admin/dashboard/dashboard.component';
@@ -84,7 +84,7 @@ import { AdminprofileComponent } from './admin/adminprofile/adminprofile.compone
         ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
 
     ],
-
+    exports: [AdminSharedModule],
     entryComponents: [NotificationComponent],
     providers: [],
     bootstrap: [

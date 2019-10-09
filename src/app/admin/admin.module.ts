@@ -8,7 +8,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { LayoutModule } from './layout/layout.module';
 import { AdminlayoutComponent } from './adminlayout.component';
 import { DocumentationModule } from './documentation/documentation.module';
-import { AuthenticationModule } from './authentication/authentication.module';
+import { AuthenticationModule } from '../authentication/authentication.module';
 import { CalendarModule } from './calendar/calendar.module';
 import { AdminSharedModule } from './shared/admin-shared.module';
 import { AdminprofileComponent } from './adminprofile/adminprofile.component';

@@ -1,8 +1,8 @@
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
-import {AllComponent} from './all/all.component';
-import {AddComponent} from './add/add.component';
-import {ProfileComponent} from './profile/profile.component';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { AllComponent } from './all/all.component';
+import { AddComponent } from './add/add.component';
+import { ProfileComponent } from './profile/profile.component';
 
 const routes: Routes = [
     {
@@ -19,7 +19,7 @@ const routes: Routes = [
     },
     {
         path: 'queue',
-        loadChildren: 'app/admin/patients/queue/queue.module#QueueModule'
+        loadChildren: 'app/patients/queue/queue.module#QueueModule'
     }
 ];
 

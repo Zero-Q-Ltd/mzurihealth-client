@@ -24,23 +24,21 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxStronglyTypedFormsModule } from 'ngx-strongly-typed-forms';
-import { AdminRoutingModule } from './admin/admin-routing.module';
-import { LayoutModule } from '@angular/cdk/layout';
 import { DocumentationModule } from './pages/documentation/documentation.module';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { CalendarModule } from 'angular-calendar';
 import { MainSharedModule } from './pages/shared/main-shared.module';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
-import { AdminlayoutComponent } from './admin/adminlayout.component';
 import { AdminprofileComponent } from './pages/adminprofile/adminprofile.component';
 import { MainLayoutComponent } from './pages/main-layout/main-layout.component';
+import { LayoutModule } from './pages/main-layout/layout/layout.module';
+import { UsersGuard } from './pages/guards/users.guard';
 
 @NgModule({
     declarations: [
         AppComponent,
         NotificationComponent,
         DashboardComponent,
-        AdminlayoutComponent,
         AdminprofileComponent,
         MainLayoutComponent,
     ],
@@ -75,7 +73,6 @@ import { MainLayoutComponent } from './pages/main-layout/main-layout.component';
         FormsModule,
         ReactiveFormsModule,
         NgxStronglyTypedFormsModule,
-        AdminRoutingModule,
         LayoutModule,
         DocumentationModule,
         AuthenticationModule,
@@ -88,7 +85,7 @@ import { MainLayoutComponent } from './pages/main-layout/main-layout.component';
     ],
     exports: [MainSharedModule],
     entryComponents: [NotificationComponent],
-    providers: [],
+    providers: [UsersGuard],
     bootstrap: [
         AppComponent,
     ]

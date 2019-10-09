@@ -28,12 +28,12 @@ export class UsersGuard implements CanActivate {
                         return true;
 
                     } else {
-                        this.router.navigate(['admin/authentication/signin']);
+                        this.router.navigate(['authentication/signin']);
                         return false;
                     }
                 });
         } else {
-            this.router.navigate(['admin/authentication/signin']);
+            this.router.navigate(['authentication/signin']);
             console.log('logged out');
             return false;
         }

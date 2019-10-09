@@ -110,7 +110,7 @@ export class AddComponent implements OnInit {
                 this.patientsForm.reset();
 
 
-                this.router.navigate(['admin/patients/all']);
+                this.router.navigate(['patients/all']);
             });
         } else {
             this.savingUser = false;

@@ -15,10 +15,11 @@ const routes: Routes = [
         children: [
             {
                 path: '',
-                redirectTo: 'dashboard'
+                redirectTo: 'dashboard',
+                pathMatch: 'full'
             },
             {
-                path: 'dashboard',
+                path: '',
                 // canActivate: [UsersGuard],
                 component: DashboardComponent
             },
@@ -60,7 +61,7 @@ const routes: Routes = [
     },
     {
         path: 'authentication',
-        loadChildren: 'app/admin/authentication/authentication.module#AuthenticationModule'
+        loadChildren: 'app/authentication/authentication.module#AuthenticationModule'
     },
 ];
 

@@ -4,7 +4,7 @@ import { Hospital } from '../../models/hospital/Hospital';
 import { PaymentChannel, Paymentmethods } from '../../models/payment/PaymentChannel';
 import { BehaviorSubject } from 'rxjs';
 
-// import * as paymentchannels from 'assets/paymentchannels.json';
+import * as paymentchannels from 'assets/paymentchannels.json';
 import { StitchService } from './stitch/stitch.service';
 import { Stream } from 'mongodb-stitch-core-sdk';
 import { ChangeEvent } from 'mongodb-stitch-core-services-mongodb-remote';
@@ -26,9 +26,11 @@ export class PaymentmethodService {
     constructor(private hospitalservice: HospitalService,
         private stitch: StitchService) {
         this.hospitalservice.activehospital.subscribe(hospital => {
+
             if (hospital._id) {
                 this.activehospital = hospital;
                 this.getallpaymentchannels();
+                // this.addallpaymnetmethods();
             }
         });
     }
@@ -86,7 +88,7 @@ export class PaymentmethodService {
         //     };
         //     return paymentchannel;
         // });
-        // console.log(conv)
-        // this.stitch.db.collection('paymentchannels').insertMany(conv)
+        // console.log(conv);
+        // this.stitch.db.collection('paymentchannels').insertMany(conv);
     }
 }

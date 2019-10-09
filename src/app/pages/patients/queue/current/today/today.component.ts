@@ -81,7 +81,7 @@ export class TodayComponent implements OnInit {
             this.hospitalprocedures = mergedprocedures;
         });
         queue.currentpatient.subscribe(value => {
-            console.log(value)
+            console.log(value);
             this.currentpatient = value;
             // this.anzisha();
             this.imeanzilishwa.next(false);
@@ -91,11 +91,11 @@ export class TodayComponent implements OnInit {
             this.currentvisit = visit;
             this.proceduresdatasource.data = visit.procedures;
         });
-        this.filteredprocedures = this.procedureselection.valueChanges
-            .pipe(
-                startWith(''),
-                map(value => this._filter(value))
-            );
+        // this.filteredprocedures = this.procedureselection.valueChanges
+        //     .pipe(
+        //         startWith(''),
+        //         map(value => this._filter(value))
+        //     );
     }
 
     anzisha(): void {

@@ -1,9 +1,7 @@
 @import "src/@fuse/scss/fuse";
 
 #patients {
-
     .header {
-
         .search-wrapper {
             width: 100%;
             max-width: 480px;
@@ -34,10 +32,23 @@
         overflow: hidden;
 
         .sidebar {
-
             &:not(.locked-open) {
                 background: white;
             }
         }
+    }
+    .pill {
+        background-color: #ddd;
+        border: none;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 16px;
+    }
+    .activepill {
+        background-color: #1eb0f3;
     }
 }

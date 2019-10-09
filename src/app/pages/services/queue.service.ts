@@ -66,6 +66,15 @@ export class QueueService {
             if (hospital._id) {
                 this.activehospitalid = hospital._id;
                 this.getqueue();
+                this.queue.subscribe(qu3 => {
+                    this.fetchingpatientdata.next(true);
+                    if (this.internalSubscriptions.get('queuesub')) {
+                        this.internalSubscriptions.get('queuesub').unsubscribe();
+                    }
+                    const queuesub = this.fetchQueuedPatients();
+                    this.internalSubscriptions.set('queuesub', queuesub);
+                });
+
             }
         });
 
@@ -75,12 +84,6 @@ export class QueueService {
         adminservice.observableuserdata.pipe(distinctUntilChanged((prev, curr) => equal(prev._id, curr._id))).subscribe((admin: HospitalAdmin) => {
             if (admin._id) {
                 this.adminid = admin._id;
-                this.fetchingpatientdata.next(true);
-                if (this.internalSubscriptions.get('queuesub')) {
-                    this.internalSubscriptions.get('queuesub').unsubscribe();
-                }
-                const queuesub = this.fetchQueuedPatients();
-                this.internalSubscriptions.set('queuesub', queuesub);
             }
         });
 
@@ -253,6 +256,16 @@ export class QueueService {
 
         const d3 = await livePatientObs;
 
+        // d1.subscribe(i => {
+        //     console.log(i);
+        // });
+        // d2.subscribe(i => {
+        //     console.log(i);
+        // });
+
+        // d3.subscribe(i => {
+        //     console.log(i);
+        // });
 
         combineLatest([d1, d2, d3]).subscribe((data) => {
             console.log('Current Patient data fetched');
@@ -265,19 +278,6 @@ export class QueueService {
                 visitdata: data[1]
             });
         });
-        // combineLatest([await this.medInfoService.watchLatest(this.currentpatient.value.queuedata.patientId),
-        // await this.visitService.watchId(this.currentpatient.value.queuedata.visitId),
-        // await this.patientservice.watchId(this.currentpatient.value.queuedata.patientId)]).subscribe((data) => {
-        //     console.log('Current Patient data fetched');
-        //     this.fetchingCurrentpatientdata.next(false);
-
-        //     // this.currentpatient.next({
-        //     //     medicalInfo: data[2],
-        //     //     patientdata: data[0],
-        //     //     queuedata: this.currentpatient.value.queuedata,
-        //     //     visitdata: data[1]
-        //     // });
-        // });
     }
 
 

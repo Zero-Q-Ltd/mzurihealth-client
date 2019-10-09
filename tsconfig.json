@@ -22,6 +22,7 @@
         "module": "commonjs",
         "skipLibCheck": true,
         "stripInternal": true,
-        "noImplicitAny": false
+        "noImplicitAny": false,
+        "resolveJsonModule": true
     }
 }

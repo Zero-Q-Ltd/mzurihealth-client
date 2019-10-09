@@ -19,7 +19,6 @@ import { HospitalService } from '../services/hospital.service';
 import { ProceduresService } from '../services/procedures.service';
 import { Router } from '@angular/router';
 import { navigation } from '../navigation/navigation';
-
 @Component({
   selector: 'app-main-layout',
   templateUrl: './main-layout.component.html',

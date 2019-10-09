@@ -31,7 +31,7 @@ export class MedicalinfoService {
    */
   async watchLatest(patientid: BSON.ObjectId): Promise<Subject<MedicalInfo>> {
     const query = {
-      patientid: patientid
+      patientId: patientid
     };
     const queryid = + new Date();
 
@@ -40,6 +40,9 @@ export class MedicalinfoService {
     this.dbSubscriptions.set(queryid, await collection.watch([patientid]));
     collection.findOne(query)
       .then(async value => {
+        if (!value) {
+          response.error('No Doc found');
+        }
         response.next(value);
       })
       .catch(e => response.error(e));

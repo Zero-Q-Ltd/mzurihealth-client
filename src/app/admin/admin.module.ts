@@ -2,17 +2,17 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AdminRoutingModule } from './admin-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { UsersGuard } from './guards/users.guard';
+import { UsersGuard } from '../pages/guards/users.guard';
 import { RouterModule } from '@angular/router';
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { LayoutModule } from './layout/layout.module';
+import { DashboardComponent } from '../pages/dashboard/dashboard.component';
+import { LayoutModule } from '../pages/layout/layout.module';
 import { AdminlayoutComponent } from './adminlayout.component';
-import { DocumentationModule } from './documentation/documentation.module';
+import { DocumentationModule } from '../pages/documentation/documentation.module';
 import { AuthenticationModule } from '../authentication/authentication.module';
-import { CalendarModule } from './calendar/calendar.module';
-import { AdminSharedModule } from './shared/admin-shared.module';
-import { AdminprofileComponent } from './adminprofile/adminprofile.component';
-import { AdminService } from './services/admin.service';
+import { CalendarModule } from '../pages/calendar/calendar.module';
+import { AdminSharedModule } from '../pages/shared/admin-shared.module';
+import { AdminprofileComponent } from '../pages/adminprofile/adminprofile.component';
+import { AdminService } from '../pages/services/admin.service';
 import { NgxStronglyTypedFormsModule } from 'ngx-strongly-typed-forms';
 
 @NgModule({

@@ -1,9 +1,9 @@
 import { RouterModule, Routes } from '@angular/router';
-import { UsersGuard } from './guards/users.guard';
+import { UsersGuard } from '../pages/guards/users.guard';
 import { NgModule } from '@angular/core';
-import { DashboardComponent } from './dashboard/dashboard.component';
+import { DashboardComponent } from '../pages/dashboard/dashboard.component';
 import { AdminlayoutComponent } from './adminlayout.component';
-import { AdminprofileComponent } from './adminprofile/adminprofile.component';
+import { AdminprofileComponent } from '../pages/adminprofile/adminprofile.component';
 
 const routes: Routes = [
     {

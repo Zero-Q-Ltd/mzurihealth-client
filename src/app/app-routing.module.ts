@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { Error404Component } from './errorpages/404/error-404.component';
-import { UsersGuard } from './admin/guards/users.guard';
+import { UsersGuard } from './pages/guards/users.guard';
 import { AdminlayoutComponent } from './admin/adminlayout.component';
-import { DashboardComponent } from './admin/dashboard/dashboard.component';
-import { AdminprofileComponent } from './admin/adminprofile/adminprofile.component';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { AdminprofileComponent } from './pages/adminprofile/adminprofile.component';
 
 const routes: Routes = [
     {

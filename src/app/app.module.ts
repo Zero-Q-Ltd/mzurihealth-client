@@ -26,13 +26,13 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxStronglyTypedFormsModule } from 'ngx-strongly-typed-forms';
 import { AdminRoutingModule } from './admin/admin-routing.module';
 import { LayoutModule } from '@angular/cdk/layout';
-import { DocumentationModule } from './admin/documentation/documentation.module';
+import { DocumentationModule } from './pages/documentation/documentation.module';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { CalendarModule } from 'angular-calendar';
-import { AdminSharedModule } from './admin/shared/admin-shared.module';
-import { DashboardComponent } from './admin/dashboard/dashboard.component';
+import { AdminSharedModule } from './pages/shared/admin-shared.module';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { AdminlayoutComponent } from './admin/adminlayout.component';
-import { AdminprofileComponent } from './admin/adminprofile/adminprofile.component';
+import { AdminprofileComponent } from './pages/adminprofile/adminprofile.component';
 import { MainLayoutComponent } from './pages/main-layout/main-layout.component';
 
 @NgModule({

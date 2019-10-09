@@ -4,10 +4,10 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FuseConfigService } from '@fuse/services/config.service';
 import { fuseAnimations } from '@fuse/animations';
 import { FuseSplashScreenService } from '../../../@fuse/services/splash-screen.service';
-import { AdminService } from '../../admin/services/admin.service';
+import { AdminService } from '../../pages/services/admin.service';
 import { HospitalAdmin } from '../../models/user/HospitalAdmin';
 import { Router } from '@angular/router';
-import { StitchService } from 'app/admin/services/stitch/stitch.service';
+import { StitchService } from 'app/pages/services/stitch/stitch.service';
 
 @Component({
     selector: 'login-2',

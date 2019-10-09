@@ -1,18 +1,18 @@
-import {Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
-import {Subject} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
-import {TranslateService} from '@ngx-translate/core';
+import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
 import * as _ from 'lodash';
 
-import {FuseConfigService} from '@fuse/services/config.service';
-import {FuseSidebarService} from '@fuse/components/sidebar/sidebar.service';
+import { FuseConfigService } from '@fuse/services/config.service';
+import { FuseSidebarService } from '@fuse/components/sidebar/sidebar.service';
 
-import {navigation} from '../../../navigation/navigation';
-import {emptyhospital, Hospital} from 'app/models/hospital/Hospital';
-import {emptyadmin, HospitalAdmin} from 'app/models/user/HospitalAdmin';
-import {AdminService} from 'app/admin/services/admin.service';
-import {HospitalService} from 'app/admin/services/hospital.service';
-import {Router} from '@angular/router';
+import { navigation } from '../../../navigation/navigation';
+import { emptyhospital, Hospital } from 'app/models/hospital/Hospital';
+import { emptyadmin, HospitalAdmin } from 'app/models/user/HospitalAdmin';
+import { AdminService } from 'app/pages/services/admin.service';
+import { HospitalService } from 'app/pages/services/hospital.service';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'toolbar',
@@ -137,7 +137,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
             });
 
         // Set the selected language from default languages
-        this.selectedLanguage = _.find(this.languages, {id: this._translateService.currentLang});
+        this.selectedLanguage = _.find(this.languages, { id: this._translateService.currentLang });
     }
 
     /**

@@ -1,4 +1,4 @@
-import { emptypatient, Patient } from './../../models/patient/Patient';
+import { emptypatient, Patient } from '../../models/patient/Patient';
 import { Injectable } from '@angular/core';
 import { HospitalService } from './hospital.service';
 import { AdminService } from './admin.service';
@@ -220,7 +220,7 @@ export class QueueService {
                        * This MUST work hand in hand with the variable that checks whether fetchingCurrentpatientdata is complete
                        */
                     if (q.queuedata.checkin.status === 2) {
-                        console.log('Current Patient Found')
+                        console.log('Current Patient Found');
                         this.fetchingCurrentpatientdata.next(true);
                         this.currentpatient.next({
                             medicalInfo: null,
@@ -244,7 +244,7 @@ export class QueueService {
     }
 
     async fetchCurrentpatient() {
-        console.log('Fetching Current Patient Data')
+        console.log('Fetching Current Patient Data');
 
 
         const liveMedicalInfoobs: Subject<MedicalInfo> = await this.medInfoService.watchLatest(this.currentpatient.value.queuedata.patientId);
@@ -252,14 +252,14 @@ export class QueueService {
         const livePatientObs: Subject<Patient> = await this.patientservice.watchId(this.currentpatient.value.queuedata.patientId);
 
         livePatientObs.subscribe(res => {
-            console.log(res)
-        })
+            console.log(res);
+        });
         liveVisitdataObs.subscribe(res => {
-            console.log(res)
-        })
+            console.log(res);
+        });
         liveMedicalInfoobs.subscribe(res => {
-            console.log(res)
-        })
+            console.log(res);
+        });
         return combineLatest([livePatientObs, liveVisitdataObs, liveMedicalInfoobs]).subscribe((data) => {
             console.log('Current Patient data fetched');
             this.fetchingCurrentpatientdata.next(false);
@@ -270,7 +270,7 @@ export class QueueService {
                 queuedata: this.currentpatient.value.queuedata,
                 visitdata: data[1]
             });
-        })
+        });
     }
 
     addPatientToQueue(newvist: NewVisit, patient: Patient): Promise<any> {

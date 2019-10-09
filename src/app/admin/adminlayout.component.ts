@@ -1,23 +1,23 @@
-import {Component, Inject, OnInit} from '@angular/core';
-import {Subject} from 'rxjs';
-import {DOCUMENT} from '@angular/common';
-import {FuseConfigService} from '../../@fuse/services/config.service';
-import {FuseNavigationService} from '../../@fuse/components/navigation/navigation.service';
-import {FuseSidebarService} from '../../@fuse/components/sidebar/sidebar.service';
-import {FuseSplashScreenService} from '../../@fuse/services/splash-screen.service';
-import {FuseTranslationLoaderService} from '../../@fuse/services/translation-loader.service';
-import {TranslateService} from '@ngx-translate/core';
-import {Platform} from '@angular/cdk/platform';
-import {navigation} from './navigation/navigation';
-import {locale as navigationEnglish} from './navigation/i18n/en';
-import {locale as navigationSwahili} from './navigation/i18n/sw';
-import {takeUntil} from 'rxjs/operators';
-import {emptyhospital, Hospital} from '../models/hospital/Hospital';
-import {emptyadmin, HospitalAdmin} from '../models/user/HospitalAdmin';
-import {AdminService} from './services/admin.service';
-import {HospitalService} from './services/hospital.service';
-import {Router} from '@angular/router';
-import {ProceduresService} from './services/procedures.service';
+import { Component, Inject, OnInit } from '@angular/core';
+import { Subject } from 'rxjs';
+import { DOCUMENT } from '@angular/common';
+import { FuseConfigService } from '../../@fuse/services/config.service';
+import { FuseNavigationService } from '../../@fuse/components/navigation/navigation.service';
+import { FuseSidebarService } from '../../@fuse/components/sidebar/sidebar.service';
+import { FuseSplashScreenService } from '../../@fuse/services/splash-screen.service';
+import { FuseTranslationLoaderService } from '../../@fuse/services/translation-loader.service';
+import { TranslateService } from '@ngx-translate/core';
+import { Platform } from '@angular/cdk/platform';
+import { navigation } from '../pages/navigation/navigation';
+import { locale as navigationEnglish } from '../pages/navigation/i18n/en';
+import { locale as navigationSwahili } from '../pages/navigation/i18n/sw';
+import { takeUntil } from 'rxjs/operators';
+import { emptyhospital, Hospital } from '../models/hospital/Hospital';
+import { emptyadmin, HospitalAdmin } from '../models/user/HospitalAdmin';
+import { AdminService } from '../pages/services/admin.service';
+import { HospitalService } from '../pages/services/hospital.service';
+import { Router } from '@angular/router';
+import { ProceduresService } from '../pages/services/procedures.service';
 
 @Component({
     selector: 'app-adminlayout',
@@ -34,9 +34,9 @@ export class AdminlayoutComponent implements OnInit {
         activehospital: Hospital
         userdata: HospitalAdmin
     } = {
-        activehospital: Object.assign({}, emptyhospital),
-        userdata: Object.assign({}, emptyadmin)
-    };
+            activehospital: Object.assign({}, emptyhospital),
+            userdata: Object.assign({}, emptyadmin)
+        };
     // Private
     private _unsubscribeAll: Subject<any>;
 

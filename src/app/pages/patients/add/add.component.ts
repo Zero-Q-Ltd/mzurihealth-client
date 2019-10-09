@@ -14,7 +14,7 @@ import { Router } from '@angular/router';
 import { Paymentmethods } from '../../../models/payment/PaymentChannel';
 import { PaymentmethodService } from '../../services/paymentmethod.service';
 import { NumberValidator } from '../../validators/number.validator';
-import { FilenumberValidator } from 'app/admin/validators/filenumber.validator';
+import { FilenumberValidator } from 'app/pages/validators/filenumber.validator';
 import { PersonalInfo, Patient, NextofKin, Insurance } from 'app/models/patient/Patient';
 import { NewPatientForm } from 'app/models/patient/NewPatientForm';
 

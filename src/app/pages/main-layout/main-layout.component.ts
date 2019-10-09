@@ -10,12 +10,15 @@ import { FuseSplashScreenService } from '@fuse/services/splash-screen.service';
 import { FuseTranslationLoaderService } from '@fuse/services/translation-loader.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Platform } from '@angular/cdk/platform';
-import { AdminService } from 'app/admin/services/admin.service';
-import { HospitalService } from 'app/admin/services/hospital.service';
-import { ProceduresService } from 'app/admin/services/procedures.service';
-import { Router } from '@angular/router';
-import { navigation } from 'app/admin/navigation/navigation';
 import { takeUntil } from 'rxjs/operators';
+
+import { locale as navigationEnglish } from './../navigation/i18n/en';
+import { locale as navigationSwahili } from './../navigation/i18n/sw';
+import { AdminService } from '../services/admin.service';
+import { HospitalService } from '../services/hospital.service';
+import { ProceduresService } from '../services/procedures.service';
+import { Router } from '@angular/router';
+import { navigation } from '../navigation/navigation';
 
 @Component({
   selector: 'app-main-layout',

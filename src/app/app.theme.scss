@@ -1,12 +1,11 @@
 // Import app and page component themes here to enable theming for them
 @import "errorpages/404/error-404.theme";
 @import "errorpages/500/error-500.theme";
+@import "pages/main-layout/main.theme.scss";
 
 // Define a mixin for easier access
 @mixin components-theme($theme) {
-
     // Layout components
     @include error-404-theme($theme);
     @include error-500-theme($theme);
-
 }

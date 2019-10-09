@@ -1,23 +1,67 @@
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
-import {Error404Component} from './errorpages/404/error-404.component';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { Error404Component } from './errorpages/404/error-404.component';
+import { UsersGuard } from './admin/guards/users.guard';
+import { AdminlayoutComponent } from './admin/adminlayout.component';
+import { DashboardComponent } from './admin/dashboard/dashboard.component';
+import { AdminprofileComponent } from './admin/adminprofile/adminprofile.component';
 
 const routes: Routes = [
     {
         path: '',
-        loadChildren: 'app/frontend/frontend.module#FrontendModule',
+        canActivate: [UsersGuard],
+        canLoad: [UsersGuard],
+        component: AdminlayoutComponent,
+        children: [
+            {
+                path: '',
+                redirectTo: 'dashboard'
+            },
+            {
+                path: 'dashboard',
+                // canActivate: [UsersGuard],
+                component: DashboardComponent
+            },
+            {
+                path: 'profile',
+                // canActivate: [UsersGuard],
+                component: AdminprofileComponent
+            },
+            {
+                path: 'appointments',
+                // canActivate: [UsersGuard],
+                // component: AppointmentComponent
+                loadChildren: 'app/admin/calendar/calendar.module#CalendarModule'
+            },
+            {
+                path: 'patients',
+                // canActivate: [UsersGuard],
+                loadChildren: 'app/admin/patients/patients.module#PatientsModule'
+            },
+            {
+                path: 'documentation',
+                loadChildren: 'app/admin/documentation/documentation.module#DocumentationModule'
+            },
+            {
+                path: 'payments',
+                loadChildren: 'app/admin/payments/payments.module#PaymentsModule'
+            },
+            {
+                path: 'superadmin',
+                // canActivate: [UsersGuard],
+                loadChildren: 'app/admin/superadmin/superadmin.module#SuperAdminModule'
+            },
+            {
+                path: 'knowledge-base',
+                loadChildren: 'app/admin/knowledge-base/knowledge-base.module#KnowledgeBaseModule'
+                // component: DashboardComponent
+            },
+        ]
     },
     {
-        path: 'admin',
-        loadChildren: 'app/admin/admin.module#AdminModule',
+        path: 'authentication',
+        loadChildren: 'app/admin/authentication/authentication.module#AuthenticationModule'
     },
-    {
-        path: 'patientsportal',
-        loadChildren: 'app/patientsportal/patientsportal.module#PatientsportalModule'
-    },
-    {
-        path: '**', component: Error404Component
-    }
 ];
 
 @NgModule({

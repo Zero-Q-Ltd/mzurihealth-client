@@ -16,18 +16,31 @@ import { AppRoutingModule } from './app-routing.module';
 import { FuseSharedModule } from '../@fuse/shared.module';
 import { Error404Module } from './errorpages/404/error-404.module';
 import { Error500Module } from './errorpages/500/error-500.module';
-import { FrontendModule } from './frontend/frontend.module';
 import { AgmCoreModule } from '@agm/core';
 import { CommonModule } from '@angular/common';
 import { NotificationComponent } from './shared/components/notification/notification.component';
 import { Angulartics2Module } from 'angulartics2';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgxStronglyTypedFormsModule } from 'ngx-strongly-typed-forms';
+import { DocumentationModule } from './pages/documentation/documentation.module';
+import { AuthenticationModule } from './authentication/authentication.module';
+import { CalendarModule } from 'angular-calendar';
+import { MainSharedModule } from './pages/shared/main-shared.module';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { AdminprofileComponent } from './pages/adminprofile/adminprofile.component';
+import { MainLayoutComponent } from './pages/main-layout/main-layout.component';
+import { LayoutModule } from './pages/main-layout/layout/layout.module';
+import { UsersGuard } from './pages/guards/users.guard';
 
 @NgModule({
     declarations: [
         AppComponent,
         NotificationComponent,
+        DashboardComponent,
+        AdminprofileComponent,
+        MainLayoutComponent,
     ],
     imports: [
         BrowserModule,
@@ -48,19 +61,31 @@ import { environment } from '../environments/environment';
         MatSnackBarModule,
         Error404Module,
         Error500Module,
-        FrontendModule,
         /* Angulartics2Module.forRoot(<Angulartics2Settings>{
              pageTracking: {clearHash: true, clearQueryParams: true},
              ga: {transport: 'beacon'},
              developerMode: !environment.gaTrackingId, // developerMode disables tracking
          }),*/
+
+        CommonModule,
+
+        RouterModule,
+        FormsModule,
+        ReactiveFormsModule,
+        NgxStronglyTypedFormsModule,
+        LayoutModule,
+        DocumentationModule,
+        AuthenticationModule,
+        CalendarModule,
+
+        MainSharedModule,
         Angulartics2Module.forRoot(),
         ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
 
     ],
-
+    exports: [MainSharedModule],
     entryComponents: [NotificationComponent],
-    providers: [],
+    providers: [UsersGuard],
     bootstrap: [
         AppComponent,
     ]

@@ -35,8 +35,8 @@ export class MainLayoutComponent implements OnInit {
     activehospital: Hospital
     userdata: HospitalAdmin
   } = {
-      activehospital: Object.assign({}, emptyhospital),
-      userdata: Object.assign({}, emptyadmin)
+      activehospital: { ...emptyhospital },
+      userdata: { ...emptyadmin }
     };
   // Private
   private _unsubscribeAll: Subject<any>;

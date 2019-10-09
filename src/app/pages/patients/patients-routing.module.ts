@@ -19,7 +19,7 @@ const routes: Routes = [
     },
     {
         path: 'queue',
-        loadChildren: 'app/patients/queue/queue.module#QueueModule'
+        loadChildren: 'app/pages/patients/queue/queue.module#QueueModule'
     }
 ];
 

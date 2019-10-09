@@ -1,4 +1,4 @@
-import {FuseNavigation} from '@fuse/types';
+import { FuseNavigation } from '@fuse/types';
 
 export const navigation: FuseNavigation[] = [
     {
@@ -13,7 +13,7 @@ export const navigation: FuseNavigation[] = [
                 translate: 'NAV.superadmin',
                 type: 'item',
                 icon: 'settings',
-                url: 'superadmin',
+                url: '/superadmin',
                 // badge    : {
                 //     title    : '25',
                 //     translate: 'NAV.SAMPLE.BADGE',
@@ -27,7 +27,7 @@ export const navigation: FuseNavigation[] = [
                 translate: 'NAV.dashboard',
                 type: 'item',
                 icon: 'dashboard',
-                url: 'dashboard',
+                url: '',
                 // badge    : {
                 //     title    : '25',
                 //     translate: 'NAV.SAMPLE.BADGE',
@@ -41,7 +41,7 @@ export const navigation: FuseNavigation[] = [
                 translate: 'NAV.appointments',
                 type: 'item',
                 icon: 'today',
-                url: 'appointments',
+                url: '/appointments',
             }
         ]
     },
@@ -57,7 +57,7 @@ export const navigation: FuseNavigation[] = [
                 // translate: 'NAV.all',
                 type: 'item',
                 icon: 'people',
-                url: 'patients/all',
+                url: '/patients/all',
             },
             {
                 id: 'Add',
@@ -65,7 +65,7 @@ export const navigation: FuseNavigation[] = [
                 // translate: 'NAV.add',
                 type: 'item',
                 icon: 'person_add',
-                url: 'patients/add',
+                url: '/patients/add',
             },
             {
                 id: 'Queue',
@@ -73,7 +73,7 @@ export const navigation: FuseNavigation[] = [
                 // translate: 'NAV.add',
                 type: 'item',
                 icon: 'weekend',
-                url: 'patients/queue',
+                url: '/patients/queue',
             }
         ]
     },
@@ -89,7 +89,7 @@ export const navigation: FuseNavigation[] = [
                 // translate: 'NAV.all',
                 type: 'item',
                 icon: 'payment',
-                url: 'payments/all',
+                url: '/payments/all',
             },
             // {
             //     _id: 'Today',
@@ -112,7 +112,7 @@ export const navigation: FuseNavigation[] = [
                 title: 'Knowledge Base',
                 type: 'item',
                 icon: 'import_contacts',
-                url: 'knowledge-base'
+                url: '/knowledge-base'
             }
         ]
     },

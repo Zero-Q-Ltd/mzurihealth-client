@@ -1,14 +1,14 @@
-import {Injectable} from '@angular/core';
-import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from '@angular/router';
-import {Observable} from 'rxjs';
+import { Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
+import { Observable } from 'rxjs';
 import 'rxjs/add/operator/map';
-import {AdminService} from '../services/admin.service';
-import {StitchService} from '../services/stitch/stitch.service';
+import { AdminService } from '../services/admin.service';
+import { StitchService } from '../services/stitch/stitch.service';
 
 @Injectable()
 export class UsersGuard implements CanActivate {
     constructor(private adminservice: AdminService, private router: Router,
-                private stitch: StitchService) {
+        private stitch: StitchService) {
 
     }
 
@@ -17,13 +17,15 @@ export class UsersGuard implements CanActivate {
             console.log('logged in');
             return this.adminservice.observableuserdata
                 .map(userdata => {
-                    // console.log(userdata)
+                    console.log(userdata);
                     if (userdata && userdata.hasOwnProperty('data')) {
-                        if (activated.url === '/app/dashboard') {
-                            return false;
-                        } else {
-                            return true;
-                        }
+
+                        // if (activated.url === '/app/dashboard') {
+                        //     return false;
+                        // } else {
+                        //     return true;
+                        // }
+                        return true;
 
                     } else {
                         this.router.navigate(['admin/authentication/signin']);

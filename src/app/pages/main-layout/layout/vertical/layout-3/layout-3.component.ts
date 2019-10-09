@@ -1,17 +1,17 @@
-import {Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
-import {Subject} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
+import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
-import {FuseConfigService} from '@fuse/services/config.service';
-import {navigation} from '../../../navigation/navigation';
+import { FuseConfigService } from '@fuse/services/config.service';
+import { navigation } from '../../../../navigation/navigation';
 
 @Component({
-    selector: 'vertical-layout-1',
-    templateUrl: './layout-1.component.html',
-    styleUrls: ['./layout-1.component.scss'],
+    selector: 'vertical-layout-3',
+    templateUrl: './layout-3.component.html',
+    styleUrls: ['./layout-3.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class VerticalLayout1Component implements OnInit, OnDestroy {
+export class VerticalLayout3Component implements OnInit, OnDestroy {
     fuseConfig: any;
     navigation: any;
 

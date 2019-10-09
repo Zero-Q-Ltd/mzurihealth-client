@@ -246,32 +246,35 @@ export class QueueService {
     async fetchCurrentpatient() {
         console.log('Fetching Current Patient Data');
 
-
         const liveMedicalInfoobs: Subject<MedicalInfo> = await this.medInfoService.watchLatest(this.currentpatient.value.queuedata.patientId);
-        const liveVisitdataObs: Subject<Visit> = await this.visitService.watchId(this.currentpatient.value.queuedata.visitId);
-        const livePatientObs: Subject<Patient> = await this.patientservice.watchId(this.currentpatient.value.queuedata.patientId);
+        // const liveVisitdataObs: Subject<Visit> = await this.visitService.watchId(this.currentpatient.value.queuedata.visitId);
+        // const livePatientObs: Subject<Patient> = await this.patientservice.watchId(this.currentpatient.value.queuedata.patientId);
 
-        livePatientObs.subscribe(res => {
-            console.log(res);
-        });
-        liveVisitdataObs.subscribe(res => {
-            console.log(res);
-        });
+
         liveMedicalInfoobs.subscribe(res => {
             console.log(res);
         });
-        return combineLatest([livePatientObs, liveVisitdataObs, liveMedicalInfoobs]).subscribe((data) => {
-            console.log('Current Patient data fetched');
-            this.fetchingCurrentpatientdata.next(false);
 
-            this.currentpatient.next({
-                medicalInfo: data[2],
-                patientdata: data[0],
-                queuedata: this.currentpatient.value.queuedata,
-                visitdata: data[1]
-            });
-        });
+        // liveVisitdataObs.subscribe(res => {
+        //     console.log(res);
+        // });
+
+        // livePatientObs.subscribe(res => {
+        //     console.log(res);
+        // });
+        // combineLatest([livePatientObs, liveVisitdataObs, liveMedicalInfoobs]).subscribe((data) => {
+        //     console.log('Current Patient data fetched');
+        //     this.fetchingCurrentpatientdata.next(false);
+
+        //     this.currentpatient.next({
+        //         medicalInfo: data[2],
+        //         patientdata: data[0],
+        //         queuedata: this.currentpatient.value.queuedata,
+        //         visitdata: data[1]
+        //     });
+        // });
     }
+
 
     addPatientToQueue(newvist: NewVisit, patient: Patient): Promise<any> {
         const meta: Meta = {

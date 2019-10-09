@@ -1,9 +1,9 @@
-import {RouterModule, Routes} from '@angular/router';
-import {UsersGuard} from './guards/users.guard';
-import {NgModule} from '@angular/core';
-import {DashboardComponent} from './dashboard/dashboard.component';
-import {AdminlayoutComponent} from './adminlayout.component';
-import {AdminprofileComponent} from './adminprofile/adminprofile.component';
+import { RouterModule, Routes } from '@angular/router';
+import { UsersGuard } from './guards/users.guard';
+import { NgModule } from '@angular/core';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { AdminlayoutComponent } from './adminlayout.component';
+import { AdminprofileComponent } from './adminprofile/adminprofile.component';
 
 const routes: Routes = [
     {
@@ -54,11 +54,6 @@ const routes: Routes = [
                 path: 'knowledge-base',
                 loadChildren: 'app/admin/knowledge-base/knowledge-base.module#KnowledgeBaseModule'
                 // component: DashboardComponent
-            },
-            {
-                path: '',
-                // canActivate: [UsersGuard],
-                component: DashboardComponent
             },
         ]
     },

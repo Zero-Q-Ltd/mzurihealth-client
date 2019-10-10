@@ -49,12 +49,6 @@ export class VisitService {
         hospitalService.activehospital.subscribe(value => {
             this.hospitalid = value._id;
         });
-        // this.queue.currentpatient.subscribe(value => {
-        //     if (value.patientdata._id) {
-        //         this.patientid = value.patientdata._id;
-        //         this.fetchvisithistory();
-        //     }
-        // });
 
     }
 
@@ -100,8 +94,9 @@ export class VisitService {
         const queryid = + new Date();
 
         const response: Subject<Visit> = new Subject();
-        this.dbSubscriptions.set(queryid, await this.stitch.db.collection<Visit>('patients').watch(query));
-        this.stitch.db.collection<Visit>('patients').findOne(query)
+        const collection = this.stitch.db.collection<Visit>('visits');
+        this.dbSubscriptions.set(queryid, await collection.watch([id]));
+        collection.findOne(query)
             .then(async value => {
                 response.next(value);
             })
@@ -151,7 +146,7 @@ export class VisitService {
 
     addVisit(visit: Visit) {
         this.stitch.db.collection('visits')
-            .insertOne(visit)
+            .insertOne(visit);
     }
 
     editpatientvisit(visit: Visit) {

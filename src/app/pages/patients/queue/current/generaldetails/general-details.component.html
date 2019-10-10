@@ -1,104 +1,29 @@
-<mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
+<div>
+    <table style="width:100%">
+        <tr>
+            <td class="mat-title">Name</td>
+            <td>{{currentpatient.personalInfo.name}}</td>
+        </tr>
+        <tr>
+            <td class="mat-title">Age</td>
+            <td>{{currentpatient.personalInfo.dob | age}}</td>
+        </tr>
+        <tr>
+            <td class="mat-title">Gender</td>
+            <td>{{currentpatient.personalInfo.gender}}</td>
+        </tr>
+        <tr>
+            <td class="mat-title">Address</td>
+            <td>{{currentpatient.personalInfo.address}}</td>
+        </tr>
+        <tr>
+            <td class="mat-title">Phone</td>
+            <td>{{currentpatient.personalInfo.phone}}</td>
+        </tr>
+        <tr>
+            <td class="mat-title">occupation</td>
+            <td>{{currentpatient.personalInfo.occupation}}</td>
+        </tr>
 
-<form (ngSubmit)="submitPatientsForm()" *ngIf="!loading" [formGroup]="patientsForm" class=" p-8 m-24"
-      fxFlex="1 0 auto" fxLayout="column" fxLayoutAlign="start" name="form">
-
-    <!--<div class="h2 mb-24">New Patient</div>-->
-
-    <span class="pl-24" fxFlex="1 1 100%">Personal information</span>
-    <section formGroupName="personalinfo" fxFlex="1 0 auto" fxLayout="column">
-
-        <!--First name, second name-->
-        <div fxFlex="1 0 auto" fxLayout="row" fxLayoutAlign="start center">
-
-            <mat-form-field appearance="outline" class="pr-4" fxFlex="33">
-                <mat-label>Name</mat-label>
-                <input formControlName="name" matInput required>
-                <mat-icon class="secondary-text" matSuffix>account_circle</mat-icon>
-                <mat-error>Name is required!</mat-error>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="pl-4" fxFlex="33">
-                <mat-label>Patient file number</mat-label>
-                <input formControlName="fileno" matInput required>
-                <mat-icon class="secondary-text" matSuffix>account_circle</mat-icon>
-                <mat-error>File number is required!</mat-error>
-            </mat-form-field>
-        </div>
-
-
-        <!--ID Number, Gender, DateOf birth-->
-        <div fxFlex="1 0 auto" fxLayout="row" fxLayoutAlign="start center">
-
-       
-            <mat-form-field appearance="outline" class="pl-4" fxFlex="33">
-                <mat-label>Gender</mat-label>
-                <mat-select formControlName="gender" required>
-                    <mat-option [value]="'1'">
-                        Male
-                    </mat-option>
-                    <mat-option [value]="'0'">
-                        Female
-                    </mat-option>
-                </mat-select>
-
-                <mat-icon class="secondary-text" matSuffix>account_circle</mat-icon>
-                <mat-error>Gender is required!</mat-error>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="pl-4" fxFlex="33">
-                <mat-label>Enter date of birth</mat-label>
-                <input #bDate (focus)="myDatepicker.open()" [matDatepicker]="myDatepicker"
-                       autocomplete="off"
-                       formControlName="birth" matInput placeholder="Please choose a date">
-
-                <mat-datepicker-toggle [for]="myDatepicker" matSuffix></mat-datepicker-toggle>
-                <mat-datepicker #myDatepicker (closed)="bDate.blur()"></mat-datepicker>
-
-                <mat-error>Date of birth is required</mat-error>
-                <mat-error>Date of birth should be valid</mat-error>
-            </mat-form-field>
-    <mat-form-field appearance="outline" fxFlex="100">
-        <mat-label>Email Address</mat-label>
-        <input formControlName="email" matInput placeholder="Enter your email" required>
-        <mat-error>Email address is required!</mat-error>
-    </mat-form-field>
-
-        </div>
-
-        <div fxFlex="1 0 auto" fxLayout="row wrap" fxLayoutAlign="start center">
-
-            <mat-form-field appearance="outline" fxFlex="100">
-                <mat-label>Ocupation</mat-label>
-                <input formControlName="occupation" matInput placeholder="Enter your occupation">
-                <mat-error>Occupation is required!</mat-error>
-            </mat-form-field>
-            <mat-form-field appearance="outline" fxFlex="33">
-                <mat-label>Place of work</mat-label>
-                <input formControlName="workplace" matInput required>
-                <mat-icon class="secondary-text" matSuffix>location_city</mat-icon>
-                <mat-error>Place of work is required</mat-error>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="px-8" fxFlex="34">
-                <mat-label>Mobile Number</mat-label>
-                <input formControlName="phone" matInput required type="number">
-                <mat-icon class="secondary-text" matSuffix>local_phone</mat-icon>
-                <mat-error>Phone number is required!</mat-error>
-            </mat-form-field>
-        </div>
-
-        <!--How to reach the patient-->
-        <!--Place of work, phone, post Address-->
-        <div fxFlex="1 0 auto" fxLayout="row" fxLayoutAlign="start center">
-
-          
-
-        </div>
-
-    </section>
-    <div fxFlex="1 0 auto" fxLayout="row" fxLayoutAlign="center center">
-        <button class="py-4" color="accent" fxFlex="50" mat-raised-button>Save Patient</button>
-    </div>
-
-</form>
+    </table>
+</div>

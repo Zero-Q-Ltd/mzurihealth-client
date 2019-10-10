@@ -5,6 +5,7 @@ import { FuseSidebarService } from '../../../../@fuse/components/sidebar/sidebar
 import { MatTabChangeEvent } from '@angular/material';
 import { LocalcommunicationService } from './current/localcommunication.service';
 import { QueueService } from '../../services/queue.service';
+import { PaymentmethodService } from 'app/pages/services/paymentmethod.service';
 
 @Component({
     selector: 'app-queue',
@@ -24,7 +25,7 @@ export class QueueComponent implements OnInit {
     myQueue = 0;
 
     constructor(private _fuseSidebarService: FuseSidebarService,
-        private communication: LocalcommunicationService,
+        private communication: LocalcommunicationService, private payment: PaymentmethodService,
         private queueservice: QueueService) {
         this.communication.ontabchanged.subscribe(tabindex => {
             this.activetabindex = tabindex;
@@ -43,9 +44,11 @@ export class QueueComponent implements OnInit {
         });
         this.queueservice.currentpatient.subscribe(current => {
             if (!current || !current.patientdata) {
+                this.currentpatient = false;
                 return;
             }
-            this.currentpatient = !current.patientdata._id;
+            console.log(!current.patientdata._id);
+            this.currentpatient = !!current.patientdata._id;
         });
     }
 
@@ -64,5 +67,5 @@ export class QueueComponent implements OnInit {
     tabChanged = (tabChangeEvent: MatTabChangeEvent): void => {
         this.communication.resetall();
         this.communication.ontabchanged.next(tabChangeEvent.index);
-    };
+    }
 }

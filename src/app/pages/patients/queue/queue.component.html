@@ -8,21 +8,19 @@
     <div class="center">
 
         <!-- HEADER -->
-        <div class="header accent p-16 p-sm-24" fxLayout="column" fxLayout.gt-xs="row"
-             fxLayoutAlign="start" fxLayoutAlign.gt-xs="space-between center">
+        <div class="header accent p-16 p-sm-24" fxLayout="column" fxLayout.gt-xs="row" fxLayoutAlign="start"
+            fxLayoutAlign.gt-xs="space-between center">
 
             <!-- APP TITLE -->
             <div fxLayout="row" fxLayoutAlign="start center">
                 <!--only show the sidebar toggle button when the active page is current patient-->
                 <button (click)="toggleSidebar('current-patients-sidebar')" *ngIf="activetabindex === 2"
-                        class="sidebar-toggle mr-12" fxHide.gt-sm
-                        mat-icon-button>
+                    class="sidebar-toggle mr-12" fxHide.gt-sm mat-icon-button>
                     <mat-icon>menu</mat-icon>
                 </button>
 
                 <div class="logo" fxLayout="row" fxLayoutAlign="start center">
-                    <mat-icon [@animate]="{value:'*',params:{delay:'50ms',scale:'0.2'}}"
-                              class="logo-icon mr-16">weekend
+                    <mat-icon [@animate]="{value:'*',params:{delay:'50ms',scale:'0.2'}}" class="logo-icon mr-16">weekend
                     </mat-icon>
                     <span [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}" class="logo-text h1">Queue</span>
                 </div>
@@ -32,7 +30,7 @@
 
             <!-- SEARCH -->
             <div [@animate]="{value:'*', params:{delay:'150ms',scale:'0.2'}}" class="ml-sm-32" fxFlex fxLayout="row"
-                 fxLayoutAlign="center center">
+                fxLayoutAlign="center center">
 
                 <div [@fadeInOut]="activetabindex !== 2" class="search-wrapper mt-16 mt-sm-0">
 
@@ -73,11 +71,11 @@
             <!--</a>-->
             <!--</nav>-->
             <mat-tab-group (selectedTabChange)="tabChanged($event)" [selectedIndex]="activetabindex"
-                           fusePerfectScrollbar>
+                fusePerfectScrollbar>
                 <mat-tab>
                     <ng-template matTabLabel>
                         <span [matBadge]="mainQueue" matBadgeColor="warn" matBadgeOverlap="false"
-                              matBadgePosition="above after">Main Queue</span>
+                            matBadgePosition="above after">Main Queue</span>
                     </ng-template>
                     <ng-template matTabContent>
                         <div class="tab-content p-24" fusePerfectScrollbar>
@@ -89,7 +87,7 @@
                 <mat-tab>
                     <ng-template matTabLabel>
                         <span [matBadge]="myQueue" matBadgeColor="warn" matBadgeOverlap="false"
-                              matBadgePosition="above after">My Queue</span>
+                            matBadgePosition="above after">My Queue</span>
                     </ng-template>
                     <ng-template matTabContent>
                         <div class="tab-content p-24" fusePerfectScrollbar>
@@ -98,19 +96,14 @@
                     </ng-template>
                 </mat-tab>
 
-                <mat-tab [disabled]="!!currentpatient">
+                <mat-tab [disabled]="!currentpatient">
                     <ng-template matTabLabel>
-                        <span>
-                            <mat-chip-list [ngSwitch]="!!currentpatient">
-                                <mat-chip *ngSwitchCase="true"  color="accent" selected>
-                                    Current Patient
-                                </mat-chip>
-                                <mat-chip *ngSwitchCase="false">
-                                    Current Patient
-                                </mat-chip>
-                             </mat-chip-list>
+                        <span class="pill" [ngClass]="{'activepill': currentpatient}">
+                            Current Patient
+
                         </span>
-                               
+
+
                     </ng-template>
                     <ng-template matTabContent>
 

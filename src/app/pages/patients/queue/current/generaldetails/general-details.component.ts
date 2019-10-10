@@ -19,18 +19,13 @@ import { PaymentmethodService } from '../../../../services/paymentmethod.service
 
 })
 export class GeneralDetailsComponent implements OnInit {
+
     allInsurance: { [key: string]: Paymentmethods } = {};
-    patientsForm: FormGroup;
     currentpatient: Patient;
-    // private medicalInfo: FormGroup;
-    loading = true;
-    private personalinfo: FormGroup;
-    private nextofkin: FormGroup;
-    // doctor will do this
+
     private insurance: FormArray;
 
     constructor(private adminservice: AdminService,
-        private patientservice: PatientService,
         private formBuilder: FormBuilder,
         private notificationservice: NotificationService,
         private paymentethods: PaymentmethodService,
@@ -42,216 +37,19 @@ export class GeneralDetailsComponent implements OnInit {
             if (!insurance['0']) {
                 return;
             }
+            this.allInsurance = insurance;
             /**
              * make sure insurances are already initialized to avoid crazy form errors
              */
             this.queue.currentpatient.subscribe(value => {
-                /**
-                 * check if this is an empty patient before
-                 */
-                if (!value.patientdata._id) {
-                    return;
-                }
-                this.initFormBuilder();
-                this.loading = false;
-
                 this.currentpatient = value.patientdata;
-                this.patientsForm.controls['personaLinfo']
-                    .get('fileno').patchValue(value.patientdata.fileInfo.no);
-
-                this.patientsForm.controls['personaLinfo']
-                    .get('fileno').disable({ onlySelf: true });
-
-                this.patientsForm.controls['personaLinfo']
-                    .get('name').patchValue(value.patientdata.personalInfo.name.split(' ')[0]);
-
-             
-                this.patientsForm.controls['personaLinfo']
-                    .get('gender').patchValue(value.patientdata.personalInfo.gender);
-
-                this.patientsForm.controls['personaLinfo']
-                    .get('birth').patchValue(value.patientdata.personalInfo.dob);
-
-                this.patientsForm.controls['personaLinfo']
-                    .get('email').patchValue(value.patientdata.personalInfo.email);
-
-                this.patientsForm.controls['personaLinfo']
-                    .get('workplace').patchValue(value.patientdata.personalInfo.workplace);
-
-                this.patientsForm.controls['personaLinfo']
-                    .get('phone').patchValue(value.patientdata.personalInfo.phone);
-
-                this.patientsForm.controls['personaLinfo']
-                    .get('address').patchValue(value.patientdata.personalInfo.address);
-
-                this.patientsForm.controls['personaLinfo']
-                    .get('occupation').patchValue(value.patientdata.personalInfo.occupation);
-
-                value.patientdata.insurance.forEach(i => {
-                    this.insurance.push(this.replicateInsurance(i));
-                    this.insurancechanges();
-                });
 
             });
         });
 
 
-    }
-
-    getTime(): any {
-        return moment().format('LLL');
     }
 
     ngOnInit(): void {
     }
-
-    getage(dob): number {
-        return moment().diff(dob, 'years');
-    }
-
-    submitPatientsForm(): void {
-        if (this.patientsForm.valid) {
-            // this.patientservice.updatePatient(this.currentpatient._id, this.patientsForm.getRawValue()).then(() => {
-            //     this.notificationservice.notify({
-            //         alertType: 'success',
-            //         body: 'Patient successifully updated',
-            //         title: 'Success',
-            //         placement: {
-            //             horizontal: 'right',
-            //             vertical: 'top'
-            //         }
-            //     });
-            // });
-        } else {
-            this.notificationservice.notify({
-                alertType: 'error',
-                body: 'Please fill all the required inputs',
-                title: 'ERROR',
-                placement: {
-                    horizontal: 'center',
-                    vertical: 'bottom'
-                }
-            });
-        }
-    }
-
-    createInsurance(): FormGroup {
-        const insurancex = new FormControl('');
-
-        const insurancenumber = new FormControl({
-            value: '',
-            disabled: true
-        });
-
-        return this.formBuilder.group({
-            id: insurancex,
-            insurancenumber: insurancenumber
-        });
-    }
-
-    replicateInsurance(insurancedata: Insurance): FormGroup {
-        const insurancex = new FormControl({
-            value: insurancedata.id,
-            disabled: false
-        });
-        const insurancenumber = new FormControl({
-            value: insurancedata.insuranceNo,
-            disabled: false
-        });
-        return this.formBuilder.group({
-            id: insurancex,
-            insurancenumber: insurancenumber
-        });
-    }
-
-    insurancechanges(): void {
-        this.insurance.controls.forEach(x => {
-            x.get('_id').valueChanges.subscribe(g => {
-                if (g) {
-                    if (x.get('_id').value.toString().length > -1) {
-                        x.get('insurancenumber').enable({ emitEvent: false });
-                    } else {
-                        x.get('insurancenumber').disable({ emitEvent: false });
-                    }
-                }
-            });
-        });
-    }
-
-    addInsurance(): void {
-        this.insurance.push(this.createInsurance());
-        this.insurancechanges();
-    }
-
-    /**
-     * Init form values inside a here.
-     * */
-    private initFormBuilder(): void {
-
-        /**
-         * personal information
-         * */
-        const name = new FormControl('', Validators.required);
-        const occupation = new FormControl('');
-        const gender = new FormControl('', Validators.required);
-        const birth = new FormControl('', Validators.required);
-        const email = new FormControl('', Validators.compose([
-            Validators.required,
-            Validators.email
-        ]));
-        const userWorkplace = new FormControl('', Validators.required);
-        const userPhone = new FormControl('', Validators.required);
-        const address = new FormControl('', Validators.compose([
-            Validators.required
-        ]));
-
-        const fileno = new FormControl('', Validators.required);
-
-        this.personalinfo = new FormGroup({
-            firstname: name,
-            occupation: occupation,
-            gender: gender,
-            birth: birth,
-            email: email,
-            workplace: userWorkplace,
-            phone: userPhone,
-            address: address,
-            fileno: fileno
-        });
-
-
-        /**
-         * next of kin
-         * **/
-
-        const relationship = new FormControl('', Validators.required);
-        const kinName = new FormControl('', Validators.required);
-        const kinPhone = new FormControl('', Validators.required);
-        const kinWorkplace = new FormControl('', Validators.required);
-
-        this.nextofkin = new FormGroup({
-            relationship: relationship,
-            name: kinName,
-            phone: kinPhone,
-            workplace: kinWorkplace
-        });
-
-        /*
-        * insurance initial
-        * https://alligator.io/angular/reactive-forms-formarray-dynamic-fields/
-        * **/
-
-        this.patientsForm = this.formBuilder.group({
-            insurance: this.formBuilder.array([]),
-            nextofkin: this.nextofkin,
-            personalinfo: this.personalinfo
-        });
-
-
-        /*
-        * init the insurance list
-        * **/
-        this.insurance = this.patientsForm.get('insurance') as FormArray;
-    }
-
 }

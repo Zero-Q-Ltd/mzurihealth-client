@@ -80,8 +80,9 @@ export class PatientService {
         const queryid = + new Date();
 
         const response: Subject<Patient> = new Subject();
-        this.dbSubscriptions.set(queryid, await this.stitch.db.collection<Patient>('patients').watch(query));
-        this.stitch.db.collection<Patient>('patients').findOne(query)
+        const collection = this.stitch.db.collection<Patient>('patients');
+        this.dbSubscriptions.set(queryid, await collection.watch([id]));
+        collection.findOne(query)
             .then(async value => {
                 response.next(value);
             })
@@ -283,7 +284,7 @@ export class PatientService {
 
 
     updatePatient(patientData: Patient): Promise<any> {
-        return this.stitch.db.collection<Patient>('patients').updateOne({ _id: patientData._id }, patientData)
+        return this.stitch.db.collection<Patient>('patients').updateOne({ _id: patientData._id }, patientData);
     }
 
     searchPatient(field: string, value: string): any {

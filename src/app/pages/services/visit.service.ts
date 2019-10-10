@@ -49,12 +49,6 @@ export class VisitService {
         hospitalService.activehospital.subscribe(value => {
             this.hospitalid = value._id;
         });
-        // this.queue.currentpatient.subscribe(value => {
-        //     if (value.patientdata._id) {
-        //         this.patientid = value.patientdata._id;
-        //         this.fetchvisithistory();
-        //     }
-        // });
 
     }
 

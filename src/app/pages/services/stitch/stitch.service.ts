@@ -50,7 +50,7 @@ export class StitchService {
     }
 
     loginWithGoogle(): void {
-        const credential = new GoogleRedirectCredential('http://localhost:4200/admin');
+        const credential = new GoogleRedirectCredential('http://localhost:4200/');
         return this.auth.loginWithRedirect(credential);
     }
 

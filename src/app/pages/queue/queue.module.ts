@@ -7,7 +7,6 @@ import { QueueComponent } from './queue.component';
 import { MainSharedModule } from '../shared/main-shared.module';
 import { GeneralNotesComponent } from './current/generalnotes/general-notes.component';
 import { HistoryComponent } from './current/history/history.component';
-import { TodayComponent } from './current/today/today.component';
 import { CurrentComponent } from './current/current.component';
 import { GeneralDetailsComponent } from './current/generaldetails/general-details.component';
 import { FuseSharedModule } from '../../../@fuse/shared.module';
@@ -23,7 +22,6 @@ import { ProcedurenotesComponent } from './current/procedure-notes/procedurenote
         GeneralDetailsComponent,
         GeneralNotesComponent,
         HistoryComponent,
-        TodayComponent,
         CurrentComponent,
         AdminSelectionComponent,
         PerformProcedureComponent,

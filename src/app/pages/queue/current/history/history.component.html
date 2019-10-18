@@ -1,50 +1,38 @@
-asdasda
-<div *ngFor="let visit of patientvisits">
-    <mat-card class="p-24">
-        <mat-card-header>
-            <div class="example-header-image" mat-card-avatar></div>
-            <mat-card-title>{{visit.metadata.created}}</mat-card-title>
-            <mat-card-subtitle>
-                <strong>Visit Description : </strong> {{visit.visitDescription}}
-            </mat-card-subtitle>
-            <mat-card-subtitle>
-                <strong>Prescription : </strong> {{visit.prescription}}
-            </mat-card-subtitle>
-        </mat-card-header>
-        <mat-card-content>
-            <table class="simple invoice-table">
-                <thead>
-                    <tr>
-                        <th>Procedure</th>
-                        <th>Practitioner</th>
-                        <th>Results</th>
-                    </tr>
-                </thead>
-                <tbody>
+<div id="history-table">
+    <table mat-table [dataSource]="flattenedProcedures">
 
-                    <!-- Double the invoice data for demo purposes -->
-                    <tr *ngFor="let procedure of visit.procedures">
-                        <td>
-                            <div class="title">
-                                {{procedure.name}}
-                            </div>
-                        </td>
-                        <td>
-                            <div class="title">
-                                {{hospitaladmins| adminName : procedure.adminid}}
-                            </div>
-                        </td>
-                        <td>
-                            <div class="title">
-                                {{procedure.results}}
-                            </div>
-                        </td>
+        <!-- Position Column -->
+        <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef> Date </th>
+            <td mat-cell *matCellDef="let procedure">
+                {{procedure.metadata.created}}
+            </td>
+        </ng-container>
+        <!-- Weight Column -->
+        <ng-container matColumnDef="doctor">
+            <th mat-header-cell *matHeaderCellDef> Doctor </th>
+            <td mat-cell *matCellDef="let procedure">
+                {{hospitaladmins| adminName : procedure.adminid}}
+            </td>
+        </ng-container>
 
+        <!-- Name Column -->
+        <ng-container matColumnDef="procedure">
+            <th mat-header-cell *matHeaderCellDef> Procedure </th>
+            <td mat-cell *matCellDef="let procedure">
+                {{procedure.name}}
+            </td>
+        </ng-container>
 
-                    </tr>
-                </tbody>
-            </table>
-        </mat-card-content>
+        <!-- Symbol Column -->
+        <ng-container matColumnDef="results">
+            <th mat-header-cell *matHeaderCellDef> Results </th>
+            <td mat-cell *matCellDef="let procedure">
+                {{procedure.results}}
+            </td>
+        </ng-container>
 
-    </mat-card>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
 </div>

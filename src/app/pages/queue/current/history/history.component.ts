@@ -5,6 +5,8 @@ import { HospitalAdmin } from '../../../../models/user/HospitalAdmin';
 import { HospitalService } from '../../../services/hospital.service';
 import { Patient } from 'app/models/patient/Patient';
 import { QueueService } from 'app/pages/services/queue.service';
+import { Procedureperformed } from 'app/models/procedure/Procedureperformed';
+import { BSON } from 'mongodb-stitch-core-sdk';
 
 @Component({
     selector: 'patient-history',
@@ -14,14 +16,21 @@ import { QueueService } from 'app/pages/services/queue.service';
 export class HistoryComponent implements OnInit {
     patientvisits: Array<Visit>;
     hospitaladmins: Array<HospitalAdmin>;
-    displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
+    displayedColumns: string[] = ['date', 'doctor', 'procedure', 'results'];
 
+    flattenedProcedures: Array<Procedureperformed & { id: BSON.ObjectID }> = [];
     constructor(private patientvisitService: VisitService,
         private queue: QueueService,
         private hospitalservice: HospitalService, ) {
 
         this.queue.currentpatientHistory.subscribe(visits => {
             this.patientvisits = visits;
+            this.flattenedProcedures = [];
+            visits.map(visit => {
+                this.flattenedProcedures.push(...visit.procedures.map(t => {
+                    return Object.assign({}, t, { id: visit._id });
+                }));
+            });
         });
         this.hospitalservice.hospitaladmins.subscribe(admins => {
             this.hospitaladmins = admins;

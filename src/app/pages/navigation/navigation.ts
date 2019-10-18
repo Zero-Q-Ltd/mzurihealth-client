@@ -73,7 +73,7 @@ export const navigation: FuseNavigation[] = [
                 // translate: 'NAV.add',
                 type: 'item',
                 icon: 'weekend',
-                url: '/patients/queue',
+                url: '/queue',
             }
         ]
     },

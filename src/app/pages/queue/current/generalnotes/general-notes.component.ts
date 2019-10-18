@@ -1,8 +1,8 @@
-import {Component, OnInit} from '@angular/core';
-import {emptynote, Patientnote} from '../../../../../models/patient/Patientnote';
-import {PatientService} from '../../../../services/patient.service';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {PatientnotesService} from '../../../../services/patientnotes.service';
+import { Component, OnInit } from '@angular/core';
+import { emptynote, Patientnote } from '../../../../models/patient/Patientnote';
+import { PatientService } from '../../../services/patient.service';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { PatientnotesService } from '../../../services/patientnotes.service';
 
 @Component({
     selector: 'patient-notes',
@@ -14,7 +14,7 @@ export class GeneralNotesComponent implements OnInit {
     newnoteform: FormGroup;
 
     constructor(private patientservice: PatientService,
-                private patientnotesService: PatientnotesService) {
+        private patientnotesService: PatientnotesService) {
         this.initformm();
         patientnotesService.patientnotes.subscribe(notes => {
             this.patientnotes = notes;

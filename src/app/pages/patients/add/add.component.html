@@ -7,32 +7,6 @@
     <!-- CENTER -->
     <div class="center">
 
-        <!-- HEADER -->
-        <div class="header accent p-16 p-sm-24" fxLayout="column" fxLayout.gt-xs="row" fxLayoutAlign="start"
-            fxLayoutAlign.gt-xs="space-between center">
-
-            <!-- APP TITLE -->
-            <div fxLayout="row" fxLayoutAlign="start center">
-
-                <div class="logo" fxLayout="row" fxLayoutAlign="start center">
-                    <mat-icon [@animate]="{value:'*',params:{delay:'50ms',scale:'0.2'}}" class="logo-icon mr-16">
-                        person_add
-                    </mat-icon>
-                    <span [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}" class="logo-text h1">New Patient :
-                        &nbsp;</span>
-                    <span [@animate]="{value:'*',params:{delay:'300ms',x:'-25px'}}" class="logo-text h2">
-                        <strong>{{patientfileno.no}}</strong></span>
-                </div>
-
-            </div>
-            <div fxLayout="row" fxLayoutAlign="start end">
-                <span [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}"
-                    class="logo-text h3">{{getTime()}}</span>
-            </div>
-            <!-- / APP TITLE -->
-
-        </div>
-
         <!-- CONTENT CARD -->
         <div class="content-card">
 
@@ -42,7 +16,8 @@
                 <form (ngSubmit)="submitPatientsForm()" [formGroup]="patientsForm" class=" p-24 m-24" fxFlex="1 0 auto"
                     fxLayout="column" fxLayoutAlign="start" name="form">
 
-                    <!--<div class="h2 mb-24">New Patient</div>-->
+                    <span [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}"
+                        class="logo-text h3">{{getTime()}}</span>
 
                     <span class="pl-24" fxFlex="1 1 100%">Personal information</span>
                     <section fxFlex="1 0 auto" fxLayout="column">

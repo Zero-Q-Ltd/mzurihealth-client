@@ -1,0 +1,19 @@
+@import "src/@fuse/scss/fuse";
+
+#patients {
+    .center {
+        padding: 32px !important;
+        margin: 0 auto;
+
+        @include media-breakpoint("lt-lg") {
+            padding: 0 !important;
+        }
+
+        .content-card {
+            position: relative;
+            display: flex;
+            flex: 1;
+            border-radius: 8px;
+        }
+    }
+}

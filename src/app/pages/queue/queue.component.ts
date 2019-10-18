@@ -1,10 +1,10 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { fuseAnimations } from '../../../../@fuse/animations';
-import { FuseSidebarService } from '../../../../@fuse/components/sidebar/sidebar.service';
+import { fuseAnimations } from '../../../@fuse/animations';
+import { FuseSidebarService } from '../../../@fuse/components/sidebar/sidebar.service';
 import { MatTabChangeEvent } from '@angular/material';
 import { LocalcommunicationService } from './current/localcommunication.service';
-import { QueueService } from '../../services/queue.service';
+import { QueueService } from '../services/queue.service';
 import { PaymentmethodService } from 'app/pages/services/paymentmethod.service';
 
 @Component({

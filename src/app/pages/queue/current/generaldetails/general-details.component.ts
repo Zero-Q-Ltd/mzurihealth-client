@@ -1,15 +1,15 @@
 import { Component, Inject, OnInit, Optional } from '@angular/core';
-import { fuseAnimations } from '../../../../../../@fuse/animations';
-import { Insurance, Patient } from '../../../../../models/patient/Patient';
+import { fuseAnimations } from '../../../../../@fuse/animations';
+import { Insurance, Patient } from '../../../../models/patient/Patient';
 import * as moment from 'moment';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { AdminService } from '../../../../services/admin.service';
-import { PatientService } from '../../../../services/patient.service';
-import { NotificationService } from '../../../../../shared/services/notifications.service';
+import { AdminService } from '../../../services/admin.service';
+import { PatientService } from '../../../services/patient.service';
+import { NotificationService } from '../../../../shared/services/notifications.service';
 import { MAT_DIALOG_DATA } from '@angular/material';
-import { QueueService } from '../../../../services/queue.service';
-import { Paymentmethods } from '../../../../../models/payment/PaymentChannel';
-import { PaymentmethodService } from '../../../../services/paymentmethod.service';
+import { QueueService } from '../../../services/queue.service';
+import { Paymentmethods } from '../../../../models/payment/PaymentChannel';
+import { PaymentmethodService } from '../../../services/paymentmethod.service';
 
 @Component({
     selector: 'general-details',

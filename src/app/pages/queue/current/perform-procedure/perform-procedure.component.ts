@@ -1,10 +1,10 @@
-import {Component, OnInit} from '@angular/core';
-import {SelectionModel} from '@angular/cdk/collections';
-import {MergedProcedureModel} from '../../../../../models/procedure/MergedProcedure.model';
-import {MatDialogRef, MatTableDataSource} from '@angular/material';
-import {ProceduresService} from '../../../../services/procedures.service';
-import {emptyprocedureperformed, Procedureperformed} from '../../../../../models/procedure/Procedureperformed';
-import {AdminService} from '../../../../services/admin.service';
+import { Component, OnInit } from '@angular/core';
+import { SelectionModel } from '@angular/cdk/collections';
+import { MergedProcedureModel } from '../../../../models/procedure/MergedProcedure.model';
+import { MatDialogRef, MatTableDataSource } from '@angular/material';
+import { ProceduresService } from '../../../services/procedures.service';
+import { emptyprocedureperformed, Procedureperformed } from '../../../../models/procedure/Procedureperformed';
+import { AdminService } from '../../../services/admin.service';
 
 @Component({
     selector: 'app-perform-procedure',
@@ -18,8 +18,8 @@ export class PerformProcedureComponent implements OnInit {
     procedureResults: Array<Procedureperformed> = [];
 
     constructor(public dialogRef: MatDialogRef<PerformProcedureComponent>,
-                private procedureservice: ProceduresService,
-                private adminservice: AdminService,
+        private procedureservice: ProceduresService,
+        private adminservice: AdminService,
     ) {
         /**
          *TODO: Here I've had to device a temporary hack that should be fixed
@@ -27,7 +27,7 @@ export class PerformProcedureComponent implements OnInit {
          */
         procedureservice.hospitalprocedures.subscribe(mergedprocedures => {
             mergedprocedures.forEach((r, i) => {
-                this.procedureResults[i] = {...emptyprocedureperformed};
+                this.procedureResults[i] = { ...emptyprocedureperformed };
                 /**
                  * very useful for later on when dialog is dismissed
                  */

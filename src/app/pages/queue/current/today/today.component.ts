@@ -1,32 +1,32 @@
 import { Component, OnInit } from '@angular/core';
-import { emptyproceduresperformed, ProcedureNotes, Procedureperformed } from '../../../../../models/procedure/Procedureperformed';
-import { HospitalAdmin } from '../../../../../models/user/HospitalAdmin';
-import { HospitalService } from '../../../../services/hospital.service';
+import { emptyproceduresperformed, ProcedureNotes, Procedureperformed } from '../../../../models/procedure/Procedureperformed';
+import { HospitalAdmin } from '../../../../models/user/HospitalAdmin';
+import { HospitalService } from '../../../services/hospital.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { PatientService } from '../../../../services/patient.service';
-import { VisitService } from '../../../../services/visit.service';
-import { RawProcedure, RawProcedureCategory } from '../../../../../models/procedure/RawProcedure';
-import { CustomProcedure } from '../../../../../models/procedure/CustomProcedure';
-import { ProceduresService } from '../../../../services/procedures.service';
-import { fuseAnimations } from '../../../../../../@fuse/animations';
-import { ProcedureCategory } from '../../../../../models/procedure/ProcedureCategory';
+import { PatientService } from '../../../services/patient.service';
+import { VisitService } from '../../../services/visit.service';
+import { RawProcedure, RawProcedureCategory } from '../../../../models/procedure/RawProcedure';
+import { CustomProcedure } from '../../../../models/procedure/CustomProcedure';
+import { ProceduresService } from '../../../services/procedures.service';
+import { fuseAnimations } from '../../../../../@fuse/animations';
+import { ProcedureCategory } from '../../../../models/procedure/ProcedureCategory';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { MergedProcedureModel } from '../../../../../models/procedure/MergedProcedure.model';
+import { MergedProcedureModel } from '../../../../models/procedure/MergedProcedure.model';
 import { map, startWith } from 'rxjs/operators';
-import { allerytypearray } from '../../../../../models/procedure/Allergy.model';
-import { medicalconditionsarray } from '../../../../../models/procedure/MedicalConditions.model';
-import { QueueService } from '../../../../services/queue.service';
-import { CurrentPatient } from '../../../../../models/visit/MergedPatientQueueModel';
+import { allerytypearray } from '../../../../models/procedure/Allergy.model';
+import { medicalconditionsarray } from '../../../../models/procedure/MedicalConditions.model';
+import { QueueService } from '../../../services/queue.service';
+import { CurrentPatient } from '../../../../models/visit/MergedPatientQueueModel';
 import { AdminSelectionComponent } from '../../admin-selection/admin-selection.component';
 import { MatDialog, MatDialogRef, MatTableDataSource } from '@angular/material';
 import { LocalcommunicationService } from '../localcommunication.service';
-import { emptypatientvisit, Visit } from '../../../../../models/visit/Visit';
-import { NotificationService } from '../../../../../shared/services/notifications.service';
+import { emptypatientvisit, Visit } from '../../../../models/visit/Visit';
+import { NotificationService } from '../../../../shared/services/notifications.service';
 import { PerformProcedureComponent } from '../perform-procedure/perform-procedure.component';
 import { SelectionModel } from '@angular/cdk/collections';
-import { AdminService } from '../../../../services/admin.service';
+import { AdminService } from '../../../services/admin.service';
 import { ProcedurenotesComponent } from '../procedure-notes/procedurenotes.component';
-import { FuseConfirmDialogComponent } from '../../../../../../@fuse/components/confirm-dialog/confirm-dialog.component';
+import { FuseConfirmDialogComponent } from '../../../../../@fuse/components/confirm-dialog/confirm-dialog.component';
 import * as moment from 'moment';
 import { Meta } from 'app/models/universal';
 
@@ -81,15 +81,14 @@ export class TodayComponent implements OnInit {
             this.hospitalprocedures = mergedprocedures;
         });
         queue.currentpatient.subscribe(value => {
-            console.log(value);
             this.currentpatient = value;
             // this.anzisha();
             this.imeanzilishwa.next(false);
         });
-        patientvisitservice.currentvisit.subscribe(visit => {
-            console.log(visit);
-            this.currentvisit = visit;
-            this.proceduresdatasource.data = visit.procedures;
+        this.queue.currentpatient.subscribe(visit => {
+            // console.log(visit);
+            // this.currentvisit = visit;
+            // this.proceduresdatasource.data = visit.procedures;
         });
         // this.filteredprocedures = this.procedureselection.valueChanges
         //     .pipe(

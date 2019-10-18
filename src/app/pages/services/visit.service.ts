@@ -20,8 +20,6 @@ import { Patient } from 'app/models/patient/Patient';
 export class VisitService {
     patientid: string;
     hospitalid: string;
-    visithistory: BehaviorSubject<Array<Visit>> = new BehaviorSubject<Array<Visit>>([]);
-    currentvisit: BehaviorSubject<Visit> = new BehaviorSubject<Visit>({ ...emptypatientvisit });
     adminid: string;
 
     /**
@@ -127,21 +125,14 @@ export class VisitService {
         // });
     }
 
-    fetchvisithistory(): void {
-        // this.db.firestore.collection('hospitalvisits')
-        //     .where('hospitalId', '==', this.hospitalId)
-        //     .where('patientId', '==', this.patientId)
-        //     .orderBy('metadata.date', 'asc')
-        //     .limit(10)
-        //     .onSnapshot(snapshot => {
-        //         this.visithistory.next(snapshot.docs.map(value => {
-        //             const visit = Object.assign({...emptypatientvisit}, value.data(), {id: value.id});
-        //             if (!visit.payment.status) {
-        //                 this.currentvisit.next(visit);
-        //             }
-        //             return visit;
-        //         }));
-        //     });
+    fetchvisithistory(patientId: BSON.ObjectId, limit: number): Promise<Array<Visit>> {
+        const query = {
+            patientId: patientId
+        };
+        const options = {
+            limit: limit
+        };
+        return this.stitch.db.collection<Visit>('visits').find(query, options).toArray();
     }
 
     addVisit(visit: Visit) {

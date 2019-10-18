@@ -1,0 +1,50 @@
+asdasda
+<div *ngFor="let visit of patientvisits">
+    <mat-card class="p-24">
+        <mat-card-header>
+            <div class="example-header-image" mat-card-avatar></div>
+            <mat-card-title>{{visit.metadata.created}}</mat-card-title>
+            <mat-card-subtitle>
+                <strong>Visit Description : </strong> {{visit.visitDescription}}
+            </mat-card-subtitle>
+            <mat-card-subtitle>
+                <strong>Prescription : </strong> {{visit.prescription}}
+            </mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+            <table class="simple invoice-table">
+                <thead>
+                    <tr>
+                        <th>Procedure</th>
+                        <th>Practitioner</th>
+                        <th>Results</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <!-- Double the invoice data for demo purposes -->
+                    <tr *ngFor="let procedure of visit.procedures">
+                        <td>
+                            <div class="title">
+                                {{procedure.name}}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="title">
+                                {{hospitaladmins| adminName : procedure.adminid}}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="title">
+                                {{procedure.results}}
+                            </div>
+                        </td>
+
+
+                    </tr>
+                </tbody>
+            </table>
+        </mat-card-content>
+
+    </mat-card>
+</div>

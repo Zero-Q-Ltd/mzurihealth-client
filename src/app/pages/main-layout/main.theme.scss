@@ -81,7 +81,7 @@ $typography: mat-typography-config(
 // Import app and page component themes here to enable theming for them
 @import "./layout/components/chat-panel/chat-panel.theme";
 @import "./layout/components/toolbar/toolbar.theme";
-@import "./../patients/queue/queue.theme";
+@import "./../queue/queue.theme";
 @import "./../patients/all/all.theme";
 
 // Define a mixin for easier access

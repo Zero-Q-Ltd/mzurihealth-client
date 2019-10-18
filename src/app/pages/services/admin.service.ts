@@ -42,10 +42,6 @@ export class AdminService {
         this.observableuserdata.subscribe(value => {
             this.userdata = value;
         });
-        this.stitch.client.callFunction("searchpatient", ["test"]).then(f => {
-            console.log(f)
-        })
-
     }
 
     // The the status of the activeadmin
@@ -70,7 +66,7 @@ export class AdminService {
                     console.log(error);
                 });
             });
-    };
+    }
 
     getadmincategories(): void {
         this.stitch.db.collection<AdminCategory>('admincategories')

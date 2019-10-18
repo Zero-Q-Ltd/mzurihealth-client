@@ -17,10 +17,7 @@ const routes: Routes = [
         path: 'profile',
         component: ProfileComponent,
     },
-    {
-        path: 'queue',
-        loadChildren: 'app/pages/patients/queue/queue.module#QueueModule'
-    }
+
 ];
 
 

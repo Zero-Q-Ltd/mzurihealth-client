@@ -250,41 +250,19 @@ export class QueueService {
     async fetchCurrentpatient() {
         console.log('Fetching Current Patient Data');
 
-        const liveMedicalInfoobs = this.medInfoService.watchLatest(this.currentpatient.value.queuedata.patientId);
-        const liveVisitdataObs = this.visitService.watchId(this.currentpatient.value.queuedata.visitId);
-        const livePatientObs = this.patientservice.watchId(this.currentpatient.value.queuedata.patientId);
-        /**
-         * Writing the above statement in a single line somehow makes only one observable get resolved
-         * @TODO research why this behavious and document 
-         */
-        const d1 = await liveMedicalInfoobs;
+        const d1 = await this.medInfoService.watchLatest(this.currentpatient.value.queuedata.patientId);
+        const d2 = await this.visitService.watchId(this.currentpatient.value.queuedata.visitId);
+        const d3 = await this.patientservice.watchId(this.currentpatient.value.queuedata.patientId);
 
-        const d2 = await liveVisitdataObs;
-
-        const d3 = await livePatientObs;
-
-        // d1.subscribe(i => {
-        //     console.log(i);
-        // });
-        // d2.subscribe(i => {
-        //     console.log(i);
-        // });
-
-        // d3.subscribe(i => {
-        //     console.log(i);
-        // });
-        return new Promise((resolve, reject) => {
-            combineLatest([d1, d2, d3]).subscribe((data) => {
-                console.log('Current Patient data fetched');
-                console.log(data);
-                this.fetchingCurrentpatientdata.next(false);
-                resolve('null');
-                this.currentpatient.next({
-                    medicalInfo: data[0],
-                    patientdata: data[2],
-                    queuedata: this.currentpatient.value.queuedata,
-                    visitdata: data[1]
-                });
+        combineLatest([d1, d2, d3]).subscribe((data) => {
+            console.log('Current Patient data fetched');
+            console.log(data);
+            this.fetchingCurrentpatientdata.next(false);
+            this.currentpatient.next({
+                medicalInfo: data[0] as any,
+                patientdata: data[2] as any,
+                queuedata: this.currentpatient.value.queuedata,
+                visitdata: data[1] as any
             });
         });
 
@@ -292,7 +270,7 @@ export class QueueService {
     /**
      * Fetches the current patient 
      */
-    async fetchCurrentPatientHsistory() {
+    fetchCurrentPatientHsistory() {
         console.log('Fetching Current Patient History');
         this.visitService.fetchvisithistory(this.currentpatient.value.queuedata.patientId, 10).then(hist => {
             console.log(hist);

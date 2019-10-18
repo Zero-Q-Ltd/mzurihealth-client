@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { StitchService } from './stitch/stitch.service';
 import { MedicalInfo, emptymedicalInfo } from 'app/models/patient/MedicalInfo';
 import { BSON, Stream } from 'mongodb-stitch-core-sdk';
-import { Observable, Subscription, BehaviorSubject, Subject } from 'rxjs';
+import { Observable, Subscription, BehaviorSubject, Subject, ReplaySubject } from 'rxjs';
 import { ChangeEvent } from 'mongodb-stitch-core-services-mongodb-remote';
 
 @Injectable({
@@ -29,16 +29,16 @@ export class MedicalinfoService {
    * @TODO Medical info changes with thime
    * Figure out a way of fetching only the most recent object
    */
-  async watchLatest(patientid: BSON.ObjectId): Promise<Subject<MedicalInfo>> {
+  async watchLatest(patientid: BSON.ObjectId): Promise<ReplaySubject<MedicalInfo>> {
     const query = {
       patientId: patientid
     };
     const queryid = + new Date();
 
-    const response: Subject<MedicalInfo> = new Subject();
+    const response: ReplaySubject<MedicalInfo> = new ReplaySubject(1);
     const collection = this.stitch.db.collection<MedicalInfo>('medinfo');
     this.dbSubscriptions.set(queryid, await collection.watch([patientid]));
-    collection.findOne(query)
+    await collection.findOne(query)
       .then(async value => {
         if (!value) {
           response.error('No Doc found');

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { QueueService } from './queue.service';
 import { HospitalService } from './hospital.service';
 import { emptypatientvisit, Visit } from '../../models/visit/Visit';
-import { BehaviorSubject, Observable, Subscription, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription, Subject, ReplaySubject } from 'rxjs';
 import { Procedureperformed } from '../../models/procedure/Procedureperformed';
 import { MergedProcedureModel } from '../../models/procedure/MergedProcedure.model';
 import { AdminService } from './admin.service';
@@ -85,16 +85,16 @@ export class VisitService {
         return true as any;
 
     }
-    async watchId(id: BSON.ObjectId): Promise<Subject<Visit>> {
+    async watchId(id: BSON.ObjectId): Promise<ReplaySubject<Visit>> {
         const query = {
             _id: id
         };
         const queryid = + new Date();
 
-        const response: Subject<Visit> = new Subject();
+        const response: ReplaySubject<Visit> = new ReplaySubject(1);
         const collection = this.stitch.db.collection<Visit>('visits');
         this.dbSubscriptions.set(queryid, await collection.watch([id]));
-        collection.findOne(query)
+        await collection.findOne(query)
             .then(async value => {
                 response.next(value);
             })

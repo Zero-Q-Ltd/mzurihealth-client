@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MergedProcedureModel } from '../../../../models/procedure/MergedProcedure.model';
-import { MatDialogRef, MatTableDataSource } from '@angular/material';
+import { MatTableDataSource } from '@angular/material';
 import { ProceduresService } from '../../../services/procedures.service';
 import { emptyprocedureperformed, Procedureperformed } from '../../../../models/procedure/Procedureperformed';
 import { AdminService } from '../../../services/admin.service';
@@ -17,7 +17,7 @@ export class PerformProcedureComponent implements OnInit {
     selection = new SelectionModel<MergedProcedureModel>(true, []);
     procedureResults: Array<Procedureperformed> = [];
 
-    constructor(public dialogRef: MatDialogRef<PerformProcedureComponent>,
+    constructor(
         private procedureservice: ProceduresService,
         private adminservice: AdminService,
     ) {
@@ -66,14 +66,6 @@ export class PerformProcedureComponent implements OnInit {
             return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
         }
         return `${this.selection.isSelected(row) ? 'deselect' : 'select'} `;
-    }
-
-    onNoClick(): void {
-        this.dialogRef.close();
-    }
-
-    doCleanup() {
-
     }
 
     ngOnInit(): void {

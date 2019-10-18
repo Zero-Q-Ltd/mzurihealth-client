@@ -1,5 +1,5 @@
 import { AbstractControl, AsyncValidatorFn } from '@angular/forms';
-import { PatientService } from '../services/patient.service';
+import { PatientService } from '../../pages/services/patient.service';
 import { of, Observable, timer } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 

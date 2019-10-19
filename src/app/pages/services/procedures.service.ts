@@ -13,7 +13,7 @@ import { Meta } from 'app/models/universal';
 import { Stream, BSON } from 'mongodb-stitch-core-sdk';
 import { ChangeEvent } from 'mongodb-stitch-core-services-mongodb-remote';
 import * as proceduredata from 'assets/procedures.json';
-// import * as procedurecats from 'assets/procedurecategories.json';
+import * as procedurecats from 'assets/procedurecategories.json';
 import { StitchService } from './stitch/stitch.service';
 import { Visit } from 'app/models/visit/Visit';
 import { RawProcedure } from 'app/models/procedure/RawProcedure';
@@ -88,7 +88,6 @@ export class ProceduresService {
 
         };
         const options = {
-            limit: 20
         };
 
         this.stitch.db.collection<ProcedureCategory>('procedurecategories')
@@ -103,18 +102,26 @@ export class ProceduresService {
 
     syncprocedures(): any {
         interface RawprocedureFromjson {
-            'CODE': string;
-            'Name': string;
-            'Minimum': string;
-            'Maximum': string;
-            'Type': string;
-            'Category': string;
-            'Code': string;
-            'SubCategoty': string;
-            'NUMERICID': string;
+            CODE: string;
+            Name: string;
+            Minimum: string;
+            Maximum: string;
+            Type: string;
+            Category: string;
+            Code: string;
+            SubCategoty: string;
+            NUMERICID: string;
+            Notes: string;
         }
-        interface RawProcedureCategoryFromjson  {
-            
+        interface RawProcedureCategoryFromjson {
+            name: string;
+            code: string;
+            subcategories: {
+                [key: number]: {
+                    name: string;
+                    parents: Array<number> | null
+                }
+            };
         }
 
         /**
@@ -122,61 +129,79 @@ export class ProceduresService {
          * also remember to add the import statement for the json
          * import * as proceduredata from 'assets/procedures.json';
          */
-        // const date = procedurecats.categories.map((category: RawProcedureCategoryFromjson) => {
-        //     category._id = new BSON.ObjectId();
-        //     category.name = category.name.toLowerCase();
+        // const data = procedurecats.categories.map((category: RawProcedureCategoryFromjson) => {
         //     if (category.subcategories) {
         //         Object.keys(category.subcategories).forEach(key => {
         //             category.subcategories[key].name = category.subcategories[key].name.toLowerCase();
         //         });
         //     }
-        //     return category;
+        //     const newcategory: ProcedureCategory = {
+        //         _id: new BSON.ObjectId(),
+        //         code: category.code.toLocaleLowerCase(),
+        //         name: category.name.toLowerCase(),
+        //         status: true,
+        //         subcategories: category.subcategories
+        //     };
+        //     return newcategory;
         // });
-        // console.log(date);
+        // console.log(data);
 
         // this.stitch.db.collection<ProcedureCategory>('procedurecategories')
-        //     .insertMany(date);
-        const procedures = proceduredata['Table 1'].map((proc: RawprocedureFromjson) => {
-            console.log(proc);
-            const procedurecategory = this.procedurecategories.value.find(cat => {
-                return cat.name.toLowerCase() === proc.Type.toLocaleLowerCase();
-            });
-            const subcategories = procedurecategory.subcategories || null;
+        //     .insertMany(data)
+        //     .then(() => {
+        //         console.log('success writing');
+        //     })
+        //     .catch(e => {
+        //         console.log('error', e);
+        //     });
 
-            const belongingcategory = Object.entries(subcategories || {}).find((val) => {
-                if (val) {
-                    if (proc.SubCategoty) {
-                        return val[1].name.toLocaleLowerCase() === proc.SubCategoty.toLocaleLowerCase();
-                    } else {
-                        if (proc.Category) {
-                            return val[1].name.toLocaleLowerCase() === proc.Category.toLocaleLowerCase();
-                        } else {
-                            console.log('This procedure does not belong to any category');
-                            return false;
-                        }
-                    }
-                }
-            });
-            const newprocedure: RawProcedure = {
-                pricing: {
-                    max: Number(proc.Maximum) || null,
-                    min: Number(proc.Minimum) || null
-                },
-                category: {
-                    _id: procedurecategory._id,
-                    subCategoryId: belongingcategory ? belongingcategory[0] : null,
-                    code: proc.Code || null
-                },
-                numericid: Number(proc.NUMERICID) || null,
-                _id: null,
-                name: proc.Name ? proc.Name.toLowerCase() : ''
-            };
-            console.log(newprocedure);
-            return newprocedure;
-        });
 
-        this.stitch.db.collection<RawProcedure>('procedures')
-            .insertMany(procedures);
+
+        // console.log(this.procedurecategories.value);
+        // const procedures = proceduredata['Table 1'].map((proc: RawprocedureFromjson) => {
+        //     // console.log(proc);
+        //     const procedurecategory = this.procedurecategories.value.find(cat => {
+        //         // console.log(cat.name.toLowerCase(), proc.Type.toLocaleLowerCase());
+        //         return cat.name.toLowerCase() === proc.Type.toLocaleLowerCase();
+        //     });
+        //     // console.log(procedurecategory);
+        //     const subcategories = procedurecategory.subcategories || null;
+
+        //     const belongingcategory = Object.entries(subcategories || {}).find((val) => {
+        //         if (val) {
+        //             if (proc.SubCategoty) {
+        //                 return val[1].name.toLocaleLowerCase() === proc.SubCategoty.toLocaleLowerCase();
+        //             } else {
+        //                 if (proc.Category) {
+        //                     return val[1].name.toLocaleLowerCase() === proc.Category.toLocaleLowerCase();
+        //                 } else {
+        //                     console.log('This procedure does not belong to any category');
+        //                     return false;
+        //                 }
+        //             }
+        //         }
+        //     });
+        //     const newprocedure: RawProcedure = {
+        //         pricing: {
+        //             max: Number(proc.Maximum) || null,
+        //             min: Number(proc.Minimum) || null
+        //         },
+        //         category: {
+        //             _id: procedurecategory._id,
+        //             subCategoryId: belongingcategory ? belongingcategory[0] : null,
+        //             code: proc.Code || null
+        //         },
+        //         numericid: Number(proc.NUMERICID) || null,
+        //         _id: null,
+        //         name: proc.Name ? proc.Name.toLowerCase() : '',
+        //         notes: proc.Notes
+        //     };
+        //     // console.log(newprocedure);
+        //     return newprocedure;
+        // });
+
+        // this.stitch.db.collection<RawProcedure>('procedures')
+        //     .insertMany(procedures);
     }
 
     addcustomprocedure(customprocedure: CustomProcedure): any {

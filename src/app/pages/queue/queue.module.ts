@@ -14,6 +14,7 @@ import { FuseWidgetModule } from '../../../@fuse/components';
 import { AdminSelectionComponent } from './admin-selection/admin-selection.component';
 import { PerformProcedureComponent } from './current/perform-procedure/perform-procedure.component';
 import { ProcedurenotesComponent } from './current/procedure-notes/procedurenotes.component';
+import { MedInfoComponent } from './current/med-info/med-info.component';
 
 @NgModule({
     declarations: [MainComponent,
@@ -25,7 +26,8 @@ import { ProcedurenotesComponent } from './current/procedure-notes/procedurenote
         CurrentComponent,
         AdminSelectionComponent,
         PerformProcedureComponent,
-        ProcedurenotesComponent],
+        ProcedurenotesComponent,
+        MedInfoComponent],
     imports: [
         CommonModule,
         QueueRoutingModule,

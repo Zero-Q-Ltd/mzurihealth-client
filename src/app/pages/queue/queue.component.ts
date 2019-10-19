@@ -47,7 +47,6 @@ export class QueueComponent implements OnInit {
                 this.currentpatient = false;
                 return;
             }
-            console.log(!current.patientdata._id);
             this.currentpatient = !!current.patientdata._id;
         });
     }

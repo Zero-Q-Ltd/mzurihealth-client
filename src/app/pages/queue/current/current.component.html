@@ -2,19 +2,14 @@
 
     <div class="content" fxLayout="column">
         <div fxLayout="row">
-            <mat-card fxFlex="50">
-                <general-details></general-details>
-            </mat-card>
-            <mat-card fxFlex="50">
-                <patient-history></patient-history>
-            </mat-card>
-
+            <general-details class="cardlike mat-elevation-z6" fxFlex="50"></general-details>
+            <patient-history class="cardlike mat-elevation-z6" fxFlex="50"></patient-history>
         </div>
 
         <div fxLayout="row">
             <!-- <patient-notes fxFlex="50"></patient-notes> -->
-
-            <app-perform-procedure fxFlex="100"></app-perform-procedure>
+            <app-med-info class="cardlike mat-elevation-z6" fxFlex="25"></app-med-info>
+            <app-perform-procedure class="cardlike mat-elevation-z6" fxFlex="75"></app-perform-procedure>
         </div>
 
     </div>

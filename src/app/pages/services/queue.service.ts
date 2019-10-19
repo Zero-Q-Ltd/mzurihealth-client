@@ -227,9 +227,8 @@ export class QueueService {
                             queuedata: q.queuedata,
                             visitdata: null
                         });
-                        const t = await this.fetchCurrentpatient();
-                        const y = this.fetchCurrentPatientHsistory();
-                        return Promise.all([t, y]);
+                        this.fetchCurrentpatient();
+                        this.fetchCurrentPatientHsistory();
                     } else {
                         /**
                          * possibly remove the patient from current patient in case they left that stage from this Doc
@@ -249,14 +248,11 @@ export class QueueService {
      */
     async fetchCurrentpatient() {
         console.log('Fetching Current Patient Data');
-
         const d1 = await this.medInfoService.watchLatest(this.currentpatient.value.queuedata.patientId);
         const d2 = await this.visitService.watchId(this.currentpatient.value.queuedata.visitId);
         const d3 = await this.patientservice.watchId(this.currentpatient.value.queuedata.patientId);
-
         combineLatest([d1, d2, d3]).subscribe((data) => {
             console.log('Current Patient data fetched');
-            console.log(data);
             this.fetchingCurrentpatientdata.next(false);
             this.currentpatient.next({
                 medicalInfo: data[0] as any,
@@ -273,7 +269,7 @@ export class QueueService {
     fetchCurrentPatientHsistory() {
         console.log('Fetching Current Patient History');
         this.visitService.fetchvisithistory(this.currentpatient.value.queuedata.patientId, 10).then(hist => {
-            console.log(hist);
+            console.log('Current Patient history fetched');
             this.currentpatientHistory.next(hist);
         });
     }

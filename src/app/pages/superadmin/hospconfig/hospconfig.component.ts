@@ -1,16 +1,16 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import {PaymentmethodService} from '../../services/paymentmethod.service';
-import {PaymentChannel} from '../../../models/payment/PaymentChannel';
-import {emptyhospital, Hospital} from '../../../models/hospital/Hospital';
-import {HospitalService} from '../../services/hospital.service';
-import {MouseEvent} from '@agm/core';
-import {NotificationService} from '../../../shared/services/notifications.service';
-import {FuseConfirmDialogComponent} from '../../../../@fuse/components/confirm-dialog/confirm-dialog.component';
-import {MatDialog, MatDialogRef} from '@angular/material';
-import {emptypaymentmethod} from '../../../models/payment/CustomPaymentMethod.model';
-import {LocalcommunicationService} from '../localcommunication.service';
-import {fuseAnimations} from '../../../../@fuse/animations';
-import {BSON} from 'mongodb-stitch-browser-sdk';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { PaymentmethodService } from '../../services/paymentmethod.service';
+import { PaymentChannel } from '../../../models/payment/PaymentChannel';
+import { emptyhospital, Hospital } from '../../../models/hospital/Hospital';
+import { HospitalService } from '../../services/hospital.service';
+import { MouseEvent } from '@agm/core';
+import { NotificationService } from '../../../shared/services/notifications.service';
+import { FuseConfirmDialogComponent } from '../../../../@fuse/components/confirm-dialog/confirm-dialog.component';
+import { MatDialog, MatDialogRef } from '@angular/material';
+import { emptypaymentmethod } from '../../../models/payment/CustomPaymentMethod.model';
+import { LocalcommunicationService } from '../localcommunication.service';
+import { fuseAnimations } from '../../../../@fuse/animations';
+import { BSON } from 'mongodb-stitch-browser-sdk';
 
 declare let google: any;
 
@@ -30,15 +30,15 @@ export class HospconfigComponent implements OnInit {
     defaultlat = -1.2939519;
     defaultlng = 36.8311134;
     zoom = 12;
-    temphospital: Hospital = {...emptyhospital};
-    originalhspital: Hospital = {...emptyhospital};
+    temphospital: Hospital = { ...emptyhospital };
+    originalhspital: Hospital = { ...emptyhospital };
     paymentchannels: Array<PaymentChannel> = [];
 
     constructor(private paymentmethodService: PaymentmethodService,
-                private hospitalservice: HospitalService,
-                private notificationservice: NotificationService,
-                private communicatioservice: LocalcommunicationService,
-                private _matDialog: MatDialog) {
+        private hospitalservice: HospitalService,
+        private notificationservice: NotificationService,
+        private communicatioservice: LocalcommunicationService,
+        private _matDialog: MatDialog) {
         this.paymentmethodService.allpaymentchannels.subscribe(channels => {
             this.customizablepaymentchannels = channels.filter(channel => {
                 return channel.transactionDetailCollection;
@@ -63,7 +63,7 @@ export class HospconfigComponent implements OnInit {
              */
             this.originalhspital = hosp;
             if (hosp.paymentMethods.length < 1) {
-                this.originalhspital.paymentMethods.push({...emptypaymentmethod});
+                this.originalhspital.paymentMethods.push({ ...emptypaymentmethod });
             }
             /**
              * TODO : Find a better solution
@@ -73,7 +73,7 @@ export class HospconfigComponent implements OnInit {
             // this.temphospital = JSON.parse(JSON.stringify(this.originalhspital));
             // this.temphospital.location = this.originalhspital.location;
 
-            this.temphospital = {...this.originalhspital};
+            this.temphospital = { ...this.originalhspital };
             /**
              * initialize some vars
              */
@@ -100,9 +100,6 @@ export class HospconfigComponent implements OnInit {
         return JSON.stringify(this.temphospital) === JSON.stringify(this.originalhspital);
     }
 
-    sync(): void {
-        this.paymentmethodService.addallpaymnetmethods();
-    }
 
     savehospitalchanges(): void {
         this.confirmDialogRef = this._matDialog.open(FuseConfirmDialogComponent, {
@@ -128,7 +125,7 @@ export class HospconfigComponent implements OnInit {
     }
 
     addpaymentarray(): void {
-        this.temphospital.paymentMethods.push({...emptypaymentmethod});
+        this.temphospital.paymentMethods.push({ ...emptypaymentmethod });
     }
 
     getpaymentchannel(_id: BSON.ObjectId): PaymentChannel | null {

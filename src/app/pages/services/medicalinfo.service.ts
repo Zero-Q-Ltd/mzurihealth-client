@@ -54,6 +54,11 @@ export class MedicalinfoService {
       response.error(e);
     });
     return response;
-
+  }
+  updateMedInfo(id: BSON.ObjectId, newData: MedicalInfo) {
+    const query = {
+      _id: id
+    };
+    return this.stitch.db.collection<MedicalInfo>('medinfo').updateOne(query, newData);
   }
 }

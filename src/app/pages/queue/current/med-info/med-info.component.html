@@ -1,55 +1,60 @@
 <div>
-    <mat-form-field appearance="outline" class="subheading-2 pr-4 pl-4 ">
+    <button mat-raised-button (click)="toggleedit()">{{editable ? "CANCEL": "EDIT"}}</button>
+    <button mat-raised-button color="accent" (click)="save()">SAVE</button>
+    <br>
+    <mat-form-field appearance="outline" class="subheading-2 ">
         <mat-label>Blood Pressure</mat-label>
-        <input matInput required>
+        <input matInput required [disabled]="!editable">
         <mat-icon class="secondary-text" matSuffix>title</mat-icon>
         <mat-error>Results required!</mat-error>
     </mat-form-field>
     <br>
-    <mat-form-field appearance="outline" class="subheading-2 pr-4 pl-4  ">
+    <mat-form-field appearance="outline" class="subheading-2  ">
         <mat-label>Haemoglobin</mat-label>
-        <input matInput required>
+        <input matInput required [disabled]="!editable">
         <mat-icon class="secondary-text" matSuffix>title</mat-icon>
         <mat-error>Results required!</mat-error>
     </mat-form-field>
     <br>
 
-    <mat-form-field appearance="outline" class="subheading-2 pr-4 pl-4  ">
+    <mat-form-field appearance="outline" class="subheading-2  ">
         <mat-label>Heart Rate</mat-label>
-        <input matInput required>
+        <input matInput required [disabled]="!editable">
         <mat-icon class="secondary-text" matSuffix>title</mat-icon>
         <mat-error>Results required!</mat-error>
     </mat-form-field>
     <br>
 
-    <mat-form-field appearance="outline" class="subheading-2 pr-4 pl-4  ">
+    <mat-form-field appearance="outline" class="subheading-2  ">
         <mat-label>Sugar</mat-label>
-        <input matInput required>
+        <input matInput required [disabled]="!editable">
         <mat-icon class="secondary-text" matSuffix>title</mat-icon>
         <mat-error>Results required!</mat-error>
     </mat-form-field>
     <br>
 
-    <mat-form-field appearance="outline" class="subheading-2 pr-4 pl-4  ">
+    <mat-form-field appearance="outline" class="subheading-2  ">
         <mat-label>Weight</mat-label>
-        <input matInput required>
+        <input matInput required [disabled]="!editable">
         <mat-icon class="secondary-text" matSuffix>title</mat-icon>
         <mat-error>Results required!</mat-error>
     </mat-form-field>
     <br>
 
-    <mat-form-field appearance="outline" class="subheading-2 pr-4 pl-4  ">
+    <mat-form-field appearance="outline" class="subheading-2  ">
         <mat-label>Height</mat-label>
-        <input matInput required>
+        <input matInput required [disabled]="!editable">
         <mat-icon class="secondary-text" matSuffix>title</mat-icon>
         <mat-error>Results required!</mat-error>
     </mat-form-field>
     <br>
 
-    <mat-form-field appearance="outline" class="subheading-2 pr-4 pl-4  ">
+    <mat-form-field appearance="outline" class="subheading-2  ">
         <mat-label>BMI</mat-label>
-        <input matInput required>
+        <input matInput required [disabled]="!editable">
         <mat-icon class="secondary-text" matSuffix>title</mat-icon>
         <mat-error>Results required!</mat-error>
     </mat-form-field>
+    <br>
+
 </div>

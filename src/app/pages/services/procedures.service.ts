@@ -25,7 +25,7 @@ export class ProceduresService {
     hospitalprocedures: BehaviorSubject<Array<MergedProcedureModel>> =
         new BehaviorSubject<Array<MergedProcedureModel>>([]);
     activehospital: Hospital;
-    procedurecategories: BehaviorSubject<Array<ProcedureCategory>> = new BehaviorSubject<Array<ProcedureCategory>>([]);
+    categories: BehaviorSubject<Array<ProcedureCategory>> = new BehaviorSubject<Array<ProcedureCategory>>([]);
     userdata: HospitalAdmin;
 
     /**
@@ -74,7 +74,17 @@ export class ProceduresService {
         // });
     }
 
-    fetchproceduresincategory(categoryid: string): any {
+    fetchproceduresincategory(categoryid: string, limit?: number): any {
+        const query = {
+            'category._id': categoryid
+        };
+        const options = {
+            limit
+        };
+
+        return this.stitch.db.collection<RawProcedure>('procedures')
+            .find(query, options)
+            .toArray();
         // return this.db.firestore.collection('procedures').where('category._id', '==', categoryId);
     }
 
@@ -88,13 +98,16 @@ export class ProceduresService {
 
         };
         const options = {
+            sort: {
+                name: 1
+            }
         };
 
         this.stitch.db.collection<ProcedureCategory>('procedurecategories')
             .find(query, options)
             .toArray()
             .then(values => {
-                this.procedurecategories.next(values);
+                this.categories.next(values);
                 this.syncprocedures();
             })
             ;
@@ -205,6 +218,7 @@ export class ProceduresService {
     }
 
     addcustomprocedure(customprocedure: CustomProcedure): any {
+        customprocedure._id = new BSON.ObjectId();
         customprocedure.hospitalId = this.activehospital._id;
         customprocedure.status = true;
         customprocedure.creatorid = this.userdata._id;
@@ -219,6 +233,7 @@ export class ProceduresService {
             created: meta,
             edited: meta,
         };
+
         /**
          * remove insurance prices set to 0
          */
@@ -227,10 +242,19 @@ export class ProceduresService {
                 delete customprocedure.insurancePrices[key];
             }
         });
+        return this.stitch.db.collection<CustomProcedure>('procedureconfigs').insertOne(customprocedure);
+
         // return this.db.firestore.collection('procedureconfigs').add(customProcedure);
     }
 
     editcustomprocedure(customprocedure: CustomProcedure): any {
+        const query = {
+            _id: customprocedure._id
+        };
+        const options = {
+            upsert: false
+        };
+
         customprocedure.creatorid = this.userdata._id;
 
         const meta: Meta = {
@@ -250,6 +274,9 @@ export class ProceduresService {
                 delete customprocedure.insurancePrices[key];
             }
         });
+
+        return this.stitch.db.collection<CustomProcedure>('procedureconfigs').updateOne(query, customprocedure, options);
+
         // return this.db.firestore.collection('procedureconfigs').doc(customProcedure.id).update(customProcedure);
     }
 

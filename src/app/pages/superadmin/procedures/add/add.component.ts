@@ -1,15 +1,15 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import {fuseAnimations} from '../../../../../@fuse/animations';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {ProceduresService} from '../../../services/procedures.service';
-import {ProcedureCategory} from '../../../../models/procedure/ProcedureCategory';
-import {emptyprawrocedure, RawProcedure, RawProcedureCategory} from '../../../../models/procedure/RawProcedure';
-import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
-import {FuseSidebarService} from '../../../../../@fuse/components/sidebar/sidebar.service';
-import {LocalcommunicationService} from '../../localcommunication.service';
-import {NotificationService} from '../../../../shared/services/notifications.service';
-import {emptycustomprocedure} from '../../../../models/procedure/CustomProcedure';
-import {Paymentmethods} from '../../../../models/payment/PaymentChannel';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { fuseAnimations } from '../../../../../@fuse/animations';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ProceduresService } from '../../../services/procedures.service';
+import { ProcedureCategory } from '../../../../models/procedure/ProcedureCategory';
+import { emptyprawrocedure, RawProcedure, RawProcedureCategory } from '../../../../models/procedure/RawProcedure';
+import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
+import { FuseSidebarService } from '../../../../../@fuse/components/sidebar/sidebar.service';
+import { LocalcommunicationService } from '../../localcommunication.service';
+import { NotificationService } from '../../../../shared/services/notifications.service';
+import { emptycustomprocedure } from '../../../../models/procedure/CustomProcedure';
+import { Paymentmethods } from '../../../../models/payment/PaymentChannel';
 
 @Component({
     selector: 'procedure-add',
@@ -19,26 +19,26 @@ import {Paymentmethods} from '../../../../models/payment/PaymentChannel';
 })
 export class AddComponent implements OnInit, AfterViewInit {
     proceduresform: FormGroup;
-    procedurecategories: Array<ProcedureCategory> = [];
+    categories: Array<ProcedureCategory> = [];
     loadingprocedures = false;
     insuranceprices: {
         [key: string]: number
     };
     expandedlist = 0;
-    selectedprocedure: RawProcedure = {...emptyprawrocedure};
+    selectedprocedure: RawProcedure = { ...emptyprawrocedure };
     procedureheaders = ['name', 'category', 'minprice', 'maxprice'];
     categoryprocedures = new MatTableDataSource<RawProcedure>();
-
-    @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
-    @ViewChild(MatSort, {static: false}) sort: MatSort;
+    defaultLimit = 10;
+    @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
+    @ViewChild(MatSort, { static: false }) sort: MatSort;
 
     constructor(private _formBuilder: FormBuilder,
-                private _fuseSidebarService: FuseSidebarService,
-                private procedureservice: ProceduresService,
-                private communicatioservice: LocalcommunicationService,
-                private notificationservice: NotificationService) {
-        procedureservice.procedurecategories.subscribe(categories => {
-            this.procedurecategories = categories;
+        private _fuseSidebarService: FuseSidebarService,
+        private procedureservice: ProceduresService,
+        private communicatioservice: LocalcommunicationService,
+        private notificationservice: NotificationService) {
+        procedureservice.categories.subscribe(categories => {
+            this.categories = categories;
         });
     }
 
@@ -49,13 +49,9 @@ export class AddComponent implements OnInit, AfterViewInit {
         this.proceduresform.get('category').valueChanges.subscribe((category: ProcedureCategory) => {
             this.loadingprocedures = true;
             this.categoryprocedures.data = [];
-            this.procedureservice.fetchproceduresincategory(category._id).get().then(rawprocedures => {
-                this.categoryprocedures.data = rawprocedures.docs.map(rawcat => {
-                    const cat = rawcat.data() as RawProcedure;
-                    cat._id = rawcat.id;
-                    return cat;
-                });
+            this.procedureservice.fetchproceduresincategory(category._id).then(rawprocedures => {
                 this.loadingprocedures = false;
+                this.categoryprocedures.data = rawprocedures;
             });
         });
     }
@@ -71,7 +67,7 @@ export class AddComponent implements OnInit, AfterViewInit {
 
     getcategory(category: RawProcedureCategory): any {
         if (category.subCategoryId) {
-            return this.procedurecategories.find(cat => {
+            return this.categories.find(cat => {
                 return cat._id === category._id;
             }).subcategories[category.subCategoryId].name;
         } else {
@@ -100,7 +96,7 @@ export class AddComponent implements OnInit, AfterViewInit {
             });
         } else {
             this.selectedprocedure = selected;
-            this.communicatioservice.onprocedureselected.next({selectiontype: 'newprocedure', selection: {customprocedure: emptycustomprocedure, rawprocedure: selected}});
+            this.communicatioservice.onprocedureselected.next({ selectiontype: 'newprocedure', selection: { customprocedure: emptycustomprocedure, rawprocedure: selected } });
         }
     }
 

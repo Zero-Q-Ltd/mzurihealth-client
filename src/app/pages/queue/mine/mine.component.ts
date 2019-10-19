@@ -1,13 +1,13 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialog, MatDialogRef, MatTableDataSource } from '@angular/material';
-import { fuseAnimations } from '../../../../../@fuse/animations';
-import { QueueService } from '../../../services/queue.service';
-import { MergedPatientQueueModel } from '../../../../models/visit/MergedPatientQueueModel';
+import { fuseAnimations } from '../../../../@fuse/animations';
+import { QueueService } from '../../services/queue.service';
+import { MergedPatientQueueModel } from '../../../models/visit/MergedPatientQueueModel';
 import * as moment from 'moment';
 import { AdminSelectionComponent } from '../admin-selection/admin-selection.component';
-import { HospitalAdmin } from '../../../../models/user/HospitalAdmin';
-import { FuseConfirmDialogComponent } from '../../../../../@fuse/components/confirm-dialog/confirm-dialog.component';
-import { InvoiceComponent } from '../../invoice/invoice.component';
+import { HospitalAdmin } from '../../../models/user/HospitalAdmin';
+import { FuseConfirmDialogComponent } from '../../../../@fuse/components/confirm-dialog/confirm-dialog.component';
+import { InvoiceComponent } from '../../patients/invoice/invoice.component';
 
 @Component({
     selector: 'queue-mine',

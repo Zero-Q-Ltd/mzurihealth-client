@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { QueueService } from './queue.service';
 import { HospitalService } from './hospital.service';
 import { emptypatientvisit, Visit } from '../../models/visit/Visit';
-import { BehaviorSubject, Observable, Subscription, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription, Subject, ReplaySubject } from 'rxjs';
 import { Procedureperformed } from '../../models/procedure/Procedureperformed';
 import { MergedProcedureModel } from '../../models/procedure/MergedProcedure.model';
 import { AdminService } from './admin.service';
@@ -20,8 +20,6 @@ import { Patient } from 'app/models/patient/Patient';
 export class VisitService {
     patientid: string;
     hospitalid: string;
-    visithistory: BehaviorSubject<Array<Visit>> = new BehaviorSubject<Array<Visit>>([]);
-    currentvisit: BehaviorSubject<Visit> = new BehaviorSubject<Visit>({ ...emptypatientvisit });
     adminid: string;
 
     /**
@@ -87,16 +85,16 @@ export class VisitService {
         return true as any;
 
     }
-    async watchId(id: BSON.ObjectId): Promise<Subject<Visit>> {
+    async watchId(id: BSON.ObjectId): Promise<ReplaySubject<Visit>> {
         const query = {
             _id: id
         };
         const queryid = + new Date();
 
-        const response: Subject<Visit> = new Subject();
+        const response: ReplaySubject<Visit> = new ReplaySubject(1);
         const collection = this.stitch.db.collection<Visit>('visits');
         this.dbSubscriptions.set(queryid, await collection.watch([id]));
-        collection.findOne(query)
+        await collection.findOne(query)
             .then(async value => {
                 response.next(value);
             })
@@ -127,21 +125,14 @@ export class VisitService {
         // });
     }
 
-    fetchvisithistory(): void {
-        // this.db.firestore.collection('hospitalvisits')
-        //     .where('hospitalId', '==', this.hospitalId)
-        //     .where('patientId', '==', this.patientId)
-        //     .orderBy('metadata.date', 'asc')
-        //     .limit(10)
-        //     .onSnapshot(snapshot => {
-        //         this.visithistory.next(snapshot.docs.map(value => {
-        //             const visit = Object.assign({...emptypatientvisit}, value.data(), {id: value.id});
-        //             if (!visit.payment.status) {
-        //                 this.currentvisit.next(visit);
-        //             }
-        //             return visit;
-        //         }));
-        //     });
+    fetchvisithistory(patientId: BSON.ObjectId, limit: number): Promise<Array<Visit>> {
+        const query = {
+            patientId: patientId
+        };
+        const options = {
+            limit: limit
+        };
+        return this.stitch.db.collection<Visit>('visits').find(query, options).toArray();
     }
 
     addVisit(visit: Visit) {

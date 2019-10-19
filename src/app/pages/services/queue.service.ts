@@ -34,7 +34,10 @@ export class QueueService {
      */
     mainpatientsqueue: BehaviorSubject<Map<BSON.ObjectId, MergedPatientQueueModel>> = new BehaviorSubject(new Map());
     mypatientqueue: BehaviorSubject<Map<BSON.ObjectId, MergedPatientQueueModel>> = new BehaviorSubject(new Map());
+
     currentpatient: BehaviorSubject<CurrentPatient> = new BehaviorSubject(null);
+    currentpatientHistory: BehaviorSubject<Array<Visit>> = new BehaviorSubject<Array<Visit>>([]);
+
     adminid: BSON.ObjectId;
     fetchingpatientdata: BehaviorSubject<boolean> = new BehaviorSubject(false);
     fetchingCurrentpatientdata: BehaviorSubject<boolean> = new BehaviorSubject(false);
@@ -201,7 +204,7 @@ export class QueueService {
             /**
              * Use this opportunity to filter patients in the queue that belong to this admin
              */
-            que.map(q => {
+            que.map(async q => {
                 patientmap.set(q.patientdata._id, q);
                 const equality = equal(q.queuedata.checkin.admin, this.adminid);
 
@@ -224,7 +227,9 @@ export class QueueService {
                             queuedata: q.queuedata,
                             visitdata: null
                         });
-                        this.fetchCurrentpatient();
+                        const t = await this.fetchCurrentpatient();
+                        const y = this.fetchCurrentPatientHsistory();
+                        return Promise.all([t, y]);
                     } else {
                         /**
                          * possibly remove the patient from current patient in case they left that stage from this Doc
@@ -239,44 +244,37 @@ export class QueueService {
             this.fetchingpatientdata.next(false);
         });
     }
-
+    /**
+     * Fetches the current Patient details
+     */
     async fetchCurrentpatient() {
         console.log('Fetching Current Patient Data');
 
-        const liveMedicalInfoobs = this.medInfoService.watchLatest(this.currentpatient.value.queuedata.patientId);
-        const liveVisitdataObs = this.visitService.watchId(this.currentpatient.value.queuedata.visitId);
-        const livePatientObs = this.patientservice.watchId(this.currentpatient.value.queuedata.patientId);
-        /**
-         * Writing the above statement in a single line somehow makes only one observable get resolved
-         * @TODO research why this behavious and document 
-         */
-        const d1 = await liveMedicalInfoobs;
-
-        const d2 = await liveVisitdataObs;
-
-        const d3 = await livePatientObs;
-
-        // d1.subscribe(i => {
-        //     console.log(i);
-        // });
-        // d2.subscribe(i => {
-        //     console.log(i);
-        // });
-
-        // d3.subscribe(i => {
-        //     console.log(i);
-        // });
+        const d1 = await this.medInfoService.watchLatest(this.currentpatient.value.queuedata.patientId);
+        const d2 = await this.visitService.watchId(this.currentpatient.value.queuedata.visitId);
+        const d3 = await this.patientservice.watchId(this.currentpatient.value.queuedata.patientId);
 
         combineLatest([d1, d2, d3]).subscribe((data) => {
             console.log('Current Patient data fetched');
+            console.log(data);
             this.fetchingCurrentpatientdata.next(false);
-
             this.currentpatient.next({
-                medicalInfo: data[0],
-                patientdata: data[2],
+                medicalInfo: data[0] as any,
+                patientdata: data[2] as any,
                 queuedata: this.currentpatient.value.queuedata,
-                visitdata: data[1]
+                visitdata: data[1] as any
             });
+        });
+
+    }
+    /**
+     * Fetches the current patient 
+     */
+    fetchCurrentPatientHsistory() {
+        console.log('Fetching Current Patient History');
+        this.visitService.fetchvisithistory(this.currentpatient.value.queuedata.patientId, 10).then(hist => {
+            console.log(hist);
+            this.currentpatientHistory.next(hist);
         });
     }
 

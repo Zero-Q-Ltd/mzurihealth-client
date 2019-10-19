@@ -1,0 +1,38 @@
+<div id="history-table">
+    <table mat-table [dataSource]="flattenedProcedures">
+
+        <!-- Position Column -->
+        <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef> Date </th>
+            <td mat-cell *matCellDef="let procedure">
+                {{procedure.metadata.created}}
+            </td>
+        </ng-container>
+        <!-- Weight Column -->
+        <ng-container matColumnDef="doctor">
+            <th mat-header-cell *matHeaderCellDef> Doctor </th>
+            <td mat-cell *matCellDef="let procedure">
+                {{hospitaladmins| adminName : procedure.adminid}}
+            </td>
+        </ng-container>
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="procedure">
+            <th mat-header-cell *matHeaderCellDef> Procedure </th>
+            <td mat-cell *matCellDef="let procedure">
+                {{procedure.name}}
+            </td>
+        </ng-container>
+
+        <!-- Symbol Column -->
+        <ng-container matColumnDef="results">
+            <th mat-header-cell *matHeaderCellDef> Results </th>
+            <td mat-cell *matCellDef="let procedure">
+                {{procedure.results}}
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+</div>

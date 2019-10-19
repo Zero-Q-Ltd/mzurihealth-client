@@ -35,6 +35,10 @@ const routes: Routes = [
                 loadChildren: 'app/pages/calendar/calendar.module#CalendarModule'
             },
             {
+                path: 'queue',
+                loadChildren: 'app/pages/queue/queue.module#QueueModule'
+            },
+            {
                 path: 'patients',
                 // canActivate: [UsersGuard],
                 loadChildren: 'app/pages/patients/patients.module#PatientsModule'

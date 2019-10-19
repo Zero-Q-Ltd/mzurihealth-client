@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { fuseAnimations } from '../../../../../@fuse/animations';
+import { fuseAnimations } from '../../../../@fuse/animations';
 import { LocalcommunicationService } from './localcommunication.service';
-import { PatientService } from '../../../services/patient.service';
+import { PatientService } from '../../services/patient.service';
 
 @Component({
     selector: 'patient-current',

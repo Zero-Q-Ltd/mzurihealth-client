@@ -1,44 +1,38 @@
-<div class="page-layout carded  tabbed right-sidebar">
+<div class="page-layout carded  tabbed right-sidebar" id="admin">
 
     <!-- TOP BACKGROUND -->
     <div class="top-bg accent"></div>
     <!-- / TOP BACKGROUND -->
     <!-- SIDEBAR -->
     <fuse-sidebar *ngIf="sidebarstatus" [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}" class="sidebar "
-                  lockedOpen="gt-md" name="procedureconfig-sidebar"
-                  position="right">
+        lockedOpen="gt-md" name="procedureconfig-sidebar" position="right">
         <app-procedureconfig *ngIf="sidebarstatus ===1" class="right-navbar"></app-procedureconfig>
-        <admins-adminconfig *ngIf="sidebarstatus ===2" [clickedadmin]="clickedadmin"
-                            class="right-navbar"></admins-adminconfig>
+        <admins-adminconfig *ngIf="sidebarstatus ===2" [clickedadmin]="clickedadmin" class="right-navbar">
+        </admins-adminconfig>
     </fuse-sidebar>
     <!-- / SIDEBAR -->
     <!-- CENTER -->
     <div class="center">
 
         <!-- CONTENT HEADER -->
-        <div class="header accent p-24">
+        <div class=" accent p-6">
 
 
-            <div class="logo" fxLayout="row" fxLayoutAlign="start center">
+            <!-- <div class="logo" fxLayout="row" fxLayoutAlign="start center">
 
                 <button (click)="toggleSidebar('procedureconfig-sidebar')" class="sidebar-toggle mr-8" fxHide.gt-md
-                        mat-icon-button>
+                    mat-icon-button>
                     <mat-icon>menu</mat-icon>
                 </button>
-                <mat-icon [@animate]="{value:'*',params:{delay:'50ms',scale:'0.2'}}"
-                          class="logo-icon mr-16">settings
+                <mat-icon [@animate]="{value:'*',params:{delay:'50ms',scale:'0.2'}}" class="logo-icon mr-16">settings
                 </mat-icon>
                 <span [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}" class="logo-text h1">
                     SuperAdmin
                 </span>
-            </div>
-            <button (click)="toggleactiveside()"
-                    [@animate]="{value:'*', params:{delay:'300ms',scale:'0.2'}}"
-                    [@fadeInOut]="activetabindex === 0"
-                    [color]="activeside ? 'primary' : 'warn' "
-                    aria-label="Add Procedure"
-                    class="vutadown"
-                    mat-fab>
+            </div> -->
+            <button (click)="toggleactiveside()" [@animate]="{value:'*', params:{delay:'300ms',scale:'0.2'}}"
+                [@fadeInOut]="activetabindex === 0" [color]="activeside ? 'primary' : 'warn' "
+                aria-label="Add Procedure" class="vutadown" mat-fab>
                 <mat-icon *ngIf="!activeside">add</mat-icon>
                 <mat-icon *ngIf="activeside">replay</mat-icon>
             </button>

@@ -73,16 +73,16 @@ export class PatientService {
         return pt.toPromise();
     }
 
-    async watchId(id: BSON.ObjectId): Promise<Subject<Patient>> {
+    async watchId(id: BSON.ObjectId): Promise<ReplaySubject<Patient>> {
         const query = {
             _id: id
         };
         const queryid = + new Date();
 
-        const response: Subject<Patient> = new Subject();
+        const response: ReplaySubject<Patient> = new ReplaySubject(1);
         const collection = this.stitch.db.collection<Patient>('patients');
         this.dbSubscriptions.set(queryid, await collection.watch([id]));
-        collection.findOne(query)
+        await collection.findOne(query)
             .then(async value => {
                 response.next(value);
             })

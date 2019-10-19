@@ -1,8 +1,8 @@
-import {Component, Inject, OnInit, Optional} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
-import {emptyadmin, HospitalAdmin} from '../../../../models/user/HospitalAdmin';
+import { Component, Inject, OnInit, Optional } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { emptyadmin, HospitalAdmin } from '../../../models/user/HospitalAdmin';
 import * as moment from 'moment';
-import {HospitalService} from '../../../services/hospital.service';
+import { HospitalService } from '../../services/hospital.service';
 
 @Component({
     selector: 'app-admin-selection',
@@ -10,12 +10,12 @@ import {HospitalService} from '../../../services/hospital.service';
     styleUrls: ['./admin-selection.component.scss']
 })
 export class AdminSelectionComponent implements OnInit {
-    chosenadmin: HospitalAdmin = {...emptyadmin};
+    chosenadmin: HospitalAdmin = { ...emptyadmin };
     hospitaladmins: Array<HospitalAdmin> = [];
 
     constructor(private hospitalService: HospitalService,
-                public dialogRef: MatDialogRef<AdminSelectionComponent>,
-                @Optional() @Inject(MAT_DIALOG_DATA) public data?: any) {
+        public dialogRef: MatDialogRef<AdminSelectionComponent>,
+        @Optional() @Inject(MAT_DIALOG_DATA) public data?: any) {
         hospitalService.hospitaladmins.subscribe(admins => {
             this.hospitaladmins = admins;
         });

@@ -1,20 +1,21 @@
-import {Component, Inject, OnInit, ViewEncapsulation} from '@angular/core';
-import {QueueService} from '../../services/queue.service';
-import {VisitService} from '../../services/visit.service';
-import {emptymergedQueueModel, MergedPatientQueueModel} from '../../../models/visit/MergedPatientQueueModel';
-import {emptyprocedureperformed, Procedureperformed} from '../../../models/procedure/Procedureperformed';
-import {PaymentmethodService} from '../../services/paymentmethod.service';
-import {PaymentChannel, Paymentmethods} from '../../../models/payment/PaymentChannel';
-import {HospitalService} from '../../services/hospital.service';
-import {PaymentMethod} from '../../../models/payment/CustomPaymentMethod.model';
-import {MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatTableDataSource} from '@angular/material';
-import {InvoiceComponent} from '../invoice/invoice.component';
-import {HospitalAdmin} from '../../../models/user/HospitalAdmin';
-import {fuseAnimations} from '../../../../@fuse/animations';
-import {ProceduresService} from '../../services/procedures.service';
-import {NotificationService} from '../../../shared/services/notifications.service';
-import {FuseConfirmDialogComponent} from '../../../../@fuse/components/confirm-dialog/confirm-dialog.component';
-import {PrescriptionComponent} from '../prescription/prescription.component';
+import { Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
+import { QueueService } from '../../services/queue.service';
+import { VisitService } from '../../services/visit.service';
+import { emptymergedQueueModel, MergedPatientQueueModel } from '../../../models/visit/MergedPatientQueueModel';
+import { emptyprocedureperformed, Procedureperformed } from '../../../models/procedure/Procedureperformed';
+import { PaymentmethodService } from '../../services/paymentmethod.service';
+import { PaymentChannel, Paymentmethods } from '../../../models/payment/PaymentChannel';
+import { HospitalService } from '../../services/hospital.service';
+import { PaymentMethod } from '../../../models/payment/CustomPaymentMethod.model';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatTableDataSource } from '@angular/material';
+import { InvoiceComponent } from '../invoice/invoice.component';
+import { HospitalAdmin } from '../../../models/user/HospitalAdmin';
+import { fuseAnimations } from '../../../../@fuse/animations';
+import { ProceduresService } from '../../services/procedures.service';
+import { NotificationService } from '../../../shared/services/notifications.service';
+import { FuseConfirmDialogComponent } from '../../../../@fuse/components/confirm-dialog/confirm-dialog.component';
+import { PrescriptionComponent } from '../prescription/prescription.component';
+import { BSON } from 'mongodb-stitch-core-sdk';
 
 @Component({
     selector: 'app-invoice-payment',
@@ -24,11 +25,11 @@ import {PrescriptionComponent} from '../prescription/prescription.component';
     animations: fuseAnimations
 })
 export class InvoiceCustomizationComponent implements OnInit {
-    patientdata: MergedPatientQueueModel = {...emptymergedQueueModel};
+    patientdata: MergedPatientQueueModel = { ...emptymergedQueueModel };
     allpaymentchannels: Array<PaymentChannel> = [];
     hospitalmethods: Array<PaymentMethod> = [];
     dialogRef: MatDialogRef<any>;
-    clickedprocedure: Procedureperformed = {...emptyprocedureperformed};
+    clickedprocedure: Procedureperformed = { ...emptyprocedureperformed };
     hospitaladmins: Array<HospitalAdmin> = [];
     proceduresdatasouce: MatTableDataSource<Procedureperformed> = new MatTableDataSource<Procedureperformed>();
     procedureheaders = ['name', 'admin-time', 'payment-method', 'cost'];
@@ -39,15 +40,15 @@ export class InvoiceCustomizationComponent implements OnInit {
     disableprecriptionbutton = true;
 
     constructor(private queue: QueueService,
-                private hospital: HospitalService,
-                private visitservice: VisitService,
-                private paymentmethodService: PaymentmethodService,
-                private hospitalservice: HospitalService,
-                public _matDialog: MatDialog,
-                private procedureservice: ProceduresService,
-                private notifications: NotificationService,
-                public thisdialogRef: MatDialogRef<InvoiceCustomizationComponent>,
-                @Inject(MAT_DIALOG_DATA) public patient: string) {
+        private hospital: HospitalService,
+        private visitservice: VisitService,
+        private paymentmethodService: PaymentmethodService,
+        private hospitalservice: HospitalService,
+        public _matDialog: MatDialog,
+        private procedureservice: ProceduresService,
+        private notifications: NotificationService,
+        public thisdialogRef: MatDialogRef<InvoiceCustomizationComponent>,
+        @Inject(MAT_DIALOG_DATA) public patient: string) {
 
 
         hospitalservice.hospitaladmins.subscribe(admins => {
@@ -87,34 +88,35 @@ export class InvoiceCustomizationComponent implements OnInit {
     }
 
 
-    getpaymentamount(customprocedureid: string, insuranceid ?: string): number {
-        if (insuranceid) {
-            /**
-             * check if the procedure contains a custom price for insurance
-             */
-            if (!!this.procedureservice.hospitalprocedures.value.find(value => {
-                return value.customProcedure._id === customprocedureid && value.customProcedure.customInsurancePrice && !!value.customProcedure.insurancePrices[insuranceid];
-            })) {
-                return this.procedureservice.hospitalprocedures.value.find(value => {
-                    return value.customProcedure._id === customprocedureid && !!value.customProcedure.insurancePrices[insuranceid];
-                }).customProcedure.insurancePrices[insuranceid];
+    getpaymentamount(customprocedureid: BSON.ObjectId, insuranceid?: string): number {
+        return 0;
+        // if (insuranceid) {
+        //     /**
+        //      * check if the procedure contains a custom price for insurance
+        //      */
+        //     if (!!this.procedureservice.hospitalprocedures.value.find(value => {
+        //         return value.customProcedure._id === customprocedureid && value.customProcedure.customInsurancePrice && !!value.customProcedure.insurancePrices[insuranceid];
+        //     })) {
+        //         return this.procedureservice.hospitalprocedures.value.find(value => {
+        //             return value.customProcedure._id === customprocedureid && !!value.customProcedure.insurancePrices[insuranceid];
+        //         }).customProcedure.insurancePrices[insuranceid];
 
-            } else {
-                /**
-                 * return the normal price
-                 */
-                return this.procedureservice.hospitalprocedures.value.find(value => {
-                    return value.customProcedure._id === customprocedureid;
-                }).customProcedure.regularPrice;
-            }
-        } else {
-            /**
-             * return the normal price
-             */
-            return this.procedureservice.hospitalprocedures.value.find(value => {
-                return value.customProcedure._id === customprocedureid;
-            }).customProcedure.regularPrice;
-        }
+        //     } else {
+        //         /**
+        //          * return the normal price
+        //          */
+        //         return this.procedureservice.hospitalprocedures.value.find(value => {
+        //             return value.customProcedure._id === customprocedureid;
+        //         }).customProcedure.regularPrice;
+        //     }
+        // } else {
+        //     /**
+        //      * return the normal price
+        //      */
+        //     return this.procedureservice.hospitalprocedures.value.find(value => {
+        //         return value.customProcedure._id === customprocedureid;
+        //     }).customProcedure.regularPrice;
+        // }
     }
 
     preview(): void {

@@ -81,10 +81,7 @@ export class AddComponent implements OnInit, AfterViewInit {
      * @param selected
      */
     onSelect(selected: RawProcedure): void {
-
-        if (this.procedureservice.hospitalprocedures.value.find(merged => {
-            return merged.rawProcedure._id === selected._id;
-        })) {
+        if (this.procedureservice.hospitalprocedures.value.get(selected._id)) {
             this.notificationservice.notify({
                 placement: {
                     vertical: 'bottom',
@@ -95,7 +92,7 @@ export class AddComponent implements OnInit, AfterViewInit {
                 body: 'this procedure is already configured'
             });
         } else {
-            this.selectedprocedure = selected;
+            this.selectedprocedure = { ...selected };
             this.communicatioservice.onprocedureselected.next({ selectiontype: 'newprocedure', selection: { customprocedure: emptycustomprocedure, rawprocedure: selected } });
         }
     }

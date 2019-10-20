@@ -77,21 +77,21 @@ export class PatientService {
         const query = {
             _id: id
         };
-        const queryid = + new Date();
+        const queryid = new BSON.ObjectId();
 
         const response: ReplaySubject<Patient> = new ReplaySubject(1);
         const collection = this.stitch.db.collection<Patient>('patients');
-        this.dbSubscriptions.set(queryid, await collection.watch([id]));
-        await collection.findOne(query)
+        this.dbSubscriptions.set(queryid.toString(), await collection.watch([id]));
+        collection.findOne(query)
             .then(async value => {
                 response.next(value);
             })
             .catch(e => response.error(e));
 
-        this.dbSubscriptions.get(queryid).onNext(data => {
+        this.dbSubscriptions.get(queryid.toString()).onNext(data => {
             response.next(data.fullDocument);
         });
-        this.dbSubscriptions.get(queryid).onError(e => {
+        this.dbSubscriptions.get(queryid.toString()).onError(e => {
             response.error(e);
         });
         return response;

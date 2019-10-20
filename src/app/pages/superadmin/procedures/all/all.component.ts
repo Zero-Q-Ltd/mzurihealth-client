@@ -31,7 +31,8 @@ export class AllComponent implements OnInit, AfterViewInit {
         private _matDialog: MatDialog,
         private notificationservice: NotificationService) {
         procedureservice.hospitalprocedures.subscribe(mergedprocedures => {
-            this.hospitalprocedures.data = mergedprocedures;
+            console.log(Array.from(mergedprocedures.values()));
+            this.hospitalprocedures.data = Array.from(mergedprocedures.values());
         });
         procedureservice.categories.subscribe(categories => {
             this.procedurecategories = categories;

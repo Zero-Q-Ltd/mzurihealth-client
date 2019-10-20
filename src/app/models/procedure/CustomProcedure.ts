@@ -4,7 +4,7 @@ import { BSON } from 'mongodb-stitch-browser-sdk';
 export interface CustomProcedure {
     creatorid: BSON.ObjectId;
     regularPrice: number;
-    parentProcedureId: BSON.ObjectId;
+    parentId: BSON.ObjectId;
     hospitalId: BSON.ObjectId;
     insurancePrices: {
         [key: string]: number
@@ -25,7 +25,7 @@ export const emptycustomprocedure: CustomProcedure = {
     status: null,
     regularPrice: 0,
     insurancePrices: {},
-    parentProcedureId: null,
+    parentId: null,
     hospitalId: null,
     metadata: emptymetadata,
     customInsurancePrice: false

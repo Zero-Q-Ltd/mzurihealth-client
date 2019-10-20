@@ -32,7 +32,7 @@ export class PerformProcedureComponent implements OnInit {
                  * very useful for later on when dialog is dismissed
                  */
                 this.procedureResults[i].originalProcedureId = r.rawProcedure._id;
-                this.procedureResults[i].customProcedureId = r.customProcedure._id;
+                // this.procedureResults[i].customProcedureId = r.customProcedure._id;
                 this.procedureResults[i].notes[0] = {
                     note: '',
                     admin: {
@@ -41,7 +41,7 @@ export class PerformProcedureComponent implements OnInit {
                     }
                 };
             });
-            this.proceduresdataSource.data = mergedprocedures;
+            this.proceduresdataSource.data = Array.from(mergedprocedures.values());
 
         });
     }

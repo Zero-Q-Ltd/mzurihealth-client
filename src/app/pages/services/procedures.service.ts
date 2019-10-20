@@ -23,7 +23,7 @@ import { switchMap, combineLatest } from 'rxjs/operators';
     providedIn: 'root'
 })
 export class ProceduresService {
-    hospitalprocedures: BehaviorSubject<Map<BSON.ObjectId, MergedProcedureModel>> = new BehaviorSubject(new Map());
+    hospitalprocedures: BehaviorSubject<Map<string, MergedProcedureModel>> = new BehaviorSubject(new Map());
     hospitalCustomProcedureConfig !: CustomProcedureConfig;
     activehospital: Hospital;
     categories: BehaviorSubject<Array<ProcedureCategory>> = new BehaviorSubject<Array<ProcedureCategory>>([]);
@@ -69,7 +69,7 @@ export class ProceduresService {
                     return;
                 }
                 this.hospitalCustomProcedureConfig = data;
-                const mapData = new Map<BSON.ObjectId, MergedProcedureModel>();
+                const mapData = new Map<string, MergedProcedureModel>();
                 data.procedures.map(procedure => {
                     /**
                           * only fetch proceures that are active
@@ -77,16 +77,15 @@ export class ProceduresService {
                     if (!procedure.status) {
                         return;
                     }
-                    mapData.set(procedure.parentProcedureId, { customProcedure: procedure, rawProcedure: null });
+                    mapData.set(procedure.parentId.toString(), { customProcedure: procedure, rawProcedure: null });
                 });
-                this.hospitalprocedures.next(mapData);
 
                 const innerquery = {
                     _id: {
                         $in: Array.from(mapData
                             .values())
                             .map(val => {
-                                return val.customProcedure.parentProcedureId;
+                                return val.customProcedure.parentId;
                             })
                     }
                 };
@@ -98,31 +97,12 @@ export class ProceduresService {
                     .toArray()
                     .then(originalprocedures => {
                         originalprocedures.map(original => {
-                            const match = mapData.get(original._id);
-                            mapData.set(original._id, { customProcedure: match.customProcedure, rawProcedure: original });
+                            const match = mapData.get(original._id.toString());
+                            mapData.set(original._id.toString(), { customProcedure: match.customProcedure, rawProcedure: original });
                         });
                         this.hospitalprocedures.next(mapData);
                     });
-
             });
-
-        // this.db.collection('procedureconfigs', ref => ref.where('hospitalId', '==', this.activehospital._id).where('status', '==', true)).snapshotChanges().pipe(
-        //     switchMap(f => {
-        //         return combineLatest(...f.map(t => {
-        //             const customProcedure = t.payload.doc.data() as CustomProcedure;
-        //             customProcedure.id = t.payload.doc.id;
-        //             return this.db.collection('procedures').doc(customProcedure.parentProcedureId).snapshotChanges().pipe(
-        //                 map(originalproceduredata => {
-        //                     const rawProcedure = originalproceduredata.payload.data() as RawProcedure;
-        //                     rawProcedure.id = originalproceduredata.payload.id;
-        //                     return ({rawProcedure: rawProcedure, customProcedure: customProcedure});
-        //                 })
-        //             );
-        //         }));
-        //     })
-        // ).subscribe(mergedData => {
-        //     this.hospitalprocedures.next(mergedData);
-        // });
     }
 
     fetchproceduresincategory(categoryid: string, limit?: number): any {
@@ -136,7 +116,6 @@ export class ProceduresService {
         return this.stitch.db.collection<RawProcedure>('procedures')
             .find(query, options)
             .toArray();
-        // return this.db.firestore.collection('procedures').where('category._id', '==', categoryId);
     }
 
     disableprocedure(procedureid: string) {

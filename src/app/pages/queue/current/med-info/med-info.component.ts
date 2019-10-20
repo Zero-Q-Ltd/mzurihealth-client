@@ -11,7 +11,7 @@ import { MedicalInfo } from 'app/models/patient/MedicalInfo';
 })
 export class MedInfoComponent implements OnInit {
   currentpatient: Patient;
-  editable = false;
+  editable = true;
   tempMedinfo !: MedicalInfo;
 
   constructor(private queue: QueueService,
@@ -29,12 +29,9 @@ export class MedInfoComponent implements OnInit {
   ngOnInit() {
   }
   save() {
-    this.editable = false;
     this.medInfo.updateMedInfo(this.tempMedinfo._id, this.tempMedinfo);
   }
+  viewhistory() {
 
-  toggleedit() {
-    this.editable = !this.editable;
   }
-
 }

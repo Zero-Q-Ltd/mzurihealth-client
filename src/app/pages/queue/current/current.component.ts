@@ -11,7 +11,7 @@ import { PatientService } from '../../services/patient.service';
 })
 export class CurrentComponent implements OnInit {
     activepage = 'generaldetails';
-
+    activechip = 'General'
     constructor(private communication: LocalcommunicationService, private patientservice: PatientService, ) {
         communication.onactivechildpagechanged.subscribe(page => {
             this.activepage = page;

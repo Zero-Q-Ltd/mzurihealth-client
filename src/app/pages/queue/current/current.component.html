@@ -7,8 +7,23 @@
         </div>
 
         <div fxLayout="row">
-            <!-- <patient-notes fxFlex="50"></patient-notes> -->
-            <app-med-info class="cardlike mat-elevation-z6" fxFlex="25"></app-med-info>
+            <div class="cardlike mat-elevation-z6" fxFlex="25">
+                <mat-chip-list aria-label="Component selection">
+                    <mat-chip color="accent" [selected]="activechip === 'General'" (click)="activechip = 'General'">
+                        General</mat-chip>
+                    <mat-chip color="accent" [selected]="activechip === 'Conditions'"
+                        (click)="activechip = 'Conditions'">Conditions</mat-chip>
+                    <mat-chip color="accent" [selected]="activechip === 'Allergies'" (click)="activechip = 'Allergies'">
+                        Allergies</mat-chip>
+                </mat-chip-list>
+                <div [ngSwitch]="activechip">
+                    <app-med-info *ngSwitchCase="'General'"></app-med-info>
+                    <app-conditions *ngSwitchCase="'Conditions'"></app-conditions>
+                    <app-allergies *ngSwitchCase="'Allergies'"></app-allergies>
+
+                </div>
+
+            </div>
             <app-perform-procedure class="cardlike mat-elevation-z6" fxFlex="75"></app-perform-procedure>
         </div>
 

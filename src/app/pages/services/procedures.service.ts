@@ -118,7 +118,7 @@ export class ProceduresService {
             .toArray();
     }
 
-    disableprocedure(procedureid: string) {
+    disableprocedure(procedure: CustomProcedure) {
         return true as any;
         // return this.db.firestore.collection('procedureconfigs').doc(procedureid).update({status: false});
     }
@@ -300,7 +300,7 @@ export class ProceduresService {
     }
 
 
-    editcustomprocedure(customprocedure: CustomProcedure, position: number): any {
+    editcustomprocedure(customprocedure: CustomProcedure): any {
         const query = {
             _id: this.hospitalCustomProcedureConfig._id
         };

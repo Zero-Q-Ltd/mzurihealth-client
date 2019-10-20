@@ -69,7 +69,7 @@ export class AllComponent implements OnInit, AfterViewInit {
         this.confirmDialogRef.componentInstance.confirmMessage = 'Are you sure you want to disable this procedure?';
         this.confirmDialogRef.afterClosed().subscribe(result => {
             if (result) {
-                this.procedureservice.disableprocedure(procedure._id).then(() => {
+                this.procedureservice.disableprocedure(procedure).then(() => {
                     this.communicationservice.resetall();
 
                     this.notificationservice.notify({

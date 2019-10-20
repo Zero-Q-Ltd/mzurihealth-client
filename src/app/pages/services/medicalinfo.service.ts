@@ -14,7 +14,7 @@ export class MedicalinfoService {
    * This keeps a list of all the DATABASE SUBSCRIPTIONS that have been made by this service
    * It's to be maintined as a standard across all services
    */
-  dbSubscriptions: Map<BSON.ObjectId, Stream<ChangeEvent<any>>> = new Map();
+  dbSubscriptions: Map<string, Stream<ChangeEvent<any>>> = new Map();
   /**
    * This keeps a copy of all the internal subscriptions to INTERNAL OBSERVABLES
    * It's to be maintined as a standard across all services
@@ -33,12 +33,12 @@ export class MedicalinfoService {
     const query = {
       patientId: patientid
     };
-    const queryid = + new Date();
+    const queryid = new BSON.ObjectId();
 
     const response: ReplaySubject<MedicalInfo> = new ReplaySubject(1);
     const collection = this.stitch.db.collection<MedicalInfo>('medinfo');
-    this.dbSubscriptions.set(queryid, await collection.watch([patientid]));
-    await collection.findOne(query)
+    this.dbSubscriptions.set(queryid.toString(), await collection.watch([patientid]));
+    collection.findOne(query)
       .then(async value => {
         if (!value) {
           response.error('No Doc found');
@@ -47,13 +47,18 @@ export class MedicalinfoService {
       })
       .catch(e => response.error(e));
 
-    this.dbSubscriptions.get(queryid).onNext(data => {
+    this.dbSubscriptions.get(queryid.toString()).onNext(data => {
       response.next(data.fullDocument);
     });
-    this.dbSubscriptions.get(queryid).onError(e => {
+    this.dbSubscriptions.get(queryid.toString()).onError(e => {
       response.error(e);
     });
     return response;
-
+  }
+  updateMedInfo(id: BSON.ObjectId, newData: MedicalInfo) {
+    const query = {
+      _id: id
+    };
+    return this.stitch.db.collection<MedicalInfo>('medinfo').updateOne(query, newData);
   }
 }

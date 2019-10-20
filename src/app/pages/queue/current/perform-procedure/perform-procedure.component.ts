@@ -26,13 +26,15 @@ export class PerformProcedureComponent implements OnInit {
          * Iterate through the procedures and create resulst for all of them, so that the html renders without errors
          */
         procedureservice.hospitalprocedures.subscribe(mergedprocedures => {
-            mergedprocedures.forEach((r, i) => {
+            const vals = Array.from(mergedprocedures.values());
+            vals.forEach((r, i) => {
+                console.log(r, i);
                 this.procedureResults[i] = { ...emptyprocedureperformed };
                 /**
                  * very useful for later on when dialog is dismissed
                  */
                 this.procedureResults[i].originalProcedureId = r.rawProcedure._id;
-                this.procedureResults[i].customProcedureId = r.customProcedure._id;
+                // this.procedureResults[i].customProcedureId = r.customProcedure._id;
                 this.procedureResults[i].notes[0] = {
                     note: '',
                     admin: {
@@ -41,7 +43,7 @@ export class PerformProcedureComponent implements OnInit {
                     }
                 };
             });
-            this.proceduresdataSource.data = mergedprocedures;
+            this.proceduresdataSource.data = vals;
 
         });
     }

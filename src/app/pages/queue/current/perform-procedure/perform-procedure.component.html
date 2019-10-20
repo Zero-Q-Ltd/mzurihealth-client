@@ -19,7 +19,7 @@
     <!-- Name Column -->
     <ng-container matColumnDef="name">
         <th *matHeaderCellDef mat-header-cell> Name</th>
-        <td (click)="selection.toggle(procedure)" *matCellDef="let procedure" mat-cell> {{procedure.rawprocedure.name}}
+        <td *matCellDef="let procedure" mat-cell> {{procedure.rawProcedure.name}}
         </td>
     </ng-container>
 
@@ -27,7 +27,7 @@
     <ng-container matColumnDef="results">
         <th *matHeaderCellDef mat-header-cell> Results</th>
         <td *matCellDef="let procedure ; let i = index" mat-cell>
-            <mat-form-field appearance="outline" class="pr-4 " fxFlex="100">
+            <mat-form-field appearance="outline">
                 <mat-label>General Results</mat-label>
                 <input [(ngModel)]="procedureResults[i].results" [disabled]="!selection.isSelected(procedure)" matInput
                     required>
@@ -41,7 +41,7 @@
     <ng-container matColumnDef="notes">
         <th *matHeaderCellDef mat-header-cell> Notes</th>
         <td *matCellDef="let procedure ; let i = index" mat-cell>
-            <mat-form-field appearance="outline" class="pr-4 " fxFlex="100">
+            <mat-form-field appearance="outline">
                 <mat-label>Notes</mat-label>
                 <input [(ngModel)]="procedureResults[i].tempnote" [disabled]="!selection.isSelected(procedure)" matInput
                     required>
@@ -51,6 +51,7 @@
     </ng-container>
 
     <tr *matHeaderRowDef="displayedColumns" mat-header-row></tr>
-    <tr *matRowDef="let row; columns: displayedColumns;" mat-row>
+    <tr *matRowDef="let row; columns: displayedColumns;"
+        (click)="selection.isSelected(row) ? null :selection.toggle(row)" mat-row>
     </tr>
 </table>

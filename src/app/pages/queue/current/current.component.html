@@ -2,19 +2,29 @@
 
     <div class="content" fxLayout="column">
         <div fxLayout="row">
-            <mat-card fxFlex="50">
-                <general-details></general-details>
-            </mat-card>
-            <mat-card fxFlex="50">
-                <patient-history></patient-history>
-            </mat-card>
-
+            <general-details class="cardlike mat-elevation-z6" fxFlex="50"></general-details>
+            <patient-history class="cardlike mat-elevation-z6" fxFlex="50"></patient-history>
         </div>
 
         <div fxLayout="row">
-            <!-- <patient-notes fxFlex="50"></patient-notes> -->
+            <div class="cardlike mat-elevation-z6" fxFlex="25">
+                <mat-chip-list aria-label="Component selection">
+                    <mat-chip color="accent" [selected]="activechip === 'General'" (click)="activechip = 'General'">
+                        General</mat-chip>
+                    <mat-chip color="accent" [selected]="activechip === 'Conditions'"
+                        (click)="activechip = 'Conditions'">Conditions</mat-chip>
+                    <mat-chip color="accent" [selected]="activechip === 'Allergies'" (click)="activechip = 'Allergies'">
+                        Allergies</mat-chip>
+                </mat-chip-list>
+                <div [ngSwitch]="activechip">
+                    <app-med-info *ngSwitchCase="'General'"></app-med-info>
+                    <app-conditions *ngSwitchCase="'Conditions'"></app-conditions>
+                    <app-allergies *ngSwitchCase="'Allergies'"></app-allergies>
 
-            <app-perform-procedure fxFlex="100"></app-perform-procedure>
+                </div>
+
+            </div>
+            <app-perform-procedure class="cardlike mat-elevation-z6" fxFlex="75"></app-perform-procedure>
         </div>
 
     </div>

@@ -8,32 +8,35 @@
 
     <ng-container matColumnDef="name">
         <mat-header-cell *matHeaderCellDef> Name</mat-header-cell>
-        <mat-cell *matCellDef="let element"><span class="text-truncate">{{element.rawprocedure.name | titlecase}}</span>
+        <mat-cell *matCellDef="let element">
+            <span class="text-truncate">
+                {{element.rawProcedure.name | titlecase}}
+            </span>
         </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="category">
         <mat-header-cell *matHeaderCellDef>Sub Category</mat-header-cell>
-        <mat-cell *matCellDef="let element"> {{getcategory(element.rawprocedure.category) | titlecase}} </mat-cell>
+        <mat-cell *matCellDef="let element"> {{getcategory(element.rawProcedure.category) | titlecase}} </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="regprice">
         <mat-header-cell *matHeaderCellDef> Regular Price</mat-header-cell>
-        <mat-cell *matCellDef="let element"> {{element.customprocedure.regularprice}} </mat-cell>
+        <mat-cell *matCellDef="let element"> {{element.customProcedure.regularprice}} </mat-cell>
     </ng-container>
     <ng-container matColumnDef="minprice">
         <mat-header-cell *matHeaderCellDef> Min Price</mat-header-cell>
-        <mat-cell *matCellDef="let element"> {{element.rawprocedure.pricing.min}} </mat-cell>
+        <mat-cell *matCellDef="let element"> {{element.rawProcedure.pricing.min}} </mat-cell>
     </ng-container>
     <ng-container matColumnDef="maxprice">
         <mat-header-cell *matHeaderCellDef> Max Price</mat-header-cell>
-        <mat-cell *matCellDef="let element"> {{element.rawprocedure.pricing.max}} </mat-cell>
+        <mat-cell *matCellDef="let element"> {{element.rawProcedure.pricing.max}} </mat-cell>
     </ng-container>
     <ng-container matColumnDef="action">
         <mat-header-cell *matHeaderCellDef> Action</mat-header-cell>
         <mat-cell *matCellDef="let element">
-            <button (click)='disableeprocedure($event,element.customprocedure)' class="sendbutton" color="warn"
-                    mat-raised-button matRipple>
+            <button (click)='disableeprocedure($event,element.customProcedure)' class="sendbutton" color="warn"
+                mat-raised-button matRipple>
                 Disable!
                 <mat-icon>cancel</mat-icon>
             </button>
@@ -43,10 +46,8 @@
 
     <mat-header-row *matHeaderRowDef="procedureheaders"></mat-header-row>
     <mat-row (click)="onSelect(row)" *matRowDef="let row; columns: procedureheaders;"
-             [@animate]="{value:'*',params:{y:'100%'}}"
-             [ngClass]="{'selected' : row == selectedprocedure}" matRipple></mat-row>
+        [@animate]="{value:'*',params:{y:'100%'}}" [ngClass]="{'selected' : row == selectedprocedure}" matRipple>
+    </mat-row>
 </mat-table>
-<mat-paginator [length]="hospitalprocedures.data.length"
-               [pageSizeOptions]="[10, 25, 50, 100]"
-               [pageSize]="10">
+<mat-paginator [length]="hospitalprocedures.data.length" [pageSizeOptions]="[10, 25, 50, 100]" [pageSize]="10">
 </mat-paginator>

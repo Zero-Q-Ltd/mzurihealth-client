@@ -9,6 +9,7 @@ export interface RawProcedure {
     };
     category: RawProcedureCategory;
     numericid: number;
+    notes : string
 }
 
 export interface RawProcedureCategory {
@@ -30,4 +31,5 @@ export const emptyprawrocedure: RawProcedure = {
         code: null,
         subCategoryId: null
     },
+    notes: ""
 };

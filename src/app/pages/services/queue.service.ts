@@ -32,8 +32,8 @@ export class QueueService {
      * otherwise encountered when sifting through the data, as there is a lot of fitering to do
      * and for big hospitals the number of patients in the mainqueue at any given time might be big
      */
-    mainpatientsqueue: BehaviorSubject<Map<BSON.ObjectId, MergedPatientQueueModel>> = new BehaviorSubject(new Map());
-    mypatientqueue: BehaviorSubject<Map<BSON.ObjectId, MergedPatientQueueModel>> = new BehaviorSubject(new Map());
+    mainpatientsqueue: BehaviorSubject<Map<string, MergedPatientQueueModel>> = new BehaviorSubject(new Map());
+    mypatientqueue: BehaviorSubject<Map<string, MergedPatientQueueModel>> = new BehaviorSubject(new Map());
 
     currentpatient: BehaviorSubject<CurrentPatient> = new BehaviorSubject(null);
     currentpatientHistory: BehaviorSubject<Array<Visit>> = new BehaviorSubject<Array<Visit>>([]);
@@ -199,8 +199,8 @@ export class QueueService {
                 return data;
             });
         })).subscribe((que: Array<MergedPatientQueueModel>) => {
-            const patientmap: Map<BSON.ObjectId, MergedPatientQueueModel> = new Map();
-            const mypatientsmap: Map<BSON.ObjectId, MergedPatientQueueModel> = new Map();
+            const patientmap: Map<string, MergedPatientQueueModel> = new Map();
+            const mypatientsmap: Map<string, MergedPatientQueueModel> = new Map();
             /**
              * Use this opportunity to filter patients in the queue that belong to this admin
              */
@@ -227,9 +227,8 @@ export class QueueService {
                             queuedata: q.queuedata,
                             visitdata: null
                         });
-                        const t = await this.fetchCurrentpatient();
-                        const y = this.fetchCurrentPatientHsistory();
-                        return Promise.all([t, y]);
+                        this.fetchCurrentpatient();
+                        this.fetchCurrentPatientHsistory();
                     } else {
                         /**
                          * possibly remove the patient from current patient in case they left that stage from this Doc
@@ -250,21 +249,20 @@ export class QueueService {
     async fetchCurrentpatient() {
         console.log('Fetching Current Patient Data');
 
-        const d1 = await this.medInfoService.watchLatest(this.currentpatient.value.queuedata.patientId);
-        const d2 = await this.visitService.watchId(this.currentpatient.value.queuedata.visitId);
-        const d3 = await this.patientservice.watchId(this.currentpatient.value.queuedata.patientId);
-
-        combineLatest([d1, d2, d3]).subscribe((data) => {
-            console.log('Current Patient data fetched');
-            console.log(data);
-            this.fetchingCurrentpatientdata.next(false);
-            this.currentpatient.next({
-                medicalInfo: data[0] as any,
-                patientdata: data[2] as any,
-                queuedata: this.currentpatient.value.queuedata,
-                visitdata: data[1] as any
+        combineLatest([
+            await this.medInfoService.watchLatest(this.currentpatient.value.queuedata.patientId),
+            await this.visitService.watchId(this.currentpatient.value.queuedata.visitId),
+            await this.patientservice.watchId(this.currentpatient.value.queuedata.patientId)])
+            .subscribe((data) => {
+                console.log('Current Patient data fetched');
+                this.fetchingCurrentpatientdata.next(false);
+                this.currentpatient.next({
+                    medicalInfo: data[0] as any,
+                    patientdata: data[2] as any,
+                    queuedata: this.currentpatient.value.queuedata,
+                    visitdata: data[1] as any
+                });
             });
-        });
 
     }
     /**
@@ -273,7 +271,7 @@ export class QueueService {
     fetchCurrentPatientHsistory() {
         console.log('Fetching Current Patient History');
         this.visitService.fetchvisithistory(this.currentpatient.value.queuedata.patientId, 10).then(hist => {
-            console.log(hist);
+            console.log('Current Patient history fetched');
             this.currentpatientHistory.next(hist);
         });
     }

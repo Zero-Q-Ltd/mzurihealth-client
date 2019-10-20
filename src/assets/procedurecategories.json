@@ -6,36 +6,27 @@
             "subcategories": {
                 "0": {
                     "name": "GENERAL PRACTITIONERS",
-                    "parents": null
+                    "parents": []
                 },
                 "1": {
                     "name": "SPECIALIST",
-                    "parents": null
+                    "parents": []
                 },
                 "5": {
                     "name": "CARDIOLOGY",
-                    "parents": null
+                    "parents": []
                 },
                 "2": {
                     "name": "House Visits",
-                    "parents": [
-                        0,
-                        1
-                    ]
+                    "parents": [0, 1]
                 },
                 "3": {
                     "name": "Hospital Visits",
-                    "parents": [
-                        0,
-                        1
-                    ]
+                    "parents": [0, 1]
                 },
                 "4": {
                     "name": "Institutional Locum Fees per hour ",
-                    "parents": [
-                        0,
-                        1
-                    ]
+                    "parents": [0, 1]
                 }
             }
         },
@@ -50,35 +41,35 @@
             "subcategories": {
                 "0": {
                     "name": "Complex Major",
-                    "parents": null
+                    "parents": []
                 },
                 "1": {
                     "name": "Complex Major",
-                    "parents": null
+                    "parents": []
                 },
                 "2": {
                     "name": "Major I",
-                    "parents": null
+                    "parents": []
                 },
                 "3": {
                     "name": "Major I",
-                    "parents": null
+                    "parents": []
                 },
                 "4": {
                     "name": "Major II",
-                    "parents": null
+                    "parents": []
                 },
                 "5": {
                     "name": "Intermediate I",
-                    "parents": null
+                    "parents": []
                 },
                 "6": {
                     "name": "Minor (GA)",
-                    "parents": null
+                    "parents": []
                 },
                 "7": {
                     "name": "Minor (LA)",
-                    "parents": null
+                    "parents": []
                 }
             }
         },
@@ -88,27 +79,27 @@
             "subcategories": {
                 "0": {
                     "name": "Complex Major",
-                    "parents": null
+                    "parents": []
                 },
                 "1": {
                     "name": "Major I",
-                    "parents": null
+                    "parents": []
                 },
                 "2": {
                     "name": "Major II",
-                    "parents": null
+                    "parents": []
                 },
                 "3": {
                     "name": "Intermediate I",
-                    "parents": null
+                    "parents": []
                 },
                 "4": {
                     "name": "Intermediate II",
-                    "parents": null
+                    "parents": []
                 },
                 "5": {
                     "name": "Minor (LA)",
-                    "parents": null
+                    "parents": []
                 }
             }
         },
@@ -118,7 +109,7 @@
             "subcategories": {
                 "0": {
                     "name": "Complex Major",
-                    "parents": null
+                    "parents": []
                 }
             }
         },
@@ -128,7 +119,7 @@
             "subcategories": {
                 "0": {
                     "name": "Complex Major",
-                    "parents": null
+                    "parents": []
                 }
             }
         },
@@ -138,121 +129,87 @@
             "subcategories": {
                 "0": {
                     "name": "Complex Major",
-                    "parents": null
+                    "parents": []
                 },
                 "1": {
                     "name": "ARTHROPLASTY",
-                    "parents": [
-                        0
-                    ]
+                    "parents": [0]
                 },
                 "2": {
                     "name": "SPINE PROCEDURES",
-                    "parents": [
-                        0
-                    ]
+                    "parents": [0]
                 },
                 "3": {
                     "name": "LIMB RECONSTRUCTION",
-                    "parents": [
-                        0
-                    ]
+                    "parents": [0]
                 },
                 "4": {
                     "name": "MAJOR I",
-                    "parents": [
-                        0
-                    ]
+                    "parents": [0]
                 },
                 "5": {
                     "name": "ARTHROSCOPIC SURGERY",
-                    "parents": [
-                        4
-                    ]
+                    "parents": [4]
                 },
                 "6": {
                     "name": "OPEN REDUCTION & INTERNAL FIXATION",
-                    "parents": [
-                        4
-                    ]
+                    "parents": [4]
                 },
                 "7": {
                     "name": "OPEN REDUCTION & EXTERNAL FIXATION",
-                    "parents": [
-                        4
-                    ]
+                    "parents": [4]
                 },
                 "8": {
                     "name": "CLOSED REDUCTION & FIXATION",
-                    "parents": [
-                        4
-                    ]
+                    "parents": [4]
                 },
                 "9": {
                     "name": "JOINT NON-PROSTHETIC STABILIZATION",
-                    "parents": [
-                        4
-                    ]
+                    "parents": [4]
                 },
                 "10": {
                     "name": "TENDON SURGERY",
-                    "parents": [
-                        4
-                    ]
+                    "parents": [4]
                 },
                 "11": {
                     "name": "ARTHROTOMY (Interventional)",
-                    "parents": [
-                        4
-                    ]
+                    "parents": [4]
                 },
                 "12": {
                     "name": "MAJOR II",
-                    "parents": null
+                    "parents": []
                 },
                 "13": {
                     "name": "AMPUTATIONS",
-                    "parents": [
-                        12
-                    ]
+                    "parents": [12]
                 },
                 "14": {
                     "name": "CORRECTIVE SURGERY",
-                    "parents": [
-                        12
-                    ]
+                    "parents": [12]
                 },
                 "15": {
                     "name": "NERVE EXPLORATION & REPAIR",
-                    "parents": [
-                        12
-                    ]
+                    "parents": [12]
                 },
                 "16": {
                     "name": "INTERMEDIATE",
-                    "parents": null
+                    "parents": []
                 },
                 "17": {
                     "name": "EXCISION SURGERY",
-                    "parents": [
-                        16
-                    ]
+                    "parents": [16]
                 },
                 "18": {
                     "name": "MINOR",
-                    "parents": null
+                    "parents": []
                 },
                 "19": {
                     "name": "MINOR EXCISIONS/ BIOPSY",
-                    "parents": [
-                        18
-                    ]
+                    "parents": [18]
                 },
                 "20": {
                     "name": "REMOVAL OF IMPLANTS",
-                    "parents": [
-                        18
-                    ]
+                    "parents": [18]
                 }
             }
         },
@@ -262,25 +219,23 @@
             "subcategories": {
                 "0": {
                     "name": "Complex Major",
-                    "parents": null
+                    "parents": []
                 },
                 "1": {
                     "name": "Major",
-                    "parents": null
+                    "parents": []
                 },
                 "2": {
                     "name": "Intermediate",
-                    "parents": null
+                    "parents": []
                 },
                 "3": {
                     "name": "Minor",
-                    "parents": null
+                    "parents": []
                 },
                 "4": {
                     "name": "Pacemaker implantation",
-                    "parents": [
-                        1
-                    ]
+                    "parents": [1]
                 }
             }
         },
@@ -290,31 +245,31 @@
             "subcategories": {
                 "0": {
                     "name": "Out patient",
-                    "parents": null
+                    "parents": []
                 },
                 "1": {
                     "name": "Inpatient",
-                    "parents": null
+                    "parents": []
                 },
                 "2": {
                     "name": "Non-invasive cardiopulmonary testing",
-                    "parents": null
+                    "parents": []
                 },
                 "3": {
                     "name": "Percutaneous coronary interventions",
-                    "parents": null
+                    "parents": []
                 },
                 "4": {
                     "name": "Pacemakers",
-                    "parents": null
+                    "parents": []
                 },
                 "5": {
                     "name": "Structural heart disease interventional procedures",
-                    "parents": null
+                    "parents": []
                 },
                 "6": {
                     "name": "Specialist consultations and inpatient visits",
-                    "parents": null
+                    "parents": []
                 }
             }
         },
@@ -324,23 +279,19 @@
             "subcategories": {
                 "0": {
                     "name": "Major I",
-                    "parents": null
+                    "parents": []
                 },
                 "1": {
                     "name": "Intermediate I",
-                    "parents": null
+                    "parents": []
                 },
                 "2": {
                     "name": "Bat Ears reduction",
-                    "parents": [
-                        0
-                    ]
+                    "parents": [0]
                 },
                 "3": {
                     "name": "Minor",
-                    "parents": [
-                        0
-                    ]
+                    "parents": [0]
                 }
             }
         },
@@ -350,81 +301,59 @@
             "subcategories": {
                 "0": {
                     "name": "Diagnostic Tests",
-                    "parents": null
+                    "parents": []
                 },
                 "1": {
                     "name": "ORBIT AND ACCULOPLASTICS",
-                    "parents": null
+                    "parents": []
                 },
                 "2": {
                     "name": "Lids",
-                    "parents": [
-                        1
-                    ]
+                    "parents": [1]
                 },
                 "3": {
                     "name": "Sockets",
-                    "parents": [
-                        1
-                    ]
+                    "parents": [1]
                 },
                 "4": {
                     "name": "Orbit",
-                    "parents": [
-                        1
-                    ]
+                    "parents": [1]
                 },
                 "5": {
                     "name": "Lacrimal",
-                    "parents": [
-                        1
-                    ]
+                    "parents": [1]
                 },
                 "6": {
                     "name": "RETINA AND POSTERIOR SEGMENT SURGERY",
-                    "parents": null
+                    "parents": []
                 },
                 "7": {
                     "name": "Retina Photocoagulation",
-                    "parents": [
-                        6
-                    ]
+                    "parents": [6]
                 },
                 "8": {
                     "name": "Surgical Procedures",
-                    "parents": [
-                        6
-                    ]
+                    "parents": [6]
                 },
                 "9": {
                     "name": "PEDIATRIC OPHTHALMOLOGY AND SQUINTS",
-                    "parents": [
-                        6
-                    ]
+                    "parents": [6]
                 },
                 "10": {
                     "name": "GLAUCOMA SURGERY",
-                    "parents": [
-                        6
-                    ]
+                    "parents": [6]
                 },
                 "11": {
                     "name": "Laser",
-                    "parents": [
-                        6
-                    ]
+                    "parents": [6]
                 },
                 "12": {
                     "name": "CORNEA AND ANTERIOR SEGMENT",
-                    "parents": [
-                        6
-                    ]
+                    "parents": [6]
                 },
                 "13": {
                     "name": "REFRACTIVE SURGERIES",
-                    "parents": [
-                        6
-                    ]
+                    "parents": [6]
                 }
             }
         },
@@ -434,41 +363,35 @@
             "subcategories": {
                 "0": {
                     "name": "Complex Major",
-                    "parents": null
+                    "parents": []
                 },
                 "1": {
                     "name": "Major I",
-                    "parents": null
+                    "parents": []
                 },
                 "2": {
                     "name": "Laparotomy",
-                    "parents": [
-                        1
-                    ]
+                    "parents": [1]
                 },
                 "3": {
                     "name": "Operative Laparoscopy",
-                    "parents": [
-                        1
-                    ]
+                    "parents": [1]
                 },
                 "4": {
                     "name": "Major II",
-                    "parents": null
+                    "parents": []
                 },
                 "5": {
                     "name": "Operative Hysteroscopy",
-                    "parents": [
-                        4
-                    ]
+                    "parents": [4]
                 },
                 "6": {
                     "name": " Intermediate I",
-                    "parents": null
+                    "parents": []
                 },
                 "7": {
                     "name": " Intermediate II",
-                    "parents": null
+                    "parents": []
                 }
             }
         },
@@ -478,35 +401,31 @@
             "subcategories": {
                 "0": {
                     "name": "Complex Major",
-                    "parents": null
+                    "parents": []
                 },
                 "2": {
                     "name": "Hirschsprung’s disease procedure",
-                    "parents": [
-                        0
-                    ]
+                    "parents": [0]
                 },
                 "3": {
                     "name": "Major I",
-                    "parents": null
+                    "parents": []
                 },
                 "4": {
                     "name": "Laparotomy",
-                    "parents": [
-                        3
-                    ]
+                    "parents": [3]
                 },
                 "5": {
                     "name": "Major II",
-                    "parents": null
+                    "parents": []
                 },
                 "6": {
                     "name": "Intermediate II ( GA )",
-                    "parents": null
+                    "parents": []
                 },
                 "7": {
                     "name": "Minor (GA)",
-                    "parents": null
+                    "parents": []
                 }
             }
         },
@@ -516,101 +435,87 @@
             "subcategories": {
                 "0": {
                     "name": "Transfers",
-                    "parents": null
+                    "parents": []
                 },
                 "1": {
                     "name": "Procedures outside the operating room",
-                    "parents": null
+                    "parents": []
                 },
                 "2": {
                     "name": "Group A: ASA I,II Patient",
-                    "parents": null
+                    "parents": []
                 },
                 "3": {
                     "name": "Group B: ASA III,IV,V neonates and specialized surgery",
-                    "parents": null
+                    "parents": []
                 },
                 "4": {
                     "name": "JOINT / BURSA INJECTION OR ASPIRATION",
-                    "parents": null
+                    "parents": []
                 },
                 "5": {
                     "name": "Tendons, Ligaments, and Muscle Injections",
-                    "parents": [
-                        4
-                    ]
+                    "parents": [4]
                 },
                 "6": {
                     "name": "Epidural Steroid Injections (ESI)",
-                    "parents": [
-                        4
-                    ]
+                    "parents": [4]
                 },
                 "7": {
                     "name": "Interlaminar",
-                    "parents": [
-                        6
-                    ]
+                    "parents": [6]
                 },
                 "8": {
                     "name": "Facet Joint Procedures",
-                    "parents": [
-                        6
-                    ]
+                    "parents": [6]
                 },
                 "9": {
                     "name": "Sacroiliac Joint",
-                    "parents": [
-                        6
-                    ]
+                    "parents": [6]
                 },
                 "10": {
                     "name": "Vertebroplasty",
-                    "parents": [
-                        6
-                    ]
+                    "parents": [6]
                 },
                 "11": {
                     "name": "Kyphoplasty",
-                    "parents": [
-                        6
-                    ]
+                    "parents": [6]
                 },
                 "12": {
                     "name": "Discogram / Discography",
-                    "parents": null
+                    "parents": []
                 },
                 "13": {
                     "name": "Permanent Chemical / Cryosection and/or Neurolysis",
-                    "parents": null
+                    "parents": []
                 },
                 "14": {
                     "name": "Implantation of Spinal Cord Stimulator Percutaneous Leads and Generator",
-                    "parents": null
+                    "parents": []
                 },
                 "15": {
                     "name": "Removal of Leads/Generator (Explant)",
-                    "parents": null
+                    "parents": []
                 },
                 "16": {
                     "name": "Intrathecal Pump",
-                    "parents": null
+                    "parents": []
                 },
                 "17": {
                     "name": "Other Procedures",
-                    "parents": null
+                    "parents": []
                 },
                 "18": {
                     "name": "Prolotherapy",
-                    "parents": null
+                    "parents": []
                 },
                 "19": {
                     "name": "Lidocaine/ Ketamine infusions",
-                    "parents": null
+                    "parents": []
                 },
                 "20": {
                     "name": "Modifiers",
-                    "parents": null
+                    "parents": []
                 }
             }
         },
@@ -620,42 +525,42 @@
             "subcategories": {
                 "0": {
                     "name": "X- Ray of Extremities",
-                    "parents": null
+                    "parents": []
                 },
                 "1": {
                     "name": "Myelogram",
-                    "parents": null
+                    "parents": []
                 },
                 "2": {
                     "name": "Angiogram / Venogram",
-                    "parents": null
+                    "parents": []
                 },
                 "3": {
                     "name": "Image Intensifier",
-                    "parents": null
+                    "parents": []
                 },
                 "4": {
                     "name": "Other X – Rays",
-                    "parents": null
+                    "parents": []
                 },
                 "5": {
                     "name": "Ultrasound",
-                    "parents": null
+                    "parents": []
                 },
                 "6": {
                     "name": "CT Scan",
-                    "parents": null
+                    "parents": []
                 },
                 "7": {
                     "name": "Others",
-                    "parents": null
+                    "parents": []
                 }
             }
         },
         {
             "name": "DERMATOLOGY",
             "code": "M0015",
-            "subcategories": null
+            "subcategories": []
         },
         {
             "name": "GASTROENTEROLOGY AND ENDOSCOPY OGD",
@@ -663,49 +568,49 @@
             "subcategories": {
                 "0": {
                     "name": "Colonoscopy",
-                    "parents": null
+                    "parents": []
                 },
                 "1": {
                     "name": "ERCP",
-                    "parents": null
+                    "parents": []
                 },
                 "2": {
                     "name": "Others",
-                    "parents": null
+                    "parents": []
                 }
             }
         },
         {
             "name": "OTHER PROCEDURES",
-            "code": "",
+            "code": "OTH",
             "subcategories": {
                 "0": {
                     "name": "Neurology",
-                    "parents": null
+                    "parents": []
                 },
                 "1": {
                     "name": "Respiratory",
-                    "parents": null
+                    "parents": []
                 },
                 "2": {
                     "name": "Dermatology",
-                    "parents": null
+                    "parents": []
                 },
                 "3": {
                     "name": "Nephrology",
-                    "parents": null
+                    "parents": []
                 },
                 "4": {
                     "name": "Psychiatry",
-                    "parents": null
+                    "parents": []
                 },
                 "5": {
                     "name": "Paediatrics",
-                    "parents": null
+                    "parents": []
                 },
                 "6": {
                     "name": "Removal of Foreign Bodies",
-                    "parents": null
+                    "parents": []
                 }
             }
         },
@@ -715,27 +620,27 @@
             "subcategories": {
                 "0": {
                     "name": "CLINICAL CHEMISTRY, SEROLOGY, ENDOCRINOLOGY",
-                    "parents": null
+                    "parents": []
                 },
                 "1": {
                     "name": "CYTOGENETIC STUDIES",
-                    "parents": null
+                    "parents": []
                 },
                 "2": {
                     "name": "HAEMATOLOGY AND COAGULATION",
-                    "parents": null
+                    "parents": []
                 },
                 "3": {
                     "name": "IMMUNOLOGY & TISSUE TYPING",
-                    "parents": null
+                    "parents": []
                 },
                 "4": {
                     "name": "MICROBIOLOGY",
-                    "parents": null
+                    "parents": []
                 },
                 "5": {
                     "name": "MOLECULAR STUDIES/PCR",
-                    "parents": null
+                    "parents": []
                 }
             }
         },
@@ -745,155 +650,119 @@
             "subcategories": {
                 "0": {
                     "name": "Consultation Fees",
-                    "parents": null
+                    "parents": []
                 },
                 "1": {
                     "name": "HOSPITAL VISIT",
-                    "parents": [
-                        1
-                    ]
+                    "parents": [1]
                 },
                 "2": {
                     "name": "Radiology",
-                    "parents": null
+                    "parents": []
                 },
                 "3": {
                     "name": "ORAL SURGERY BY GENERAL DENTIST",
-                    "parents": null
+                    "parents": []
                 },
                 "4": {
                     "name": "RESTORATIVE DENTISTRY",
-                    "parents": null
+                    "parents": []
                 },
                 "5": {
                     "name": "ENDODONTICS (ROOT CANAL TREATMENT)",
-                    "parents": null
+                    "parents": []
                 },
                 "6": {
                     "name": "PERIODONTICS",
-                    "parents": null
+                    "parents": []
                 },
                 "7": {
                     "name": "General Periodontics",
-                    "parents": [
-                        6
-                    ]
+                    "parents": [6]
                 },
                 "8": {
                     "name": "Periodontal Splinting",
-                    "parents": [
-                        6
-                    ]
+                    "parents": [6]
                 },
                 "9": {
                     "name": "Perioldontal Surgery",
-                    "parents": [
-                        6
-                    ]
+                    "parents": [6]
                 },
                 "10": {
                     "name": "Surgical Phase of Oral Implantology",
-                    "parents": [
-                        6
-                    ]
+                    "parents": [6]
                 },
                 "11": {
                     "name": "PROSTHODONTICS",
-                    "parents": null
+                    "parents": []
                 },
                 "12": {
                     "name": "Fixed prosthodontics",
-                    "parents": [
-                        11
-                    ]
+                    "parents": [11]
                 },
                 "13": {
                     "name": "Crowns",
-                    "parents": [
-                        11
-                    ]
+                    "parents": [11]
                 },
                 "14": {
                     "name": "Provisional Maryland Bridge",
-                    "parents": [
-                        11
-                    ]
+                    "parents": [11]
                 },
                 "15": {
                     "name": "Veneers per unit",
-                    "parents": [
-                        11
-                    ]
+                    "parents": [11]
                 },
                 "16": {
                     "name": "Prosthodontic Phase of Oral Implantology",
-                    "parents": [
-                        11
-                    ]
+                    "parents": [11]
                 },
                 "17": {
                     "name": "Acrylic Removable Partial Dentures",
-                    "parents": [
-                        11
-                    ]
+                    "parents": [11]
                 },
                 "18": {
                     "name": "Maxillofacial prosthodontics",
-                    "parents": [
-                        11
-                    ]
+                    "parents": [11]
                 },
                 "19": {
                     "name": "PAEDIATRIC DENTISTRY",
-                    "parents": null
+                    "parents": []
                 },
                 "20": {
                     "name": "ORTHODONTICS",
-                    "parents": null
+                    "parents": []
                 },
                 "21": {
                     "name": "Diagnosis + treatment planning",
-                    "parents": [
-                        20
-                    ]
+                    "parents": [20]
                 },
                 "22": {
                     "name": "Comprehensive  Fixed Orthodontic Treatment",
-                    "parents": [
-                        20
-                    ]
+                    "parents": [20]
                 },
                 "23": {
                     "name": "Lingual Orthodontics",
-                    "parents": [
-                        20
-                    ]
+                    "parents": [20]
                 },
                 "24": {
                     "name": "Interceptive Orthodontics",
-                    "parents": [
-                        20
-                    ]
+                    "parents": [20]
                 },
                 "25": {
                     "name": "Retentive Phase of Orthodontics",
-                    "parents": [
-                        20
-                    ]
+                    "parents": [20]
                 },
                 "26": {
                     "name": "Correction of Dentofacial Anomalies",
-                    "parents": [
-                        20
-                    ]
+                    "parents": [20]
                 },
                 "27": {
                     "name": "AESTHETIC DENTISTRY",
-                    "parents": null
+                    "parents": []
                 },
                 "28": {
                     "name": "DENTAL TREATMENT UNDER GENERAL ANAESTHESIA",
-                    "parents": null
+                    "parents": []
                 }
             }
         },
@@ -903,116 +772,41 @@
             "subcategories": {
                 "0": {
                     "name": "Consultations",
-                    "parents": null
+                    "parents": []
                 },
                 "1": {
                     "name": "House Visits",
-                    "parents": [
-                        0
-                    ]
+                    "parents": [0]
                 },
                 "2": {
                     "name": "Hospital Visits",
-                    "parents": [
-                        0
-                    ]
+                    "parents": [0]
                 },
                 "3": {
                     "name": "Minor Surgery",
-                    "parents": null
+                    "parents": []
                 },
                 "4": {
                     "name": "Intermediate I",
-                    "parents": null
+                    "parents": []
                 },
                 "5": {
                     "name": "Intermediate II",
-                    "parents": null
+                    "parents": []
                 },
                 "6": {
                     "name": "Major I",
-                    "parents": null
+                    "parents": []
                 },
                 "7": {
                     "name": "Major II",
-                    "parents": null
+                    "parents": []
                 },
                 "8": {
                     "name": "Complex Major",
-                    "parents": null
+                    "parents": []
                 }
             }
         }
     ]
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

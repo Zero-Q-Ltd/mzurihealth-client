@@ -51,11 +51,12 @@ export class AdminService {
     }
 
     getuser = async (user: StitchUser) => {
+        console.log('Fetching User data');
         this.stitch.db.collection<HospitalAdmin>('hospitaladmins')
             .findOne({ _id: new BSON.ObjectId(user.id) })
             .then(async userdata => {
                 this.observableuserdata.next(userdata);
-                console.log(userdata);
+                console.log('User data fetched');
                 const stream = await this.stitch.db.collection<HospitalAdmin>('hospitaladmins')
                     .watch([new BSON.ObjectId(user.id)]);
                 stream.onNext(data => {
@@ -105,64 +106,6 @@ export class AdminService {
         //     }
         //     batch.set(this.db.firestore.collection('admincategories').doc(this.db.createId()), category);
         //     return await batch.commit();
-        // });
-    }
-
-    checkinvite(user: StitchUser): void {
-        // const invitequery = this.db.firestore.collection('admininvites')
-        // .where('email', '==', user.email)
-        // .limit(1)
-        // .get().then(snapshot => {
-        //     if (!snapshot.empty) {
-        //         const invite = snapshot.docs[0].data() as AdminInvite;
-        //         const newadmin: HospitalAdmin = {
-        //             _id: user.uid,
-        //             data: {
-        //                 displayName: user.displayName,
-        //                 email: user.email,
-        //                 photoURL: user.photoURL,
-        //                 uid: user.uid
-        //             },
-        //             profileData: {
-        //                 phone: '',
-        //                 address: '',
-        //                 age: '',
-        //                 bio: '',
-        //                 status: null
-        //             },
-        //             config: {
-        //                 level: invite.level,
-        //                 categoryId: invite.categoyId,
-        //                 availability: 1,
-        //                 hospitalId: invite.hospitalId
-        //             },
-        //             status: true,
-        //             metadata: {
-        //                 date: firestore.Timestamp.now(),
-        //                 lastEdit: firestore.Timestamp.now()
-        //             }
-        //         };
-        //         this.db.firestore.collection(`hospitaladmins`).doc(user.uid).set(newadmin).then(result => {
-        //             this.db.firestore.collection(`admininvites`).doc(snapshot.docs[0]._id).delete();
-        //             if (this.activeurl === '/authentication/signin') {
-        //                 this.router.navigate(['/dashboard']);
-        //             }
-        //         });
-        //     } else {
-        //         // console.log('User does not exist!!')
-        //         this.notificationservice.notify({
-        //             alertType: 'error',
-        //             body: 'You have not registered with any Hospital. Please contactperson us for instrustions',
-        //             title: 'ERROR', duration: 10000,
-        //             icon: '',
-        //             placement: {
-        //                 vertical: 'top',
-        //                 horizontal: 'center'
-        //             }
-        //         });
-        //     }
-        // }, error => {
-        //     console.log('Error verifying invite');
         // });
     }
 

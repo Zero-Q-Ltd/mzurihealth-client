@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HospitalService } from './hospital.service';
 import { BehaviorSubject } from 'rxjs';
 import { Hospital } from '../../models/hospital/Hospital';
-import { CustomProcedure } from '../../models/procedure/CustomProcedure';
+import { CustomProcedure, CustomProcedureConfig } from '../../models/procedure/CustomProcedure';
 import { ProcedureCategory } from '../../models/procedure/ProcedureCategory';
 import { NotificationService } from '../../shared/services/notifications.service';
 import { HospitalAdmin } from '../../models/user/HospitalAdmin';
@@ -10,17 +10,23 @@ import { AdminService } from './admin.service';
 import * as moment from 'moment';
 import { MergedProcedureModel } from '../../models/procedure/MergedProcedure.model';
 import { Meta } from 'app/models/universal';
-import { Stream } from 'mongodb-stitch-core-sdk';
+import { Stream, BSON } from 'mongodb-stitch-core-sdk';
 import { ChangeEvent } from 'mongodb-stitch-core-services-mongodb-remote';
+import * as proceduredata from 'assets/procedures.json';
+import * as procedurecats from 'assets/procedurecategories.json';
+import { StitchService } from './stitch/stitch.service';
+import { Visit } from 'app/models/visit/Visit';
+import { RawProcedure } from 'app/models/procedure/RawProcedure';
+import { switchMap, combineLatest } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root'
 })
 export class ProceduresService {
-    hospitalprocedures: BehaviorSubject<Array<MergedProcedureModel>> =
-        new BehaviorSubject<Array<MergedProcedureModel>>([]);
+    hospitalprocedures: BehaviorSubject<Map<string, MergedProcedureModel>> = new BehaviorSubject(new Map());
+    hospitalCustomProcedureConfig !: CustomProcedureConfig;
     activehospital: Hospital;
-    procedurecategories: BehaviorSubject<Array<ProcedureCategory>> = new BehaviorSubject<Array<ProcedureCategory>>([]);
+    categories: BehaviorSubject<Array<ProcedureCategory>> = new BehaviorSubject<Array<ProcedureCategory>>([]);
     userdata: HospitalAdmin;
 
     /**
@@ -31,7 +37,8 @@ export class ProceduresService {
 
     constructor(private hospitalservice: HospitalService,
         private notificationservice: NotificationService,
-        private adminservice: AdminService) {
+        private adminservice: AdminService,
+        private stitch: StitchService) {
         this.hospitalservice.activehospital.subscribe(hospital => {
             if (hospital._id) {
                 this.activehospital = hospital;
@@ -49,56 +56,119 @@ export class ProceduresService {
          * I honestly am not sure why the following code works so well
          * Please.... be very careful before changing
          */
-        // this.db.collection('procedureconfigs', ref => ref.where('hospitalId', '==', this.activehospital._id).where('status', '==', true)).snapshotChanges().pipe(
-        //     switchMap(f => {
-        //         return combineLatest(...f.map(t => {
-        //             const customProcedure = t.payload.doc.data() as CustomProcedure;
-        //             customProcedure.id = t.payload.doc.id;
-        //             return this.db.collection('procedures').doc(customProcedure.parentProcedureId).snapshotChanges().pipe(
-        //                 map(originalproceduredata => {
-        //                     const rawProcedure = originalproceduredata.payload.data() as RawProcedure;
-        //                     rawProcedure.id = originalproceduredata.payload.id;
-        //                     return ({rawProcedure: rawProcedure, customProcedure: customProcedure});
-        //                 })
-        //             );
-        //         }));
-        //     })
-        // ).subscribe(mergedData => {
-        //     this.hospitalprocedures.next(mergedData);
-        // });
+        const query = {
+            hospitalId: this.activehospital._id
+        };
+        const options = {
+        };
+
+        this.stitch.db.collection<CustomProcedureConfig>('procedureconfigs')
+            .findOne(query, options)
+            .then(data => {
+                if (!data) {
+                    return;
+                }
+                this.hospitalCustomProcedureConfig = data;
+                const mapData = new Map<string, MergedProcedureModel>();
+                data.procedures.map(procedure => {
+                    /**
+                          * only fetch proceures that are active
+                          */
+                    if (!procedure.status) {
+                        return;
+                    }
+                    mapData.set(procedure.parentId.toString(), { customProcedure: procedure, rawProcedure: null });
+                });
+
+                const innerquery = {
+                    _id: {
+                        $in: Array.from(mapData
+                            .values())
+                            .map(val => {
+                                return val.customProcedure.parentId;
+                            })
+                    }
+                };
+
+                const inneroptions = {
+                };
+
+                this.stitch.db.collection<RawProcedure>('procedures').find(innerquery, inneroptions)
+                    .toArray()
+                    .then(originalprocedures => {
+                        originalprocedures.map(original => {
+                            const match = mapData.get(original._id.toString());
+                            mapData.set(original._id.toString(), { customProcedure: match.customProcedure, rawProcedure: original });
+                        });
+                        this.hospitalprocedures.next(mapData);
+                    });
+            });
     }
 
-    fetchproceduresincategory(categoryid: string): any {
-        // return this.db.firestore.collection('procedures').where('category._id', '==', categoryId);
+    fetchproceduresincategory(categoryid: string, limit?: number): any {
+        const query = {
+            'category._id': categoryid
+        };
+        const options = {
+            limit
+        };
+
+        return this.stitch.db.collection<RawProcedure>('procedures')
+            .find(query, options)
+            .toArray();
     }
 
-    disableprocedure(procedureid: string) {
+    disableprocedure(procedure: CustomProcedure) {
         return true as any;
         // return this.db.firestore.collection('procedureconfigs').doc(procedureid).update({status: false});
     }
 
     getprocedurecategories(): void {
-        // this.db.firestore.collection('procedurecategories').orderBy('name', 'asc').onSnapshot(rawdocs => {
-        //     this.procedurecategories.next(rawdocs.docs.map(rawdoc => {
-        //         const procedurecategory: ProcedureCategory = rawdoc.data() as ProcedureCategory;
-        //         procedurecategory.id = rawdoc.id;
-        //         return procedurecategory;
-        //     }));
-        //     // console.log('done fetching ');
-        // });
+        const query = {
+
+        };
+        const options = {
+            sort: {
+                name: 1
+            }
+        };
+
+        this.stitch.db.collection<ProcedureCategory>('procedurecategories')
+            .find(query, options)
+            .toArray()
+            .then(values => {
+                this.categories.next(values);
+                /**
+                 * in case we ever need to ut all the procedures in the database
+                 * or the categories, this is the right place
+                 */
+                // this.syncprocedures();
+            })
+            ;
     }
 
     syncprocedures(): any {
         interface RawprocedureFromjson {
-            'CODE': string;
-            'Name': string;
-            'Minimum': string;
-            'Maximum': string;
-            'Type': string;
-            'Category': string;
-            'Code': string;
-            'SubCategoty': string;
-            'NUMERICID': string;
+            CODE: string;
+            Name: string;
+            Minimum: string;
+            Maximum: string;
+            Type: string;
+            Category: string;
+            Code: string;
+            SubCategoty: string;
+            NUMERICID: string;
+            Notes: string;
+        }
+        interface RawProcedureCategoryFromjson {
+            name: string;
+            code: string;
+            subcategories: {
+                [key: number]: {
+                    name: string;
+                    parents: Array<number> | null
+                }
+            };
         }
 
         /**
@@ -106,67 +176,81 @@ export class ProceduresService {
          * also remember to add the import statement for the json
          * import * as proceduredata from 'assets/procedures.json';
          */
-        /*procedurecats.categories.forEach(async (category: ProcedureCategory) => {
-          let batch = this.db.firestore.batch();
-          category.name = category.name.toLowerCase();
-          if(category.subcategories){
-            Object.keys(category.subcategories).forEach(key =>{
-              category.subcategories[key].name = category.subcategories[key].name.toLowerCase();
-            });
-          }
-          batch.set(this.db.firestore.collection('procedurecategories').doc(this.db.createId()), category);
-          return await batch.commit();
-        });*/
-        // return Promise.all(
-        //     proceduredata['Table 1'].forEach(async (proc: rawProcedure) => {
-        //         let batch = this.db.firestore.batch();
-        //
-        //         let procedurecategory = this.procedurecategories.value.find(cat => {
-        //             return cat.name.toLowerCase() == proc.Type.toLocaleLowerCase();
+        // const data = procedurecats.categories.map((category: RawProcedureCategoryFromjson) => {
+        //     if (category.subcategories) {
+        //         Object.keys(category.subcategories).forEach(key => {
+        //             category.subcategories[key].name = category.subcategories[key].name.toLowerCase();
         //         });
-        //         let subcategories = procedurecategory.subcategories;
-        //         let belongingcategory = Object.entries(subcategories || {}).find((val) => {
-        //             if (val) {
-        //                 if (proc.SubCategoty) {
-        //                     return val[1].name.toLocaleLowerCase() === proc.SubCategoty.toLocaleLowerCase();
+        //     }
+        //     const newcategory: ProcedureCategory = {
+        //         _id: new BSON.ObjectId(),
+        //         code: category.code.toLocaleLowerCase(),
+        //         name: category.name.toLowerCase(),
+        //         status: true,
+        //         subcategories: category.subcategories
+        //     };
+        //     return newcategory;
+        // });
+        // console.log(data);
+
+        // this.stitch.db.collection<ProcedureCategory>('procedurecategories')
+        //     .insertMany(data)
+        //     .then(() => {
+        //         console.log('success writing');
+        //     })
+        //     .catch(e => {
+        //         console.log('error', e);
+        //     });
+
+        // console.log(this.procedurecategories.value);
+        // const procedures = proceduredata['Table 1'].map((proc: RawprocedureFromjson) => {
+        //     // console.log(proc);
+        //     const procedurecategory = this.procedurecategories.value.find(cat => {
+        //         // console.log(cat.name.toLowerCase(), proc.Type.toLocaleLowerCase());
+        //         return cat.name.toLowerCase() === proc.Type.toLocaleLowerCase();
+        //     });
+        //     // console.log(procedurecategory);
+        //     const subcategories = procedurecategory.subcategories || null;
+
+        //     const belongingcategory = Object.entries(subcategories || {}).find((val) => {
+        //         if (val) {
+        //             if (proc.SubCategoty) {
+        //                 return val[1].name.toLocaleLowerCase() === proc.SubCategoty.toLocaleLowerCase();
+        //             } else {
+        //                 if (proc.Category) {
+        //                     return val[1].name.toLocaleLowerCase() === proc.Category.toLocaleLowerCase();
         //                 } else {
-        //                     if (proc.Category) {
-        //                         return val[1].name.toLocaleLowerCase() === proc.Category.toLocaleLowerCase();
-        //                     } else {
-        //                         console.log('This procedure does not belong to any category');
-        //                         return false;
-        //                     }
+        //                     console.log('This procedure does not belong to any category');
+        //                     return false;
         //                 }
         //             }
-        //         });
-        //         let newprocedure: RawProcedure = {
-        //             pricing: {
-        //                 max: Number(proc.Maximum) || null,
-        //                 min: Number(proc.Minimum) || null
-        //             },
-        //             category: {
-        //                 _id: procedurecategory._id,
-        //                 subCategoryId: belongingcategory ? belongingcategory[0] : null,
-        //                 code: proc.Code || null
-        //             },
-        //             numericid: Number(proc.NUMERICID) || null,
-        //             _id: null,
-        //             name: proc.Name ? proc.Name.toLowerCase() : ''
-        //         };
-        //         console.log(newprocedure);
-        //         batch.set(this.db.firestore.collection('procedures').doc(this.db.createId()), newprocedure);
-        //         return await batch.commit();
-        //     })).then(() => {
-        //     this.notificationservice.notify({
-        //         alertType: 'success',
-        //         body: 'Procedures added',
-        //         title: 'Success',
-        //         placement: 'center'
+        //         }
         //     });
+        //     const newprocedure: RawProcedure = {
+        //         pricing: {
+        //             max: Number(proc.Maximum) || null,
+        //             min: Number(proc.Minimum) || null
+        //         },
+        //         category: {
+        //             _id: procedurecategory._id,
+        //             subCategoryId: belongingcategory ? belongingcategory[0] : null,
+        //             code: proc.Code || null
+        //         },
+        //         numericid: Number(proc.NUMERICID) || null,
+        //         _id: null,
+        //         name: proc.Name ? proc.Name.toLowerCase() : '',
+        //         notes: proc.Notes
+        //     };
+        //     // console.log(newprocedure);
+        //     return newprocedure;
         // });
+
+        // this.stitch.db.collection<RawProcedure>('procedures')
+        //     .insertMany(procedures);
     }
 
     addcustomprocedure(customprocedure: CustomProcedure): any {
+
         customprocedure.hospitalId = this.activehospital._id;
         customprocedure.status = true;
         customprocedure.creatorid = this.userdata._id;
@@ -174,13 +258,14 @@ export class ProceduresService {
         const meta: Meta = {
             date: moment().toDate(),
             adminId: this.adminservice.userdata._id,
-            hospitalId: this.hospitalservice.activehospital.value._id
+            hospitalId: this.activehospital._id
         };
 
         customprocedure.metadata = {
             created: meta,
             edited: meta,
         };
+
         /**
          * remove insurance prices set to 0
          */
@@ -189,11 +274,39 @@ export class ProceduresService {
                 delete customprocedure.insurancePrices[key];
             }
         });
-        // return this.db.firestore.collection('procedureconfigs').add(customProcedure);
+        /**
+         * wrote this long code for better readability
+         */
+        let newProcedureConfig: CustomProcedureConfig;
+        if (this.hospitalCustomProcedureConfig) {
+            const query = {
+                _id: this.hospitalCustomProcedureConfig._id
+            };
+            const temp = { ...this.hospitalCustomProcedureConfig };
+            temp.metadata.edited = meta;
+            return this.stitch.db.collection<CustomProcedureConfig>('procedureconfigs').updateOne(query, temp);
+        } else {
+            newProcedureConfig = {
+                _id: new BSON.ObjectId(),
+                hospitalId: this.activehospital._id,
+                metadata: {
+                    created: meta,
+                    edited: meta
+                },
+                procedures: [customprocedure]
+            };
+            return this.stitch.db.collection<CustomProcedureConfig>('procedureconfigs').insertOne(newProcedureConfig);
+        }
     }
 
+
     editcustomprocedure(customprocedure: CustomProcedure): any {
-        customprocedure.creatorid = this.userdata._id;
+        const query = {
+            _id: this.hospitalCustomProcedureConfig._id
+        };
+        const options = {
+            upsert: false
+        };
 
         const meta: Meta = {
             date: moment().toDate(),
@@ -212,7 +325,12 @@ export class ProceduresService {
                 delete customprocedure.insurancePrices[key];
             }
         });
-        // return this.db.firestore.collection('procedureconfigs').doc(customProcedure.id).update(customProcedure);
+        const update = {
+            $set: {
+                position: customprocedure
+            }
+        };
+        return this.stitch.db.collection<CustomProcedure>('procedureconfigs').updateOne(query, update, options);
     }
 
     deactivateprocedure(procedureid: string): any {

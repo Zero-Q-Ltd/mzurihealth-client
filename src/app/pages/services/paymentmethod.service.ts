@@ -49,46 +49,34 @@ export class PaymentmethodService {
                 }));
                 this.allinsurance.next(insurancecompanies);
             });
-        // this.stitch.db.collection('paymentchannels').onSnapshot(paymentmethodsdata => {
-        //     let insurancecompanies = {};
-        //     this.allpaymentchannels.next(paymentmethodsdata.docs.map(methodata => {
-        //         const paymentChannel = methodata.data() as PaymentChannel;
-        //         paymentChannel.id = methodata.id;
-        //         if (paymentChannel.name === 'insurance') {
-        //             insurancecompanies = paymentChannel.methods;
-        //         }
-        //         return paymentChannel;
-        //     }));
-        //     this.allinsurance.next(insurancecompanies);
-        // });
     }
 
-    addallpaymnetmethods() {
-        /**
-         * import * as paymentchannels from 'assets/paymentchannels.json';
-         */
-        // const paymnetmethodkeys = Object.keys(paymentchannels.channels);
-        // //
-        // const conv = paymnetmethodkeys.map((methodname: string) => {
-        //     console.log(methodname);
-        //     const channelmethods: Array<Paymentmethods> = paymentchannels.channels[methodname].map(channel => {
-        //         return {
-        //             imageurl: '',
-        //             name: channel.name.toLowerCase()
-        //         };
-        //     });
-        //     const paymentchannel: PaymentChannel = {
-        //         name: methodname.toLowerCase(),
-        //         _id: null,
-        //         /**
-        //          * Convert the array to object without giving a fuck
-        //          */
-        //         // @ts-ignore
-        //         methods: { ...channelmethods }
-        //     };
-        //     return paymentchannel;
-        // });
-        // console.log(conv);
-        // this.stitch.db.collection('paymentchannels').insertMany(conv);
-    }
+    // addallpaymnetmethods() {
+    /**
+     * import * as paymentchannels from 'assets/paymentchannels.json';
+     */
+    // const paymnetmethodkeys = Object.keys(paymentchannels.channels);
+    // //
+    // const conv = paymnetmethodkeys.map((methodname: string) => {
+    //     console.log(methodname);
+    //     const channelmethods: Array<Paymentmethods> = paymentchannels.channels[methodname].map(channel => {
+    //         return {
+    //             imageurl: '',
+    //             name: channel.name.toLowerCase()
+    //         };
+    //     });
+    //     const paymentchannel: PaymentChannel = {
+    //         name: methodname.toLowerCase(),
+    //         _id: null,
+    //         /**
+    //          * Convert the array to object without giving a fuck
+    //          */
+    //         // @ts-ignore
+    //         methods: { ...channelmethods }
+    //     };
+    //     return paymentchannel;
+    // });
+    // console.log(conv);
+    // this.stitch.db.collection('paymentchannels').insertMany(conv);
+    // }
 }

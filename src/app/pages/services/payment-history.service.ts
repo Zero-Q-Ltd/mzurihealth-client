@@ -11,8 +11,6 @@ import { ChangeEvent } from 'mongodb-stitch-core-services-mongodb-remote';
     providedIn: 'root'
 })
 export class PaymentHistoryService {
-    activehospitalid: BSON.ObjectId;
-    paymentshistory: BehaviorSubject<Array<MergedPatientQueueModel>> = new BehaviorSubject([]);
 
     /**
      * This keeps a list of all the subscriptions TO THE DATABASE that have been made by this service
@@ -23,7 +21,6 @@ export class PaymentHistoryService {
     constructor(private hospitalservice: HospitalService) {
         this.hospitalservice.activehospital.subscribe(hospital => {
             if (hospital._id) {
-                this.activehospitalid = hospital._id;
                 this.gethistory('day');
             }
         });
@@ -32,7 +29,10 @@ export class PaymentHistoryService {
     /**
      *fetches patientvisit and merges it with hospital file info and patient info
      */
-    gethistory(timeframe: 'day' | 'week' | 'month' | 'year'): void {
+    gethistory(timeframe: 'day' | 'week' | 'month' | 'year'): Promise<any> {
+        return new Promise(t => {
+            t(null);
+        });
         //     this.paymentshistory.next([]);
         //     this.db.firestore.collection('hospitalvisits')
         //         .where('hospitalId', '==', this.activehospitalid)

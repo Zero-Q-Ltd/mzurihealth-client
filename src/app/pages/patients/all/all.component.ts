@@ -66,7 +66,7 @@ export class AllComponent implements OnInit, AfterViewInit {
                 this.userdata = admin;
             }
         });
-        this.patientservice.hospitalpatients.subscribe(patients => {
+        this.patientservice.getHospitalPatients().subscribe(patients => {
             this.patientsdatasource.data = patients;
         });
 

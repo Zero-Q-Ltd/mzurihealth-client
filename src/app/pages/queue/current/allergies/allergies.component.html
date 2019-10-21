@@ -4,7 +4,8 @@
             <mat-form-field appearance="outline" class="pl-4" fxFlex="45">
                 <mat-label>Type</mat-label>
                 <mat-select required>
-                    <mat-option *ngFor="let type of allergyArray" [value]="allergyval.value.type">
+                    <mat-option *ngFor="let type of allergyArray"
+                        [formControl]="tempAllergies.controls[i].controls.type">
                         {{type |titlecase}}
                     </mat-option>
                 </mat-select>
@@ -31,6 +32,6 @@
 
     </div>
     <button mat-mini-fab (click)="appendnew()">
-        <mat-icon>library-add</mat-icon>
+        <mat-icon>add</mat-icon>
     </button>
 </div>

@@ -13,7 +13,6 @@ import { ChangeEvent } from 'mongodb-stitch-core-services-mongodb-remote';
     providedIn: 'root'
 })
 export class PaymentmethodService {
-    activehospital: Hospital;
     allpaymentchannels: BehaviorSubject<Array<PaymentChannel>> = new BehaviorSubject<Array<PaymentChannel>>([]);
     allinsurance: BehaviorSubject<{ [key: string]: Paymentmethods }> = new BehaviorSubject({});
 
@@ -28,7 +27,6 @@ export class PaymentmethodService {
         this.hospitalservice.activehospital.subscribe(hospital => {
 
             if (hospital._id) {
-                this.activehospital = hospital;
                 this.getallpaymentchannels();
                 // this.addallpaymnetmethods();
             }

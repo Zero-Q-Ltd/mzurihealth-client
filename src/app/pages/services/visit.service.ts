@@ -18,10 +18,6 @@ import { Patient } from 'app/models/patient/Patient';
     providedIn: 'root'
 })
 export class VisitService {
-    patientid: string;
-    hospitalid: string;
-    adminid: string;
-
     /**
      * This keeps a list of all the DATABASE SUBSCRIPTIONS that have been made by this service
      * It's to be maintined as a standard across all services
@@ -37,16 +33,6 @@ export class VisitService {
         private adminservice: AdminService,
         private hospitalService: HospitalService,
         private stitch: StitchService) {
-        /*** DANGEROUS TERRITORY ****
-         * the order of calling these functions is very important,
-         * because if hospitalId is missing some queries that execute later might fail
-         */
-        this.adminservice.observableuserdata.subscribe(admin => {
-            this.adminid = admin._id;
-        });
-        hospitalService.activehospital.subscribe(value => {
-            this.hospitalid = value._id;
-        });
 
     }
 
@@ -71,7 +57,7 @@ export class VisitService {
             created: meta,
             edited: meta,
         };
-        per.adminid = this.adminid;
+        per.adminid = this.adminservice.userdata._id;
         per.payment = {
             amount: 0,
             hasInsurance: false,

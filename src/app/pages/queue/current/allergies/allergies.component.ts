@@ -37,6 +37,7 @@ export class AllergiesComponent implements OnInit {
       /**
        * No validation for now
        */
+      console.log(values);
       this.comm.allergies = values;
     });
   }
@@ -46,7 +47,6 @@ export class AllergiesComponent implements OnInit {
 
   appendnew(): void {
     this.tempAllergies.push(this.addellergy('food', ''));
-    console.log(this.tempAllergies);
   }
   /**
    * 

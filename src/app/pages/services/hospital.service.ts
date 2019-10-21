@@ -16,9 +16,7 @@ import { ChangeEvent } from 'mongodb-stitch-core-services-mongodb-remote';
 export class HospitalService {
     hospitaladmins: BehaviorSubject<HospitalAdmin[]> = new BehaviorSubject([]);
     activehospital: BehaviorSubject<Hospital> = new BehaviorSubject<Hospital>({ ...emptyhospital });
-    userdata: HospitalAdmin;
     hospitalerror: boolean;
-    invitedadmins: BehaviorSubject<Array<AdminInvite>> = new BehaviorSubject<Array<AdminInvite>>([]);
 
     /**
      * This keeps a list of all the subscriptions TO THE DATABASE that have been made by this service
@@ -34,7 +32,6 @@ export class HospitalService {
             equal(prev._id, curr._id) || equal(prev.config.hospitalId, curr.config.hospitalId)))
             .subscribe((admin: HospitalAdmin) => {
                 if (admin._id) {
-                    this.userdata = admin;
                     this.gethospitaldetails();
                 }
             });
@@ -49,20 +46,6 @@ export class HospitalService {
             });
     }
 
-    getinvitedadmins(): void {
-        this.stitch.db.collection<AdminInvite>('admininvites')
-            .find({ 'hospitalId': this.activehospital.value._id })
-            .toArray()
-            .then(invitesdata => {
-                /**
-                 * This step is just t make sure that all the data is standardized in case there are any missing attributes
-                 * from a previous version
-                 */
-                this.invitedadmins.next(invitesdata.map(inviteedata => {
-                    return Object.assign({}, { ...emptyadmininvite }, inviteedata);
-                }));
-            });
-    }
 
     savehospitalchanges(hospital: Hospital): Promise<any> {
         return this.stitch.db.collection('hospitals').findOneAndUpdate({ _id: hospital._id }, hospital);
@@ -80,15 +63,17 @@ export class HospitalService {
          * Remove any previous subscriptions before creating new ones
          */
         if (this.subscriptions.get('hospitaldetails')) {
-            this.subscriptions.get('hospitaldetails').close()
+            this.subscriptions.get('hospitaldetails').close();
         }
-        this.stitch.db.collection<Hospital>('hospitals').findOne({ _id: this.userdata.config.hospitalId })
+        this.stitch.db.collection<Hospital>('hospitals').findOne({ _id: this.adminservice.userdata.config.hospitalId })
             .then(async value => {
                 this.activehospital.next(Object.assign({}, { ...emptyhospital }, value));
                 /**
                  * ensnure that there's only one source of truth
                  */
-                this.subscriptions.set('hospitaldetails', await this.stitch.db.collection<Hospital>('hospitals').watch([this.userdata.config.hospitalId]))
+                this.subscriptions.set('hospitaldetails',
+                    await this.stitch.db.collection<Hospital>('hospitals')
+                        .watch([this.adminservice.userdata.config.hospitalId]));
                 this.subscriptions.get('hospitaldetails').onNext(data => {
                     this.activehospital.next(Object.assign({}, { ...emptyhospital }, data.fullDocument));
                 });

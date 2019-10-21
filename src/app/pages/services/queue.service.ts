@@ -109,7 +109,7 @@ export class QueueService {
             hospitalId: this.activehospitalid
         };
         console.log(visit);
-        return true as any;
+        return true;
 
         // return this.db.firestore.collection('hospitalvisits').doc(visit.id).update(visit);
     }
@@ -120,7 +120,7 @@ export class QueueService {
             status: 2,
             admin: this.adminid
         };
-        return true as any;
+        return true;
         // batch.update(this.db.firestore.collection('hospitalvisits').doc(visit.id), visit);
         // return batch.commit();
     }
@@ -250,17 +250,18 @@ export class QueueService {
         console.log('Fetching Current Patient Data');
 
         combineLatest([
-            await this.medInfoService.watchLatest(this.currentpatient.value.queuedata.patientId),
-            await this.visitService.watchId(this.currentpatient.value.queuedata.visitId),
+            this.medInfoService.getLatest(this.currentpatient.value.queuedata.patientId),
+            this.visitService.getLatest(this.currentpatient.value.queuedata.visitId),
             await this.patientservice.watchId(this.currentpatient.value.queuedata.patientId)])
             .subscribe((data) => {
                 console.log('Current Patient data fetched');
+                // console.log(data);
                 this.fetchingCurrentpatientdata.next(false);
                 this.currentpatient.next({
-                    medicalInfo: data[0] as any,
-                    patientdata: data[2] as any,
+                    medicalInfo: data[0],
+                    patientdata: data[2],
                     queuedata: this.currentpatient.value.queuedata,
-                    visitdata: data[1] as any
+                    visitdata: data[1]
                 });
             });
 

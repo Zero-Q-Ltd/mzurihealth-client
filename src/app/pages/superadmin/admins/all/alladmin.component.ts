@@ -1,15 +1,15 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import {MatDialog, MatDialogRef, MatTableDataSource} from '@angular/material';
-import {HospitalAdmin} from '../../../../models/user/HospitalAdmin';
-import {fuseAnimations} from '../../../../../@fuse/animations';
-import {HospitalService} from '../../../services/hospital.service';
-import {AdminService} from '../../../services/admin.service';
-import {ProceduresService} from '../../../services/procedures.service';
-import {LocalcommunicationService} from '../../localcommunication.service';
-import {AdminInvite} from '../../../../models/user/AdminInvite';
-import {AdminCategory} from '../../../../models/user/AdminCategory';
-import {FuseConfirmDialogComponent} from '../../../../../@fuse/components/confirm-dialog/confirm-dialog.component';
-import {NotificationService} from '../../../../shared/services/notifications.service';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { MatDialog, MatDialogRef, MatTableDataSource } from '@angular/material';
+import { HospitalAdmin } from '../../../../models/user/HospitalAdmin';
+import { fuseAnimations } from '../../../../../@fuse/animations';
+import { HospitalService } from '../../../services/hospital.service';
+import { AdminService } from '../../../services/admin.service';
+import { ProceduresService } from '../../../services/procedures.service';
+import { LocalcommunicationService } from '../../localcommunication.service';
+import { AdminInvite } from '../../../../models/user/AdminInvite';
+import { AdminCategory } from '../../../../models/user/AdminCategory';
+import { FuseConfirmDialogComponent } from '../../../../../@fuse/components/confirm-dialog/confirm-dialog.component';
+import { NotificationService } from '../../../../shared/services/notifications.service';
 
 @Component({
     selector: 'admins-all',
@@ -28,17 +28,17 @@ export class AlladminComponent implements OnInit {
     confirmDialogRef: MatDialogRef<FuseConfirmDialogComponent>;
 
     constructor(private hospitalservice: HospitalService,
-                private adminservice: AdminService,
-                private procedureservice: ProceduresService,
-                private _matDialog: MatDialog,
-                private notificationservice: NotificationService,
-                private communicationService: LocalcommunicationService) {
+        private adminservice: AdminService,
+        private procedureservice: ProceduresService,
+        private _matDialog: MatDialog,
+        private notificationservice: NotificationService,
+        private communicationService: LocalcommunicationService) {
         this.hospitalservice.hospitaladmins.subscribe(admins => {
             this.adminsdatasource.data = admins;
         });
-        this.hospitalservice.invitedadmins.subscribe(admins => {
-            this.invitedadminsdatasource.data = admins;
-        });
+        // this.hospitalservice.invitedadmins.subscribe(admins => {
+        //     this.invitedadminsdatasource.data = admins;
+        // });
         this.adminservice.observableuserdata.subscribe(value => {
             this.userdata = value;
         });

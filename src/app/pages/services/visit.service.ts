@@ -18,10 +18,6 @@ import { Patient } from 'app/models/patient/Patient';
     providedIn: 'root'
 })
 export class VisitService {
-    patientid: string;
-    hospitalid: string;
-    adminid: string;
-
     /**
      * This keeps a list of all the DATABASE SUBSCRIPTIONS that have been made by this service
      * It's to be maintined as a standard across all services
@@ -37,16 +33,6 @@ export class VisitService {
         private adminservice: AdminService,
         private hospitalService: HospitalService,
         private stitch: StitchService) {
-        /*** DANGEROUS TERRITORY ****
-         * the order of calling these functions is very important,
-         * because if hospitalId is missing some queries that execute later might fail
-         */
-        this.adminservice.observableuserdata.subscribe(admin => {
-            this.adminid = admin._id;
-        });
-        hospitalService.activehospital.subscribe(value => {
-            this.hospitalid = value._id;
-        });
 
     }
 
@@ -71,7 +57,7 @@ export class VisitService {
             created: meta,
             edited: meta,
         };
-        per.adminid = this.adminid;
+        per.adminid = this.adminservice.userdata._id;
         per.payment = {
             amount: 0,
             hasInsurance: false,
@@ -85,7 +71,32 @@ export class VisitService {
         return true as any;
 
     }
+    /**
+     * Fetches the latest patient visit ONCE
+     * NOT REALTIME
+     * @param id 
+     */
+    getLatest(id: BSON.ObjectId) {
+        const query = {
+            _id: id
+        };
+        const options = {
+            sort: {
+                'metadata.edited.date': -1
+            }
+        };
+        const collection = this.stitch.db.collection<Visit>('visits');
+        return collection.findOne(query, options);
+
+    }
+    /**
+     * Creates a realtime database subscription
+     * @param id 
+     */
     async watchId(id: BSON.ObjectId): Promise<ReplaySubject<Visit>> {
+
+
+
         const query = {
             _id: id
         };

@@ -15,6 +15,8 @@
                         (click)="activechip = 'Conditions'">Conditions</mat-chip>
                     <mat-chip color="accent" [selected]="activechip === 'Allergies'" (click)="activechip = 'Allergies'">
                         Allergies</mat-chip>
+                    <mat-chip color="accent" selected (click)="savemedinfo()">
+                        SAVE</mat-chip>
                 </mat-chip-list>
                 <div [ngSwitch]="activechip">
                     <app-med-info *ngSwitchCase="'General'"></app-med-info>

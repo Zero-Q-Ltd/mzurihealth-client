@@ -27,7 +27,6 @@ export class ProceduresService {
     hospitalCustomProcedureConfig !: CustomProcedureConfig;
     activehospital: Hospital;
     categories: BehaviorSubject<Array<ProcedureCategory>> = new BehaviorSubject<Array<ProcedureCategory>>([]);
-    userdata: HospitalAdmin;
 
     /**
      * This keeps a list of all the subscriptions TO THE DATABASE that have been made by this service
@@ -46,9 +45,7 @@ export class ProceduresService {
                 this.getprocedurecategories();
             }
         });
-        this.adminservice.observableuserdata.subscribe(userdata => {
-            this.userdata = userdata as HospitalAdmin;
-        });
+
     }
 
     getprocedures(): void {
@@ -253,7 +250,7 @@ export class ProceduresService {
 
         customprocedure.hospitalId = this.activehospital._id;
         customprocedure.status = true;
-        customprocedure.creatorid = this.userdata._id;
+        customprocedure.creatorid = this.adminservice.userdata._id;
 
         const meta: Meta = {
             date: moment().toDate(),

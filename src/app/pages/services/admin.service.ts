@@ -22,9 +22,6 @@ export class AdminService {
      * Secondary copy of data to avoid many unnecessary subscriptions
      */
     userdata: HospitalAdmin = emptyadmin;
-    activeurl: string = null;
-    firstlogin = false;
-    validuser: boolean;
     admincategories: BehaviorSubject<Array<AdminCategory>> = new BehaviorSubject<Array<AdminCategory>>([]);
 
     /**

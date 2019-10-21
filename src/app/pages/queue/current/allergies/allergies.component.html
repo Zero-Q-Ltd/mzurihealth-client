@@ -1,1 +1,36 @@
-<p>allergies works!</p>
+<div>
+    <div *ngFor="let allergyval of tempAllergies.controls;let i = index" fxFlex="1 1 100%">
+        <div fxFlex="1 0 auto" fxLayout="row" fxLayoutAlign="start center">
+            <mat-form-field appearance="outline" class="pl-4" fxFlex="45">
+                <mat-label>Type</mat-label>
+                <mat-select required>
+                    <mat-option *ngFor="let type of allergyArray" [value]="allergyval.value.type">
+                        {{type |titlecase}}
+                    </mat-option>
+                </mat-select>
+                <mat-icon class="secondary-text" matSuffix>
+                    monetization_on
+                </mat-icon>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="pl-4" fxFlex="45">
+                <mat-label>Detail</mat-label>
+                <input autocomplete="off" [formControl]="tempAllergies.controls[i].controls.detail" matInput required>
+                <mat-icon class="secondary-text" matSuffix>confirmation_number</mat-icon>
+                <mat-error>Allergy detail is required</mat-error>
+            </mat-form-field>
+
+            <div class="pl-8" fxFlex="5">
+                <button (click)="removeAllergy(i)" color="warn" mat-mini-fab type="button">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </div>
+
+        </div>
+
+
+    </div>
+    <button mat-mini-fab (click)="appendnew()">
+        <mat-icon>library-add</mat-icon>
+    </button>
+</div>

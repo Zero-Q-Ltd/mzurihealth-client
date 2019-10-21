@@ -85,7 +85,32 @@ export class VisitService {
         return true as any;
 
     }
+    /**
+     * Fetches the latest patient visit ONCE
+     * NOT REALTIME
+     * @param id 
+     */
+    getLatest(id: BSON.ObjectId) {
+        const query = {
+            _id: id
+        };
+        const options = {
+            sort: {
+                'metadata.edited.date': -1
+            }
+        };
+        const collection = this.stitch.db.collection<Visit>('visits');
+        return collection.findOne(query, options);
+
+    }
+    /**
+     * Creates a realtime database subscription
+     * @param id 
+     */
     async watchId(id: BSON.ObjectId): Promise<ReplaySubject<Visit>> {
+
+
+
         const query = {
             _id: id
         };

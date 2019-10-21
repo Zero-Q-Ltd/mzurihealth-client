@@ -9,19 +9,19 @@ export interface MedicalInfo {
     bloodType: string;
     conditions: Array<Condition>;
     allergies: Array<Allegy>;
-    vitals: {
-        height: number,
-        weight: number,
-        pressure: number,
-        sugar: number,
-        heartRate: number,
-        respiration: number,
-        hb: string,
-    };
+    vitals: Vitals;
     metadata: Metadata;
     visitId: BSON.ObjectId;
 }
-
+export interface Vitals {
+    height: number;
+    weight: number;
+    pressure: number;
+    sugar: number;
+    heartRate: number;
+    respiration: number;
+    hb: string;
+}
 export const emptymedicalInfo: MedicalInfo = {
     _id: null,
     patientId: null,

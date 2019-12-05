@@ -202,13 +202,22 @@ export class QueueService {
 
     /**
      * This only updates the status of the patient queue
+     * This logic is very sensitive and arranged the way it is because of the following reason(s)
+     * 1. The patient movement pipeline dictates that a patient is first added to that admin's queue 
+     * 2. The admin accepts them (That means they already exist in that admin's queue ^^Above)
+     * Hence if you are edisitng the db direct and skip adding the patient to that admin's queue, 
+     * the patient WILL NOT appear in the current patient tab even if the stage is correct
      */
-    updatePatientVisits(visit: Visit): void {
+    async updatePatientVisits(visit: Visit): Promise<void> {
         const patientmap: Map<string, MergedPatientQueueModel> = this.mainpatientsqueue.value;
         const mypatientsmap: Map<string, MergedPatientQueueModel> = this.mypatientqueue.value;
 
-        const previousData = patientmap.get(visit.patientId.toHexString());
-        const previousDataQueue = mypatientsmap.get(visit.patientId.toHexString());
+        const previousData: MergedPatientQueueModel = patientmap.get(visit.patientId.toHexString());
+        /**
+         * There is a possibility that the patient was not previously in the queue, 
+         * so these two vars might contain different values
+         */
+        const previousDataQueue: MergedPatientQueueModel = mypatientsmap.get(visit.patientId.toHexString());
 
         /**
          * replace the visit data into the array
@@ -219,18 +228,20 @@ export class QueueService {
          */
         if (previousDataQueue) {
             /**
-             * make sure they're still in that admin's queue
+             * remove from my queue in case they have moved away
              */
-            if (visit.checkin.status === CheckinStatus['being attended'] || visit.checkin.status === CheckinStatus.waiting) {
-                mypatientsmap.set(visit.patientId.toHexString(), { visitData: visit, patientdata: previousData.patientdata });
-
-            } else {
+            if (!this.checkAdmin(visit.checkin.admin)) {
                 mypatientsmap.delete(visit.patientId.toHexString());
                 /**
                  * also remove from the current patient in case they were being attended
                  */
                 if (this.currentpatient.value.visitdata._id.toHexString() === visit._id.toHexString()) {
                     this.currentpatient.next(null);
+                }
+            } else {
+                mypatientsmap.set(visit.patientId.toHexString(), { visitData: visit, patientdata: previousData.patientdata });
+                if (visit.checkin.status === CheckinStatus['being attended']) {
+                    this.currentpatient.next(await this.fetchCurrentPatientData(visit, previousData.patientdata, true));
                 }
             }
         }
@@ -264,7 +275,6 @@ export class QueueService {
      * @param visits the visits array
      */
     combinePatientData(visits: Visit[]): void {
-
         /**
          * create a map of the patient ids to be used in file and patient query
          */
@@ -305,18 +315,7 @@ export class QueueService {
                     if (this.checkAdmin(visit.checkin.admin)) {
                         mypatientsmap.set(visit.patientId.toHexString(), { visitData: visit, patientdata: matchingPatient });
                         if (visit.checkin.status === CheckinStatus['being attended']) {
-                            console.log('Current Patient Found');
-                            this.fetchingCurrentpatientdata.next(true);
-                            this.fetchCurrentPatientHsistory(visit.patientId);
-
-                            this.currentpatient.next({
-                                /**
-                                 * make sure that a value is assigned to the med info
-                                 */
-                                medicalInfo: await this.medInfoService.getLatest(visit.patientId) || { ...emptymedicalInfo },
-                                patientdata: matchingPatient,
-                                visitdata: visit
-                            });
+                            this.currentpatient.next(await this.fetchCurrentPatientData(visit, matchingPatient, false));
                         }
                     }
                 });
@@ -324,6 +323,27 @@ export class QueueService {
                 this.mypatientqueue.next(mypatientsmap);
                 this.fetchingpatientdata.next(false);
             });
+    }
+
+    /**
+     * Uses the patient id to fetch the most recent medicalInfo and conditionally update the patientdata
+     * The visit is provided
+     * @param visit 
+     * @param patientId 
+     */
+    async fetchCurrentPatientData(visitdata: Visit, patient: Patient, updatePatientdata: boolean): Promise<CurrentPatient> {
+        console.log('Current Patient Found');
+        this.fetchingCurrentpatientdata.next(true);
+        this.fetchCurrentPatientHsistory(visitdata.patientId);
+
+        return {
+            /**
+             * make sure that a value is assigned to the med info
+             */
+            medicalInfo: await this.medInfoService.getLatest(patient._id) || { ...emptymedicalInfo },
+            patientdata: updatePatientdata ? await this.patientservice.getpatientbyid(patient._id) : patient,
+            visitdata
+        };
     }
 
     /**

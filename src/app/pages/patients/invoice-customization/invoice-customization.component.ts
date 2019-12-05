@@ -192,10 +192,10 @@ export class InvoiceCustomizationComponent implements OnInit {
         });
     }
 
-    getmethodname(channelid: string, methodid: string): string {
+    getmethodname(channelid: BSON.ObjectID, methodid: BSON.ObjectID): string {
         return this.allpaymentchannels.find(value => {
-            return value._id === channelid;
-        }).methods[methodid].name;
+            return value._id.toHexString() === channelid.toHexString();
+        }).methods[methodid.toHexString()].name;
     }
 
     insurancename(insuranceid: string): string {

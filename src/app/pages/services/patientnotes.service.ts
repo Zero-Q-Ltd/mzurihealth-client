@@ -5,16 +5,17 @@ import { BehaviorSubject } from 'rxjs';
 import { Patientnote } from '../../models/patient/Patientnote';
 import { AdminService } from './admin.service';
 import * as moment from 'moment';
-import { BSON, Stream } from 'mongodb-stitch-browser-sdk';
+import { Stream } from 'mongodb-stitch-browser-sdk';
 import { Meta } from 'app/models/universal';
 import { ChangeEvent } from 'mongodb-stitch-core-services-mongodb-remote';
+import * as BSON from 'bson';
 
 @Injectable({
     providedIn: 'root'
 })
 export class PatientnotesService {
     patientnotes: BehaviorSubject<Array<Patientnote>> = new BehaviorSubject<Array<Patientnote>>([]);
-    patientid: string;
+    patientid: BSON.ObjectId;
 
     /**
      * This keeps a list of all the subscriptions TO THE DATABASE that have been made by this service

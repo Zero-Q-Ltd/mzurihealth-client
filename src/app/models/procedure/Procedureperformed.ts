@@ -17,9 +17,9 @@ export interface Procedureperformed {
      */
     tempnote?: string;
     notes: Array<ProcedureNotes>;
-    adminid: string;
+    adminid: BSON.ObjectId;
     name: string;
-    originalProcedureId: string;
+    originalProcedureId: BSON.ObjectID;
     customProcedureId: string;
     metadata: Metadata;
     payment: {

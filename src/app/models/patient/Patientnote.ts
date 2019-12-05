@@ -9,7 +9,7 @@ export interface Patientnote {
         name: string
     };
     _id: BSON.ObjectId;
-    patientId: string;
+    patientId: BSON.ObjectId;
     metadata: Metadata;
     /**
      * distributed counter for docs that found this note helpful

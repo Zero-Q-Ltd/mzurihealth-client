@@ -102,7 +102,7 @@ export class ProceduresService {
             });
     }
 
-    fetchproceduresincategory(categoryid: string, limit?: number): any {
+    fetchproceduresincategory(categoryid: BSON.ObjectId, limit?: number): any {
         const query = {
             'category._id': categoryid
         };

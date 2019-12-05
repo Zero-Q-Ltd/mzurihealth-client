@@ -89,10 +89,10 @@ export class AllComponent implements OnInit, AfterViewInit {
 
     addToQueue(patient: Patient): void {
 
-        const fil = this.queueService.mainpatientsqueue.value.has(patient._id);
+        const fil = this.queueService.mainpatientsqueue.value.has(patient._id.toHexString());
         console.log(patient._id);
         console.log(Array.from(this.queueService.mainpatientsqueue.value.keys()));
-        console.log(this.queueService.mainpatientsqueue.value.get(patient._id));
+        console.log(this.queueService.mainpatientsqueue.value.get(patient._id.toHexString()));
         if (fil) {
             this.notificationservice.notify({
                 alertType: 'warning',
@@ -148,7 +148,7 @@ export class AllComponent implements OnInit, AfterViewInit {
 
     deletepatient(patient: Patient): void {
         event.stopPropagation();
-        const fil = this.queueService.mainpatientsqueue.value.get(patient._id);
+        const fil = this.queueService.mainpatientsqueue.value.get(patient._id.toHexString());
 
         if (fil) {
             this.notificationservice.notify({
@@ -165,7 +165,7 @@ export class AllComponent implements OnInit, AfterViewInit {
         this.confirmDialogRef.componentInstance.confirmMessage = 'Delete Patient?';
         this.confirmDialogRef.afterClosed().subscribe(result => {
             if (result) {
-                this.patientservice.deletepatient(patient._id);
+                this.patientservice.deletepatient(patient._id.toHexString());
             }
         });
     }

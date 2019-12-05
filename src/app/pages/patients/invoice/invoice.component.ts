@@ -8,6 +8,7 @@ import { QueueService } from '../../services/queue.service';
 import { MAT_DIALOG_DATA } from '@angular/material';
 import { PaymentmethodService } from '../../services/paymentmethod.service';
 import { PaymentChannel } from '../../../models/payment/PaymentChannel';
+import * as BSON from 'bson';
 
 @Component({
     selector: 'app-invoice',
@@ -57,10 +58,10 @@ export class InvoiceComponent implements OnInit, OnDestroy {
 
     }
 
-    getmethodname(channelid: string, methodid: string): string {
+    getmethodname(channelid: BSON.ObjectId, methodid: BSON.ObjectId): string {
         return this.allpaymentchannels.find(value => {
-            return value._id === channelid;
-        }).methods[methodid].name;
+            return value._id.toHexString() === channelid.toHexString();
+        }).methods[methodid.toHexString()].name;
     }
 
     /**

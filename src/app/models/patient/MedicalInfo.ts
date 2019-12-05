@@ -1,7 +1,7 @@
 import { Condition } from '../procedure/MedicalConditions.model';
 import { Allegy } from '../procedure/Allergy.model';
 import { emptymetadata, Metadata } from '../universal';
-import { BSON } from 'mongodb-stitch-browser-sdk';
+import * as BSON from 'bson';
 
 export interface MedicalInfo {
     _id: BSON.ObjectId;

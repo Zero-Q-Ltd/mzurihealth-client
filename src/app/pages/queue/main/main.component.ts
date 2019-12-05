@@ -51,15 +51,15 @@ export class MainComponent implements OnInit, AfterViewInit {
     redirectadmin(data: MergedPatientQueueModel): void {
         event.stopPropagation();
         this.showadminchoice(data);
-        // this.confirmDialogRef = this._matDialog.open(FuseConfirmDialogComponent, {
-        //     disableClose: false
-        // });
-        // this.confirmDialogRef.componentInstance.confirmMessage = 'Redirect Patient?';
-        // this.confirmDialogRef.afterClosed().subscribe(result => {
-        //     if (result) {
-        //         this.showadminchoice(data);
-        //     }
-        // });
+        this.confirmDialogRef = this._matDialog.open(FuseConfirmDialogComponent, {
+            disableClose: false
+        });
+        this.confirmDialogRef.componentInstance.confirmMessage = 'Redirect Patient?';
+        this.confirmDialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.showadminchoice(data);
+            }
+        });
     }
 
     showadminchoice(data: MergedPatientQueueModel): void {
@@ -69,7 +69,7 @@ export class MainComponent implements OnInit, AfterViewInit {
         this.dialogRef.afterClosed().subscribe((res: HospitalAdmin) => {
             console.log(res);
             if (res) {
-                // this.queue.assignadmin(data.visitData, res._id);
+                this.queue.assignadmin(data.visitData, res._id);
             }
         });
     }

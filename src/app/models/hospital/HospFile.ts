@@ -1,4 +1,4 @@
-import { BSON } from 'mongodb-stitch-browser-sdk';
+import * as BSON from 'bson';
 import { Metadata, emptymetadata } from '../universal';
 
 export interface HospFile {

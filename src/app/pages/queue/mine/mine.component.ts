@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, OnDestroy } from '@angular/core';
 import { MatDialog, MatDialogRef, MatTableDataSource } from '@angular/material';
 import { fuseAnimations } from '../../../../@fuse/animations';
 import { QueueService } from '../../services/queue.service';
@@ -8,6 +8,9 @@ import { AdminSelectionComponent } from '../admin-selection/admin-selection.comp
 import { HospitalAdmin } from '../../../models/user/HospitalAdmin';
 import { FuseConfirmDialogComponent } from '../../../../@fuse/components/confirm-dialog/confirm-dialog.component';
 import { InvoiceComponent } from '../../patients/invoice/invoice.component';
+import { VisitService } from 'app/pages/services/visit.service';
+import { ReplaySubject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
     selector: 'queue-mine',
@@ -16,19 +19,23 @@ import { InvoiceComponent } from '../../patients/invoice/invoice.component';
     encapsulation: ViewEncapsulation.None,
     animations: fuseAnimations
 })
-export class MineComponent implements OnInit {
+export class MineComponent implements OnInit, OnDestroy {
     patientsdatasource = new MatTableDataSource<MergedPatientQueueModel>();
     patientsheaders = ['FileNo', 'Name', 'Age', 'Phone', 'Last Visit', 'Status', 'Action'];
     dialogRef: MatDialogRef<any>;
     confirmDialogRef: MatDialogRef<FuseConfirmDialogComponent>;
+    comopnentDestroyed: ReplaySubject<boolean> = new ReplaySubject<boolean>();
 
     constructor(private queue: QueueService,
+        private visit: VisitService,
         public _matDialog: MatDialog) {
-        queue.mypatientqueue.subscribe(value => {
-            this.patientsdatasource.data = (Array.from(value.values()) || []).sort((a, b) => {
-                return a.queuedata.metadata.edited.date.getMilliseconds() - b.queuedata.metadata.edited.date.getMilliseconds();
+        queue.mypatientqueue
+            .pipe(takeUntil(this.comopnentDestroyed))
+            .subscribe(value => {
+                this.patientsdatasource.data = (Array.from(value.values()) || []).sort((a, b) => {
+                    return a.visitData.metadata.edited.date.getMilliseconds() - b.visitData.metadata.edited.date.getMilliseconds();
+                });
             });
-        });
     }
 
     ngOnInit(): void {
@@ -37,21 +44,23 @@ export class MineComponent implements OnInit {
     getAge(birtday: Date): number {
         return moment().diff(birtday, 'years');
     }
+    ngOnDestroy(): void {
+        this.comopnentDestroyed.next(true);
+    }
 
 
     acceptpatient(data: MergedPatientQueueModel): void {
         event.stopPropagation();
-        // this.queue.acceptpatient(data.queuedata);
 
-        // this.confirmDialogRef = this._matDialog.open(FuseConfirmDialogComponent, {
-        //     disableClose: false
-        // });
-        // this.confirmDialogRef.componentInstance.confirmMessage = 'Accept?';
-        // this.confirmDialogRef.afterClosed().subscribe(result => {
-        //     if (result) {
-        //         this.queue.acceptpatient(data.queuedata);
-        //     }
-        // });
+        this.confirmDialogRef = this._matDialog.open(FuseConfirmDialogComponent, {
+            disableClose: false
+        });
+        this.confirmDialogRef.componentInstance.confirmMessage = 'Accept?';
+        this.confirmDialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.visit.acceptPatient(data.visitData._id);
+            }
+        });
     }
 
     viewinvoice(data: MergedPatientQueueModel): void {
@@ -81,7 +90,7 @@ export class MineComponent implements OnInit {
                 this.dialogRef.afterClosed().subscribe((res: HospitalAdmin) => {
                     console.log(res);
                     if (res) {
-                        // this.queue.assignadmin(data.queuedata, res._id);
+                        // this.queue.assignadmin(data.visitData, res._id);
                     }
                 });
             }

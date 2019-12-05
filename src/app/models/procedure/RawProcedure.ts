@@ -1,4 +1,4 @@
-import {BSON} from 'mongodb-stitch-browser-sdk';
+import * as BSON from 'bson';
 
 export interface RawProcedure {
     name: string;
@@ -9,7 +9,7 @@ export interface RawProcedure {
     };
     category: RawProcedureCategory;
     numericid: number;
-    notes : string
+    notes: string;
 }
 
 export interface RawProcedureCategory {
@@ -31,5 +31,5 @@ export const emptyprawrocedure: RawProcedure = {
         code: null,
         subCategoryId: null
     },
-    notes: ""
+    notes: ''
 };

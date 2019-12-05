@@ -1,7 +1,12 @@
-import {Metadata} from '../universal';
+import { Metadata } from '../universal';
 
-export type allergy = 'respiratory' | 'food' | 'skin' | 'other' ;
-export const allerytypearray = ['respiratory', 'food', 'skin', 'other'];
+export enum allergy {
+    'Respiratory' = 'respiratory',
+    'Food' = 'Food',
+    'skin' = 'skin',
+    'other' = 'other'
+}
+export const allerytypearray = Object.values(allergy);
 
 export interface Allegy {
     type: allergy;

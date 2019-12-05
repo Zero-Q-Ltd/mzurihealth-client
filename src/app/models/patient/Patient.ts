@@ -1,6 +1,6 @@
 import { Customfields, emptymetadata, Metadata } from '../universal';
 import { HospFile } from '../hospital/HospFile';
-import { BSON } from 'mongodb-stitch-browser-sdk';
+import * as BSON from 'bson';
 
 export interface Patient {
     _id: BSON.ObjectId;

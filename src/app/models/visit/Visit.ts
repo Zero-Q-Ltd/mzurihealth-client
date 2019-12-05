@@ -1,10 +1,10 @@
 import { emptymetadata, Metadata } from '../universal';
 import { Procedureperformed } from '../procedure/Procedureperformed';
-import { BSON } from 'mongodb-stitch-browser-sdk';
 import { Prescription } from './Prescription';
 import { PaymentMethod } from '../payment/CustomPaymentMethod.model';
 import { Insurance } from '../patient/Patient';
 import { PaymentChannel } from '../payment/PaymentChannel';
+import * as BSON from 'bson';
 
 export interface Visit {
     procedures: Array<Procedureperformed>;
@@ -37,7 +37,7 @@ export interface Visit {
 }
 
 export interface Checkin {
-    admin: string;
+    admin: BSON.ObjectId;
     /**
      * 0 new
      * 1 waiting
@@ -45,7 +45,14 @@ export interface Checkin {
      * 3 waiting for payment
      * 4 completed
      */
-    status: 0 | 1 | 2 | 3 | 4;
+    status: CheckinStatus;
+}
+export enum CheckinStatus {
+    'new',
+    'waiting',
+    'being attended',
+    'waiting for payment',
+    'completed'
 }
 /**
  * During reg it is important to distinguish between cash and isurance patients

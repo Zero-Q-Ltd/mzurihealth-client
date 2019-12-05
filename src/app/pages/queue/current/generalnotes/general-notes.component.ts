@@ -1,27 +1,32 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { emptynote, Patientnote } from '../../../../models/patient/Patientnote';
 import { PatientService } from '../../../services/patient.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { PatientnotesService } from '../../../services/patientnotes.service';
+import { ReplaySubject } from 'rxjs';
 
 @Component({
     selector: 'patient-notes',
     templateUrl: './general-notes.component.html',
     styleUrls: ['./general-notes.component.scss']
 })
-export class GeneralNotesComponent implements OnInit {
+export class GeneralNotesComponent implements OnInit, OnDestroy {
     patientnotes: Array<Patientnote> = [];
     newnoteform: FormGroup;
+    comopnentDestroyed: ReplaySubject<boolean> = new ReplaySubject<boolean>();
 
     constructor(private patientservice: PatientService,
         private patientnotesService: PatientnotesService) {
         this.initformm();
-        patientnotesService.patientnotes.subscribe(notes => {
-            this.patientnotes = notes;
-        });
+        // patientnotesService.patientnotes.subscribe(notes => {
+        //     this.patientnotes = notes;
+        // });
     }
 
     ngOnInit(): void {
+    }
+    ngOnDestroy(): void {
+        this.comopnentDestroyed.next(true);
     }
 
     initformm(): void {

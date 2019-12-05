@@ -13,7 +13,7 @@ import { BSON, Stream } from 'mongodb-stitch-browser-sdk';
 import { StitchService } from './stitch/stitch.service';
 import { NewPatientForm } from 'app/models/patient/NewPatientForm';
 import * as equal from 'deep-equal';
-import { ChangeEvent } from 'mongodb-stitch-core-services-mongodb-remote';
+import { ChangeEvent, RemoteUpdateResult } from 'mongodb-stitch-core-services-mongodb-remote';
 @Injectable({
     providedIn: 'root'
 })
@@ -262,7 +262,7 @@ export class PatientService {
 
 
 
-    updatePatient(patientData: Patient): Promise<any> {
+    updatePatient(patientData: Patient): Promise<RemoteUpdateResult> {
         return this.stitch.db.collection<Patient>('patients').updateOne({ _id: patientData._id }, patientData);
     }
 
@@ -270,7 +270,7 @@ export class PatientService {
         return true as any;
     }
 
-    updateVitalsAllegiesConditions(patientID: string, vitals, conditions: Array<any>, allegies: Array<any>): any {
+    updateVitalsAllegiesConditions(patientID: string, vitals, conditions: Array<any>, allegies: Array<any>): Promise<RemoteUpdateResult> {
         // get current user
         // const patientsDocRef = this.stitch.db.firestore.collection('patients').doc(patientID);
         //

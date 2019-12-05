@@ -21,7 +21,7 @@ export class AdminService {
     /**
      * Secondary copy of data to avoid many unnecessary subscriptions
      */
-    userdata: HospitalAdmin = emptyadmin;
+    userdata: HospitalAdmin = { ...emptyadmin };
     admincategories: BehaviorSubject<Array<AdminCategory>> = new BehaviorSubject<Array<AdminCategory>>([]);
 
     /**

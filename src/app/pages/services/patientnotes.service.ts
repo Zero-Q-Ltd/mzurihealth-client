@@ -1,20 +1,20 @@
 import { HospitalService } from './hospital.service';
 import { Injectable } from '@angular/core';
 import { QueueService } from './queue.service';
-import { BehaviorSubject } from 'rxjs';
-import { Patientnote } from '../../models/patient/Patientnote';
+import { Patientnote, emptynote } from '../../models/patient/Patientnote';
 import { AdminService } from './admin.service';
 import * as moment from 'moment';
-import { BSON, Stream } from 'mongodb-stitch-browser-sdk';
+import { Stream, RemoteMongoReadOperation } from 'mongodb-stitch-browser-sdk';
 import { Meta } from 'app/models/universal';
-import { ChangeEvent } from 'mongodb-stitch-core-services-mongodb-remote';
+import { ChangeEvent, RemoteUpdateResult, RemoteInsertOneResult, RemoteFindOptions } from 'mongodb-stitch-core-services-mongodb-remote';
+import * as BSON from 'bson';
+import { StitchService } from './stitch/stitch.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class PatientnotesService {
-    patientnotes: BehaviorSubject<Array<Patientnote>> = new BehaviorSubject<Array<Patientnote>>([]);
-    patientid: string;
+    patientid: BSON.ObjectId;
 
     /**
      * This keeps a list of all the subscriptions TO THE DATABASE that have been made by this service
@@ -24,6 +24,7 @@ export class PatientnotesService {
 
     constructor(private queueservice: QueueService,
         private hospitalservice: HospitalService,
+        private stitch: StitchService,
         private adminservice: AdminService) {
         queueservice.currentpatient.subscribe(value => {
             if (value.patientdata._id) {
@@ -33,19 +34,22 @@ export class PatientnotesService {
         });
     }
 
-    fetchpatientnotes(_id: BSON.ObjectId): void {
-        // this.stitch.db.collection('patientnotes')
-        //     .where('patientId', '==', id)
-        //     .limit(100)
-        //     .orderBy('metadata.date', 'desc')
-        //     .onSnapshot(rawdata => {
-        //         this.patientnotes.next(rawdata.docs.map(value => {
-        //             return Object.assign({...emptynote}, value.data(), {id: value.id});
-        //         }));
-        //     });
+    fetchpatientnotes(patientId: BSON.ObjectId): Promise<Patientnote[]> {
+        const query = {
+            patientId: patientId
+        };
+        const options: RemoteFindOptions = {
+            limit: 100,
+            sort: {
+                'metadata.date': 1
+            }
+        };
+        return this.stitch.db.collection<Patientnote>('patientnotes')
+            .find(query, options)
+            .toArray();
     }
 
-    addnote(note: Patientnote): any {
+    addnote(note: Patientnote): Promise<RemoteInsertOneResult> {
         note.admin = {
             _id: this.adminservice.userdata._id,
             name: this.adminservice.userdata.data.displayName
@@ -60,7 +64,7 @@ export class PatientnotesService {
             created: meta,
             edited: meta,
         };
-        // return this.db.collection('patientnotes').add(note);
+        return this.stitch.db.collection('patientnotes').insertOne(note);
 
     }
 

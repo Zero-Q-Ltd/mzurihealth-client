@@ -1,6 +1,6 @@
 import { emptymetadata, Metadata } from '../universal';
 import { PaymentMethod } from '../payment/CustomPaymentMethod.model';
-import { BSON } from 'mongodb-stitch-core-sdk';
+import * as BSON from 'bson';
 
 export interface Hospital {
     location: any;

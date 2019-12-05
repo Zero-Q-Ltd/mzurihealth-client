@@ -5,10 +5,9 @@ import { HospitalAdmin } from '../../models/user/HospitalAdmin';
 import { emptyhospital, Hospital } from '../../models/hospital/Hospital';
 import { AdminInvite, emptyadmininvite } from '../../models/user/AdminInvite';
 import { StitchService } from './stitch/stitch.service';
-import { distinctUntilChanged } from 'rxjs/operators';
-import * as equal from 'deep-equal';
 import { Stream } from 'mongodb-stitch-core-sdk';
 import { ChangeEvent } from 'mongodb-stitch-core-services-mongodb-remote';
+import { distinctUntilChanged, skipWhile } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root'
@@ -28,20 +27,34 @@ export class HospitalService {
         /**
          * only re-fetch the hospital if the admin id or the assigned hospital id changes
          */
-        adminservice.observableuserdata.pipe(distinctUntilChanged((prev, curr) =>
-            equal(prev._id, curr._id) || equal(prev.config.hospitalId, curr.config.hospitalId)))
-            .subscribe((admin: HospitalAdmin) => {
-                if (admin._id) {
-                    this.gethospitaldetails();
-                }
+        adminservice.observableuserdata.pipe(
+            skipWhile(t => !t._id),
+            distinctUntilChanged<HospitalAdmin>((prev, curr) => {
+                return prev._id.toHexString() === curr._id.toHexString() || prev.config.hospitalId.toHexString() === curr.config.hospitalId.toHexString();
+            }))
+            .subscribe(() => {
+                this.gethospitaldetails();
+            });
+        /**
+         * Fetch the hospital admins when the hosp changes
+         */
+        this.activehospital
+            .pipe(
+                skipWhile(t => !t._id),
+                distinctUntilChanged<Hospital>((prev, curr) => {
+                    return prev._id.toHexString() === curr._id.toHexString();
+                }))
+            .subscribe(() => {
+                this.gethospitaladmins();
             });
     }
 
     gethospitaladmins(): void {
         this.stitch.db.collection<HospitalAdmin>('hospitaladmins')
-            .find({ 'config.hospitalid': this.activehospital.value._id })
+            .find({ 'config.hospitalId': this.activehospital.value._id })
             .asArray()
             .then(hospitaladmindocs => {
+                // console.log(hospitaladmindocs);
                 this.hospitaladmins.next(hospitaladmindocs);
             });
     }

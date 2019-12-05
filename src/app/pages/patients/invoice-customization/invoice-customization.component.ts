@@ -15,7 +15,7 @@ import { ProceduresService } from '../../services/procedures.service';
 import { NotificationService } from '../../../shared/services/notifications.service';
 import { FuseConfirmDialogComponent } from '../../../../@fuse/components/confirm-dialog/confirm-dialog.component';
 import { PrescriptionComponent } from '../prescription/prescription.component';
-import { BSON } from 'mongodb-stitch-core-sdk';
+import * as BSON from 'bson';
 
 @Component({
     selector: 'app-invoice-payment',
@@ -71,16 +71,16 @@ export class InvoiceCustomizationComponent implements OnInit {
         /**
          * Subscribe so that other admin changes are immediately reflected
          */
-        this.queue.mainpatientsqueue.subscribe(queuedata => {
-            // queuedata.filter(value => {
+        this.queue.mainpatientsqueue.subscribe(visitData => {
+            // visitData.filter(value => {
             //     if (value.patientdata._id === this.patient) {
             //         this.patientdata = value;
-            //         this.proceduresdatasouce.data = value.queuedata.procedures;
+            //         this.proceduresdatasouce.data = value.visitData.procedures;
             //         if (this.allpaymentchannels.length > 0) {
             //             /**
             //              * Calculate the totals with the first pre-selected channel
             //              */
-            //             this.setchannel(this.allpaymentchannels.filter(channel => channel._id === value.queuedata.payment.singlePayment.channelId)[0]);
+            //             this.setchannel(this.allpaymentchannels.filter(channel => channel._id === value.visitData.payment.singlePayment.channelId)[0]);
             //         }
             //     }
             // });
@@ -148,13 +148,13 @@ export class InvoiceCustomizationComponent implements OnInit {
                 alertType: 'info',
                 body: 'Coming soon...'
             });
-            // this.patientdata.queuedata.payment.splitPayment = false;
+            // this.patientdata.visitData.payment.splitPayment = false;
         }, 800);
 
     }
 
     setchannel(channel: PaymentChannel): void {
-        // this.patientdata.queuedata.payment.singlePayment = {
+        // this.patientdata.visitData.payment.singlePayment = {
         //     amount: 0,
         //     channelId: channel._id,
         //     methodId: '',
@@ -162,14 +162,14 @@ export class InvoiceCustomizationComponent implements OnInit {
         // };
         // const isinsurance = channel.name === 'insurance';
         // if (!isinsurance) {
-        //     this.patientdata.queuedata.payment.hasInsurance = null;
+        //     this.patientdata.visitData.payment.hasInsurance = null;
         // }else {
         //     /**
         //      * @TODO: find a way of selecting the insurance
         //      */
         // }
         // let total = 0;
-        // this.patientdata.queuedata.procedures.map(value => {
+        // this.patientdata.visitData.procedures.map(value => {
         //     const amount = this.getpaymentamount(value.customProcedureId);
         //     value.payment = {
         //         amount: amount,
@@ -183,7 +183,7 @@ export class InvoiceCustomizationComponent implements OnInit {
         //     };
         //     total += amount;
         // });
-        // this.patientdata.queuedata.payment.total = total;
+        // this.patientdata.visitData.payment.total = total;
     }
 
     getcativechannelmethods(channelid: string): Array<PaymentMethod> {
@@ -192,10 +192,10 @@ export class InvoiceCustomizationComponent implements OnInit {
         });
     }
 
-    getmethodname(channelid: string, methodid: string): string {
+    getmethodname(channelid: BSON.ObjectID, methodid: BSON.ObjectID): string {
         return this.allpaymentchannels.find(value => {
-            return value._id === channelid;
-        }).methods[methodid].name;
+            return value._id.toHexString() === channelid.toHexString();
+        }).methods[methodid.toHexString()].name;
     }
 
     insurancename(insuranceid: string): string {
@@ -207,9 +207,9 @@ export class InvoiceCustomizationComponent implements OnInit {
 
     selectinsurance(insurance): void {
         // this.selectedinsurance = insurance;
-        // this.patientdata.queuedata.payment.hasInsurance = true;
+        // this.patientdata.visitData.payment.hasInsurance = true;
         // let total = 0;
-        // this.patientdata.queuedata.procedures.map(value => {
+        // this.patientdata.visitData.procedures.map(value => {
         //     const amount = this.getpaymentamount(value.customProcedureId, insurance._id);
         //     value.payment = {
         //         amount: amount,
@@ -223,8 +223,8 @@ export class InvoiceCustomizationComponent implements OnInit {
         //     };
         //     total += amount;
         // });
-        // this.patientdata.queuedata.payment.total = total;
-        // this.patientdata.queuedata.payment.singlePayment.amount = total;
+        // this.patientdata.visitData.payment.total = total;
+        // this.patientdata.visitData.payment.singlePayment.amount = total;
     }
 
 
@@ -260,7 +260,7 @@ export class InvoiceCustomizationComponent implements OnInit {
     }
 
     pay(): void {
-        if (!this.patientdata.queuedata.checkin.admin) {
+        if (!this.patientdata.visitData.checkin.admin) {
             this.confirmDialogRef = this._matDialog.open(FuseConfirmDialogComponent, {
                 disableClose: false
             });
@@ -268,7 +268,7 @@ export class InvoiceCustomizationComponent implements OnInit {
             this.confirmDialogRef.componentInstance.confirmMessage = 'Are you sure you want to pay for the Invoice and exit the patient??';
             this.confirmDialogRef.afterClosed().subscribe(result => {
                 if (result) {
-                    // this.visitservice.payandexit(this.patientdata.queuedata);
+                    // this.visitservice.payandexit(this.patientdata.visitData);
                     this.thisdialogRef.close();
                 }
             });

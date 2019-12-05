@@ -1,5 +1,5 @@
 import { emptymetadata, Metadata } from '../universal';
-import { BSON } from 'mongodb-stitch-browser-sdk';
+import * as BSON from 'bson';
 
 export interface CustomProcedure {
     creatorid: BSON.ObjectId;

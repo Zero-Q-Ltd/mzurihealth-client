@@ -2,7 +2,7 @@
     <!-- <button mat-raised-button (click)="viewhistory()">HISTORY</button>
     <button mat-raised-button color="accent" (click)="save()">SAVE</button> -->
     <br>
-    <form [formGroup]="tempMedinfo" class=" p-24 m-24">
+    <form [formGroup]="tempMedinfo" class=" p-24 m-24" *ngIf="init">
         <mat-form-field appearance="outline" class="subheading-2 ">
             <mat-label>Blood Pressure</mat-label>
             <input matInput required formControlName="pressure">
@@ -46,7 +46,7 @@
 
         <mat-form-field appearance="outline" class="subheading-2  ">
             <mat-label>BMI</mat-label>
-            <input matInput disabled=required [value]="tempMedinfo.controls.height">
+            <input matInput disabled=required [value]="tempMedinfo?.controls.height">
             <mat-icon class="secondary-text" matSuffix>title</mat-icon>
         </mat-form-field>
         <br>

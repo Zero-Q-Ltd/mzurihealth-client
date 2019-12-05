@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { QueueService } from './queue.service';
 import { HospitalService } from './hospital.service';
-import { emptypatientvisit, Visit } from '../../models/visit/Visit';
+import { emptypatientvisit, Visit, Checkin, CheckinStatus } from '../../models/visit/Visit';
 import { BehaviorSubject, Observable, Subscription, Subject, ReplaySubject } from 'rxjs';
 import { Procedureperformed } from '../../models/procedure/Procedureperformed';
 import { MergedProcedureModel } from '../../models/procedure/MergedProcedure.model';
@@ -9,10 +9,11 @@ import { AdminService } from './admin.service';
 import * as moment from 'moment';
 import { Meta } from 'app/models/universal';
 import { Prescription } from 'app/models/visit/Prescription';
-import { Stream, BSON } from 'mongodb-stitch-core-sdk';
-import { ChangeEvent } from 'mongodb-stitch-core-services-mongodb-remote';
+import { Stream } from 'mongodb-stitch-core-sdk';
+import { ChangeEvent, RemoteUpdateResult } from 'mongodb-stitch-core-services-mongodb-remote';
 import { StitchService } from './stitch/stitch.service';
 import { Patient } from 'app/models/patient/Patient';
+import * as BSON from 'bson';
 
 @Injectable({
     providedIn: 'root'
@@ -175,22 +176,42 @@ export class VisitService {
         // return this.db.collection('hospitalvisits').doc(visit.id).update(visit);
     }
 
-    setprescription(visitid: string, prescription: Prescription) {
+    setprescription(visitid: BSON.ObjectId, prescription: Prescription): Promise<RemoteUpdateResult> {
         // return this.db.collection('hospitalvisits').doc(visitid).update({
         //     prescription: prescription
         // });
         return true as any;
 
     }
+    /**
+     * Updataes a visit status to completed
+     * @param visitId 
+     */
+    terminatepatientvisit(visitId: BSON.ObjectId): Promise<RemoteUpdateResult> {
+        return this.updateVisitStatus(visitId, CheckinStatus.completed, this.adminservice.userdata._id);
+    }
 
+    /**
+     * Updates a visit status to have the currently logged in admin as the one attending to the patient
+     * @param visitId The visit to accept
+     */
+    acceptPatient(visitId: BSON.ObjectId): Promise<RemoteUpdateResult> {
+        return this.updateVisitStatus(visitId, CheckinStatus['being attended'], this.adminservice.userdata._id);
+    }
 
-    terminatepatientvisit(visitid) {
-        // return this.db.collection('hospitalvisits').doc(visitid).update({
-        //     checkin: {
-        //         status: 4,
-        //         admin: null,
-        //     }
-        // });
+    /**
+     * Updates the visit status to the specified value and assisn the specified admin
+     * @param visitId 
+     * @param status 
+     * @param adminId can be null because exited and newly created patients are not assigned to any admins
+     */
+    updateVisitStatus(visitId: BSON.ObjectId, status: CheckinStatus, adminId: BSON.ObjectId | null): Promise<RemoteUpdateResult> {
+        const updatedCheckin: Checkin = {
+            status: status,
+            admin: adminId,
+        };
+        return this.stitch.db.collection<Visit>('visits').updateOne({ _id: visitId }, { $set: { checkin: updatedCheckin } });
+
     }
 
 

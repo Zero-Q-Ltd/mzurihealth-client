@@ -52,7 +52,7 @@
         <mat-header-cell *matHeaderCellDef mat-sort-header>Status
         </mat-header-cell>
         <mat-cell *matCellDef="let patient; let i = index">
-            <mat-chip-list [ngSwitch]='patient.queuedata.checkin.status'>
+            <mat-chip-list [ngSwitch]='patient.visitData.checkin.status'>
                 <mat-chip *ngSwitchCase="1" color="primary" mat-raised-button selected>Waiting</mat-chip>
                 <mat-chip *ngSwitchCase="2" color="basic" mat-raised-button selected>In Progress</mat-chip>
             </mat-chip-list>
@@ -64,7 +64,7 @@
         </mat-header-cell>
         <mat-cell *matCellDef="let patient; let i = index">
             <span [ngSwitch]='i'>
-                <span *ngSwitchCase="0" [ngSwitch]="patient.queuedata.checkin.status">
+                <span *ngSwitchCase="0" [ngSwitch]="patient.visitData.checkin.status">
                     <button (click)="acceptpatient(patient)" *ngSwitchCase="1" color="warn" mat-raised-button matRipple>
                         Accept
                     </button>

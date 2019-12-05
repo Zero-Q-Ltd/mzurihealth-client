@@ -1,13 +1,14 @@
-import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
-import {MergedPatientQueueModel} from '../../../models/visit/MergedPatientQueueModel';
-import {PaymentChannel} from '../../../models/payment/PaymentChannel';
-import {Subject} from 'rxjs';
-import {Hospital} from '../../../models/hospital/Hospital';
-import {HospitalService} from '../../services/hospital.service';
-import {QueueService} from '../../services/queue.service';
-import {PaymentmethodService} from '../../services/paymentmethod.service';
-import {VisitService} from '../../services/visit.service';
-import {MAT_DIALOG_DATA} from '@angular/material';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { MergedPatientQueueModel } from '../../../models/visit/MergedPatientQueueModel';
+import { PaymentChannel } from '../../../models/payment/PaymentChannel';
+import { Subject } from 'rxjs';
+import { Hospital } from '../../../models/hospital/Hospital';
+import { HospitalService } from '../../services/hospital.service';
+import { QueueService } from '../../services/queue.service';
+import { PaymentmethodService } from '../../services/paymentmethod.service';
+import { VisitService } from '../../services/visit.service';
+import { MAT_DIALOG_DATA } from '@angular/material';
+import * as BSON from 'bson';
 
 @Component({
     selector: 'app-invoice',
@@ -21,10 +22,10 @@ export class InvoiceComponent implements OnInit, OnDestroy {
     private _unsubscribeAll: Subject<any>;
 
     constructor(private hospitalservice: HospitalService,
-                private queue: QueueService,
-                private paymentmethodService: PaymentmethodService,
-                private patientvisit: VisitService,
-                @Inject(MAT_DIALOG_DATA) public patientdata: MergedPatientQueueModel) {
+        private queue: QueueService,
+        private paymentmethodService: PaymentmethodService,
+        private patientvisit: VisitService,
+        @Inject(MAT_DIALOG_DATA) public patientdata: MergedPatientQueueModel) {
         // Set the private defaults
         this._unsubscribeAll = new Subject();
         this.hospitalservice.activehospital.subscribe(hosp => {
@@ -47,12 +48,11 @@ export class InvoiceComponent implements OnInit, OnDestroy {
 
     }
 
-    getmethodname(channelid: string, methodid: string): string {
+    getmethodname(channelid: BSON.ObjectId, methodid: BSON.ObjectId): string {
         return this.allpaymentchannels.find(value => {
-            return value._id === channelid;
-        }).methods[methodid].name;
+            return value._id.toHexString() === channelid.toHexString();
+        }).methods[methodid.toHexString()].name;
     }
-
     /**
      * On destroy
      */

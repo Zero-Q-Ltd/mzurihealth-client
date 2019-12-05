@@ -81,7 +81,7 @@ export class AddComponent implements OnInit, AfterViewInit {
      * @param selected
      */
     onSelect(selected: RawProcedure): void {
-        if (this.procedureservice.hospitalprocedures.value.get(selected._id)) {
+        if (this.procedureservice.hospitalprocedures.value.get(selected._id.toHexString())) {
             this.notificationservice.notify({
                 placement: {
                     vertical: 'bottom',

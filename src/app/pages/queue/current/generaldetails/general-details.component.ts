@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, Optional } from '@angular/core';
+import { Component, Inject, OnInit, Optional, OnDestroy } from '@angular/core';
 import { fuseAnimations } from '../../../../../@fuse/animations';
 import { Insurance, Patient } from '../../../../models/patient/Patient';
 import * as moment from 'moment';
@@ -10,6 +10,8 @@ import { MAT_DIALOG_DATA } from '@angular/material';
 import { QueueService } from '../../../services/queue.service';
 import { Paymentmethods } from '../../../../models/payment/PaymentChannel';
 import { PaymentmethodService } from '../../../services/paymentmethod.service';
+import { ReplaySubject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
     selector: 'general-details',
@@ -18,10 +20,11 @@ import { PaymentmethodService } from '../../../services/paymentmethod.service';
     animations: fuseAnimations
 
 })
-export class GeneralDetailsComponent implements OnInit {
+export class GeneralDetailsComponent implements OnInit, OnDestroy {
 
     allInsurance: { [key: string]: Paymentmethods } = {};
     currentpatient: Patient;
+    comopnentDestroyed: ReplaySubject<boolean> = new ReplaySubject<boolean>();
 
     private insurance: FormArray;
 
@@ -41,13 +44,18 @@ export class GeneralDetailsComponent implements OnInit {
             /**
              * make sure insurances are already initialized to avoid crazy form errors
              */
-            this.queue.currentpatient.subscribe(value => {
-                this.currentpatient = value.patientdata;
+            this.queue.currentpatient
+                .pipe(takeUntil(this.comopnentDestroyed))
+                .subscribe(value => {
+                    this.currentpatient = value.patientdata;
 
-            });
+                });
         });
 
 
+    }
+    ngOnDestroy(): void {
+        this.comopnentDestroyed.next(true);
     }
 
     ngOnInit(): void {

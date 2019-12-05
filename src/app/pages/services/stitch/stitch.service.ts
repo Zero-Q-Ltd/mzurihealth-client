@@ -28,8 +28,8 @@ export class StitchService {
      * we need to re-authenticate again, at least with anonymous credentials,
      * so the app can work (like before user logged in).
      */
-    public logout(): void {
-        this.auth.logout();
+    public logout(): Promise<void> {
+        return this.auth.logout();
     }
 
     /**

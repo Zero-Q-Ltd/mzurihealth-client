@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { StitchService } from './stitch/stitch.service';
 import { MedicalInfo, emptymedicalInfo } from 'app/models/patient/MedicalInfo';
-import { BSON, Stream } from 'mongodb-stitch-core-sdk';
+import { Stream } from 'mongodb-stitch-core-sdk';
 import { Observable, Subscription, BehaviorSubject, Subject, ReplaySubject } from 'rxjs';
 import { ChangeEvent } from 'mongodb-stitch-core-services-mongodb-remote';
+import * as BSON from 'bson';
 
 @Injectable({
   providedIn: 'root'
@@ -33,8 +34,7 @@ export class MedicalinfoService {
     const query = {
       patientId: patientid
     };
-    const collection = this.stitch.db.collection<MedicalInfo>('medinfo');
-    return collection.findOne(query);
+    return this.stitch.db.collection<MedicalInfo>('medinfo').findOne(query);
   }
   updateMedInfo(newData: MedicalInfo) {
     return this.stitch.db.collection<MedicalInfo>('medinfo').insertOne(newData);

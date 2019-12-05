@@ -16,7 +16,7 @@ import { Meta } from 'app/models/universal';
 import * as BSON from 'bson';
 import { ChangeEvent, OperationType } from 'mongodb-stitch-core-services-mongodb-remote';
 import { VisitService } from './visit.service';
-import { MedicalInfo } from 'app/models/patient/MedicalInfo';
+import { MedicalInfo, emptymedicalInfo } from 'app/models/patient/MedicalInfo';
 import { MedicalinfoService } from './medicalinfo.service';
 
 @Injectable({
@@ -104,17 +104,6 @@ export class QueueService {
         // return this.db.firestore.collection('hospitalvisits').doc(visit.id).update(visit);
     }
 
-    acceptpatient(visit: Visit) {
-        // const batch = this.db.firestore.batch();
-        visit.checkin = {
-            status: 2,
-            admin: this.adminid
-        };
-        return true;
-        // batch.update(this.db.firestore.collection('hospitalvisits').doc(visit.id), visit);
-        // return batch.commit();
-    }
-
 
     fetchQueuedPatients() {
 
@@ -135,8 +124,7 @@ export class QueueService {
                 const visits = await this.stitch.db.collection<Visit>('visits')
                     .watch();
                 visits.onNext(q => {
-                    console.log(q);
-
+                    // console.log(q);
                     switch (q.operationType) {
                         case OperationType.Delete: {
                             /**
@@ -163,7 +151,7 @@ export class QueueService {
                             /**
                              * Check if the patient has left the queue
                              */
-                            if (q.fullDocument.checkin.status === 4) {
+                            if (q.fullDocument.checkin.status === CheckinStatus.completed) {
                                 /**
                                 * remove the exited item from the array by filtering and only returning true if the id matches
                                 */
@@ -185,7 +173,7 @@ export class QueueService {
                             /**
                             * Check if the patient has left the queue
                             */
-                            if (q.fullDocument.checkin.status === 4) {
+                            if (q.fullDocument.checkin.status === CheckinStatus.completed) {
                                 /**
                                 * remove the exited item from the array by filtering and only returning true if the id matches
                                 */
@@ -208,9 +196,6 @@ export class QueueService {
                             break;
                         }
                     }
-
-                    console.log(q.operationType); { }
-                    console.log(q.fullDocument);
                 });
             });
     }
@@ -236,7 +221,7 @@ export class QueueService {
             /**
              * make sure they're still in that admin's queue
              */
-            if (visit.checkin.status === 2) {
+            if (visit.checkin.status === CheckinStatus['being attended']) {
                 mypatientsmap.set(visit.patientId.toHexString(), { visitData: visit, patientdata: previousData.patientdata });
 
             } else {
@@ -278,7 +263,6 @@ export class QueueService {
          * create a map of the patient ids to be used in file and patient query
          */
         const idMap = visits.map(r => r.patientId);
-        console.log(idMap);
         const patientFileQuery = {
             patientId: {
                 $in: idMap
@@ -302,19 +286,17 @@ export class QueueService {
                 const patientmap: Map<string, MergedPatientQueueModel> = new Map();
                 const mypatientsmap: Map<string, MergedPatientQueueModel> = new Map();
 
-                visits.map(visit => {
+                visits.map(async visit => {
                     /**
                      * check if the visit is for the current admin
                      */
-                    console.log(visit._id.toHexString());
-                    const equality = this.checkAdmin(visit.checkin.admin);
                     const matchingPatient: Patient = result[1].filter(pp => pp._id.toHexString() === visit.patientId.toHexString())[0];
                     matchingPatient.fileInfo = result[0].filter(ff => ff.patientId.toHexString() === matchingPatient._id.toHexString())[0];
 
                     patientmap.set(visit.patientId.toHexString(), { visitData: visit, patientdata: matchingPatient });
 
 
-                    if (equality) {
+                    if (this.checkAdmin(visit.checkin.admin)) {
                         mypatientsmap.set(visit.patientId.toHexString(), { visitData: visit, patientdata: matchingPatient });
                         /**
                            * There's only one source of truth for the queue data
@@ -324,15 +306,19 @@ export class QueueService {
                            * It is safe to make the rest of the objects null since this is the first point of interaction
                            * This MUST work hand in hand with the variable that checks whether fetchingCurrentpatientdata is complete
                            */
-                        if (visit.checkin.status === 2) {
+                        if (visit.checkin.status === CheckinStatus['being attended']) {
                             console.log('Current Patient Found');
                             this.fetchingCurrentpatientdata.next(true);
+                            this.fetchCurrentPatientHsistory(visit.patientId);
+
                             this.currentpatient.next({
-                                medicalInfo: null,
-                                patientdata: null,
-                                visitdata: null
+                                /**
+                                 * make sure that a value is assigned to the med info
+                                 */
+                                medicalInfo: await this.medInfoService.getLatest(visit.patientId) || { ...emptymedicalInfo },
+                                patientdata: matchingPatient,
+                                visitdata: visit
                             });
-                            this.fetchCurrentPatientHsistory();
                         }
                     }
                 });
@@ -345,9 +331,9 @@ export class QueueService {
     /**
      * Fetches the current patient 
      */
-    fetchCurrentPatientHsistory() {
+    fetchCurrentPatientHsistory(patientId: BSON.ObjectID) {
         console.log('Fetching Current Patient History');
-        this.visitService.fetchvisithistory(this.currentpatient.value.visitdata.patientId, 10).then(hist => {
+        this.visitService.fetchvisithistory(patientId, 10).then(hist => {
             console.log('Current Patient history fetched');
             this.currentpatientHistory.next(hist);
         });

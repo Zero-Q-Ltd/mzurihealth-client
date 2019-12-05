@@ -15,7 +15,7 @@ import { LocalcommunicationService } from '../localcommunication.service';
 export class MedInfoComponent implements OnInit {
   editable = true;
   tempMedinfo: FormGroup<Vitals>;
-
+  init = false;
   constructor(private queue: QueueService,
     private formBuilder: FormBuilder,
     private comm: LocalcommunicationService
@@ -24,6 +24,7 @@ export class MedInfoComponent implements OnInit {
       /**
        * make sure we dont mutate the original data
        */
+      console.log(value.medicalInfo);
       this.tempMedinfo = this.formBuilder.group<Vitals>({
         height: [value.medicalInfo.vitals.height, Validators.required],
         weight: [value.medicalInfo.vitals.weight, Validators.required],
@@ -33,13 +34,15 @@ export class MedInfoComponent implements OnInit {
         sugar: [value.medicalInfo.vitals.sugar, Validators.required],
         respiration: [value.medicalInfo.vitals.respiration, Validators.required],
       });
+      this.init = true;
+      this.tempMedinfo.valueChanges.subscribe(values => {
+        /**
+         * No validation for now
+         */
+        this.comm.vitals = values;
+      });
     });
-    this.tempMedinfo.valueChanges.subscribe(values => {
-      /**
-       * No validation for now
-       */
-      this.comm.vitals = values;
-    });
+
   }
 
   ngOnInit() {

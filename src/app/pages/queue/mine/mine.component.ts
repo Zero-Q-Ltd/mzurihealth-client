@@ -8,6 +8,7 @@ import { AdminSelectionComponent } from '../admin-selection/admin-selection.comp
 import { HospitalAdmin } from '../../../models/user/HospitalAdmin';
 import { FuseConfirmDialogComponent } from '../../../../@fuse/components/confirm-dialog/confirm-dialog.component';
 import { InvoiceComponent } from '../../patients/invoice/invoice.component';
+import { VisitService } from 'app/pages/services/visit.service';
 
 @Component({
     selector: 'queue-mine',
@@ -23,6 +24,7 @@ export class MineComponent implements OnInit {
     confirmDialogRef: MatDialogRef<FuseConfirmDialogComponent>;
 
     constructor(private queue: QueueService,
+        private visit: VisitService,
         public _matDialog: MatDialog) {
         queue.mypatientqueue.subscribe(value => {
             this.patientsdatasource.data = (Array.from(value.values()) || []).sort((a, b) => {
@@ -41,17 +43,16 @@ export class MineComponent implements OnInit {
 
     acceptpatient(data: MergedPatientQueueModel): void {
         event.stopPropagation();
-        // this.queue.acceptpatient(data.visitData);
 
-        // this.confirmDialogRef = this._matDialog.open(FuseConfirmDialogComponent, {
-        //     disableClose: false
-        // });
-        // this.confirmDialogRef.componentInstance.confirmMessage = 'Accept?';
-        // this.confirmDialogRef.afterClosed().subscribe(result => {
-        //     if (result) {
-        //         this.queue.acceptpatient(data.visitData);
-        //     }
-        // });
+        this.confirmDialogRef = this._matDialog.open(FuseConfirmDialogComponent, {
+            disableClose: false
+        });
+        this.confirmDialogRef.componentInstance.confirmMessage = 'Accept?';
+        this.confirmDialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.visit.acceptPatient(data.visitData._id);
+            }
+        });
     }
 
     viewinvoice(data: MergedPatientQueueModel): void {

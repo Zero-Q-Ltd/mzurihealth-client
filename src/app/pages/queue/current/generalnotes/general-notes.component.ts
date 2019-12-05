@@ -16,9 +16,9 @@ export class GeneralNotesComponent implements OnInit {
     constructor(private patientservice: PatientService,
         private patientnotesService: PatientnotesService) {
         this.initformm();
-        patientnotesService.patientnotes.subscribe(notes => {
-            this.patientnotes = notes;
-        });
+        // patientnotesService.patientnotes.subscribe(notes => {
+        //     this.patientnotes = notes;
+        // });
     }
 
     ngOnInit(): void {

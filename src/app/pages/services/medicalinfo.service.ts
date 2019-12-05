@@ -3,7 +3,7 @@ import { StitchService } from './stitch/stitch.service';
 import { MedicalInfo, emptymedicalInfo } from 'app/models/patient/MedicalInfo';
 import { Stream } from 'mongodb-stitch-core-sdk';
 import { Observable, Subscription, BehaviorSubject, Subject, ReplaySubject } from 'rxjs';
-import { ChangeEvent } from 'mongodb-stitch-core-services-mongodb-remote';
+import { ChangeEvent, RemoteUpdateResult } from 'mongodb-stitch-core-services-mongodb-remote';
 import * as BSON from 'bson';
 
 @Injectable({
@@ -30,13 +30,14 @@ export class MedicalinfoService {
    * @TODO Medical info changes with thime
    * Figure out a way of fetching only the most recent object
    */
-  getLatest(patientid: BSON.ObjectId): Promise<MedicalInfo> {
+  getLatest(patientId: BSON.ObjectId): Promise<MedicalInfo> {
     const query = {
-      patientId: patientid
+      patientId
     };
     return this.stitch.db.collection<MedicalInfo>('medinfo').findOne(query);
   }
-  updateMedInfo(newData: MedicalInfo) {
-    return this.stitch.db.collection<MedicalInfo>('medinfo').insertOne(newData);
+
+  updateMedInfo(newData: MedicalInfo): Promise<RemoteUpdateResult> {
+    return this.stitch.db.collection<MedicalInfo>('medinfo').updateOne(newData._id, newData);
   }
 }

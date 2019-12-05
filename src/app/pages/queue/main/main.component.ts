@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild, ViewEncapsulation, OnDestroy } from '@angular/core';
 import { MatDialog, MatDialogRef, MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { fuseAnimations } from '../../../../@fuse/animations';
 import { QueueService } from '../../services/queue.service';
@@ -8,6 +8,8 @@ import { HospitalAdmin } from '../../../models/user/HospitalAdmin';
 import { FuseConfirmDialogComponent } from '../../../../@fuse/components/confirm-dialog/confirm-dialog.component';
 import { HospitalService } from '../../services/hospital.service';
 import { InvoiceCustomizationComponent } from '../../patients/invoice-customization/invoice-customization.component';
+import { ReplaySubject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
     selector: 'queue-main',
@@ -16,12 +18,13 @@ import { InvoiceCustomizationComponent } from '../../patients/invoice-customizat
     encapsulation: ViewEncapsulation.None,
     animations: fuseAnimations
 })
-export class MainComponent implements OnInit, AfterViewInit {
+export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
     patientsdatasource = new MatTableDataSource<MergedPatientQueueModel>();
     patientsheaders = ['FileNo', 'Name', 'Age', 'Phone', 'Last Visit', 'Status', 'Action'];
     dialogRef: MatDialogRef<any>;
     confirmDialogRef: MatDialogRef<FuseConfirmDialogComponent>;
     hospitaladmins: Array<HospitalAdmin>;
+    comopnentDestroyed: ReplaySubject<boolean> = new ReplaySubject<boolean>();
 
     @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
     @ViewChild(MatSort, { static: false }) sort: MatSort;
@@ -30,9 +33,11 @@ export class MainComponent implements OnInit, AfterViewInit {
     constructor(private queue: QueueService,
         private hospitalservice: HospitalService,
         public _matDialog: MatDialog) {
-        queue.mainpatientsqueue.subscribe(value => {
-            this.patientsdatasource.data = Array.from(value.values()) || [];
-        });
+        queue.mainpatientsqueue
+            .pipe(takeUntil(this.comopnentDestroyed))
+            .subscribe(value => {
+                this.patientsdatasource.data = Array.from(value.values()) || [];
+            });
         hospitalservice.hospitaladmins.subscribe(admins => {
             this.hospitaladmins = admins;
         });
@@ -40,6 +45,10 @@ export class MainComponent implements OnInit, AfterViewInit {
 
     ngOnInit(): void {
     }
+    ngOnDestroy(): void {
+        this.comopnentDestroyed.next(true);
+    }
+
 
     ngAfterViewInit(): void {
         this.patientsdatasource.sort = this.sort;

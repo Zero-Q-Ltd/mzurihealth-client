@@ -221,11 +221,17 @@ export class QueueService {
             /**
              * make sure they're still in that admin's queue
              */
-            if (visit.checkin.status === CheckinStatus['being attended']) {
+            if (visit.checkin.status === CheckinStatus['being attended'] || visit.checkin.status === CheckinStatus.waiting) {
                 mypatientsmap.set(visit.patientId.toHexString(), { visitData: visit, patientdata: previousData.patientdata });
 
             } else {
                 mypatientsmap.delete(visit.patientId.toHexString());
+                /**
+                 * also remove from the current patient in case they were being attended
+                 */
+                if (this.currentpatient.value.visitdata._id.toHexString() === visit._id.toHexString()) {
+                    this.currentpatient.next(null);
+                }
             }
         }
         /**
@@ -282,7 +288,7 @@ export class QueueService {
              */
             .pipe(take(1))
             .subscribe(result => {
-                console.log('patientfile and patients found');
+                console.log('queued patients data fetched');
                 const patientmap: Map<string, MergedPatientQueueModel> = new Map();
                 const mypatientsmap: Map<string, MergedPatientQueueModel> = new Map();
 
@@ -298,14 +304,6 @@ export class QueueService {
 
                     if (this.checkAdmin(visit.checkin.admin)) {
                         mypatientsmap.set(visit.patientId.toHexString(), { visitData: visit, patientdata: matchingPatient });
-                        /**
-                           * There's only one source of truth for the queue data
-                           * It is obvious that when the current patient changes there must be a refetch of the currentpatient info
-                           * for the rest of the objects
-                           * make sure that this only happens when the patientID changes
-                           * It is safe to make the rest of the objects null since this is the first point of interaction
-                           * This MUST work hand in hand with the variable that checks whether fetchingCurrentpatientdata is complete
-                           */
                         if (visit.checkin.status === CheckinStatus['being attended']) {
                             console.log('Current Patient Found');
                             this.fetchingCurrentpatientdata.next(true);
@@ -332,7 +330,6 @@ export class QueueService {
      * Fetches the current patient 
      */
     fetchCurrentPatientHsistory(patientId: BSON.ObjectID) {
-        console.log('Fetching Current Patient History');
         this.visitService.fetchvisithistory(patientId, 10).then(hist => {
             console.log('Current Patient history fetched');
             this.currentpatientHistory.next(hist);

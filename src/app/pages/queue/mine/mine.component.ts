@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, OnDestroy } from '@angular/core';
 import { MatDialog, MatDialogRef, MatTableDataSource } from '@angular/material';
 import { fuseAnimations } from '../../../../@fuse/animations';
 import { QueueService } from '../../services/queue.service';
@@ -9,6 +9,8 @@ import { HospitalAdmin } from '../../../models/user/HospitalAdmin';
 import { FuseConfirmDialogComponent } from '../../../../@fuse/components/confirm-dialog/confirm-dialog.component';
 import { InvoiceComponent } from '../../patients/invoice/invoice.component';
 import { VisitService } from 'app/pages/services/visit.service';
+import { ReplaySubject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
     selector: 'queue-mine',
@@ -17,20 +19,23 @@ import { VisitService } from 'app/pages/services/visit.service';
     encapsulation: ViewEncapsulation.None,
     animations: fuseAnimations
 })
-export class MineComponent implements OnInit {
+export class MineComponent implements OnInit, OnDestroy {
     patientsdatasource = new MatTableDataSource<MergedPatientQueueModel>();
     patientsheaders = ['FileNo', 'Name', 'Age', 'Phone', 'Last Visit', 'Status', 'Action'];
     dialogRef: MatDialogRef<any>;
     confirmDialogRef: MatDialogRef<FuseConfirmDialogComponent>;
+    comopnentDestroyed: ReplaySubject<boolean> = new ReplaySubject<boolean>();
 
     constructor(private queue: QueueService,
         private visit: VisitService,
         public _matDialog: MatDialog) {
-        queue.mypatientqueue.subscribe(value => {
-            this.patientsdatasource.data = (Array.from(value.values()) || []).sort((a, b) => {
-                return a.visitData.metadata.edited.date.getMilliseconds() - b.visitData.metadata.edited.date.getMilliseconds();
+        queue.mypatientqueue
+            .pipe(takeUntil(this.comopnentDestroyed))
+            .subscribe(value => {
+                this.patientsdatasource.data = (Array.from(value.values()) || []).sort((a, b) => {
+                    return a.visitData.metadata.edited.date.getMilliseconds() - b.visitData.metadata.edited.date.getMilliseconds();
+                });
             });
-        });
     }
 
     ngOnInit(): void {
@@ -38,6 +43,9 @@ export class MineComponent implements OnInit {
 
     getAge(birtday: Date): number {
         return moment().diff(birtday, 'years');
+    }
+    ngOnDestroy(): void {
+        this.comopnentDestroyed.next(true);
     }
 
 

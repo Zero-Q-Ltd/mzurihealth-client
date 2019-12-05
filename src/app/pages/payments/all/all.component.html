@@ -121,9 +121,9 @@
                     </mat-cell>
                 </ng-container>
 
-                <mat-header-row *matHeaderRowDef="patientsheaders; sticky:true"></mat-header-row>
+                <mat-header-row *matHeaderRowDef="patientheaders; sticky:true"></mat-header-row>
 
-                <mat-row (click)="viewinvoice(patient)" *matRowDef="let patient; columns: patientsheaders;"
+                <mat-row (click)="viewinvoice(patient)" *matRowDef="let patient; columns: patientheaders;"
                     class="product" matRipple>
                 </mat-row>
 

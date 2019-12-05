@@ -13,6 +13,7 @@ import { emptyadmin, HospitalAdmin } from 'app/models/user/HospitalAdmin';
 import { AdminService } from 'app/pages/services/admin.service';
 import { HospitalService } from 'app/pages/services/hospital.service';
 import { Router } from '@angular/router';
+import { StitchService } from 'app/pages/services/stitch/stitch.service';
 
 @Component({
     selector: 'toolbar',
@@ -52,6 +53,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
         private _fuseSidebarService: FuseSidebarService,
         private _translateService: TranslateService,
         private adminservice: AdminService,
+        private stitch: StitchService,
         private hospitalservice: HospitalService,
         private router: Router,
     ) {
@@ -161,7 +163,16 @@ export class ToolbarComponent implements OnInit, OnDestroy {
     toggleSidebarOpen(key): void {
         this._fuseSidebarService.getSidebar(key).toggleOpen();
     }
-
+    logout(): void {
+        console.log('Logging out');
+        this.stitch.logout()
+            .then(() => {
+                return this.router.navigate['/authentication/login'];
+            })
+            .catch(e => {
+                console.error('error logging out, please try again ');
+            });
+    }
     /**
      * Search
      *

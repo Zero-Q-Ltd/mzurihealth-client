@@ -22,7 +22,7 @@ import { InvoiceComponent } from '../invoice/invoice.component';
 export class AllComponent implements OnInit {
     viewcriteria: 'day' | 'week' | 'month' | 'year' = 'week';
     patientshistorydatasource = new MatTableDataSource<MergedPatientQueueModel>();
-    patientsheaders = ['FileNo', 'Photo', 'name', 'ID', 'Phone', 'Date', 'Procedures', 'Amount'];
+    patientheaders = ['FileNo', 'Photo', 'name', 'ID', 'Phone', 'Date', 'Procedures', 'Amount'];
     activehospital: Hospital = Object.assign({}, emptyhospital);
     hospitaladmins: Array<HospitalAdmin> = [];
     userdata: HospitalAdmin;

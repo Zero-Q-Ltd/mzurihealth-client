@@ -1,11 +1,7 @@
 <mat-dialog-content>
     <!--Payment Procedures Section-->
-    <mat-table #table
-               [@animateStagger]="{value:'50'}"
-               [dataSource]="proceduresdatasouce"
-               class="patients-table mat-elevation-z1"
-               fusePerfectScrollbar
-               matSort>
+    <mat-table #table [@animateStagger]="{value:'50'}" [dataSource]="proceduresdatasouce"
+        class="patients-table mat-elevation-z1" fusePerfectScrollbar matSort>
 
         <!-- fileNo Column -->
         <ng-container matColumnDef="name">
@@ -54,24 +50,18 @@
 
         <mat-header-row *matHeaderRowDef="procedureheaders; sticky:true"></mat-header-row>
 
-        <mat-row (click)="selectprocedure(procedure)"
-                 *matRowDef="let procedure; columns: procedureheaders;"
-                 [@animate]="{value:'*',params:{y:'100%'}}"
-                 class="product"
-                 matRipple>
+        <mat-row (click)="selectprocedure(procedure)" *matRowDef="let procedure; columns: procedureheaders;"
+            [@animate]="{value:'*',params:{y:'100%'}}" class="product" matRipple>
         </mat-row>
 
     </mat-table>
 
-    <mat-paginator #paginator
-                   [length]="proceduresdatasouce.data.length"
-                   [pageIndex]="0"
-                   [pageSizeOptions]="[5, 10, 25, 100]"
-                   [pageSize]="10">
+    <mat-paginator #paginator [length]="proceduresdatasouce.data.length" [pageIndex]="0"
+        [pageSizeOptions]="[5, 10, 25, 100]" [pageSize]="10">
     </mat-paginator>
     <!--End of Payment Procedures Section-->
     <!--Payment Channels Div Starts Here-->
-    <!-- <div *ngIf="patientdata.queuedata.payment.splitPayment">
+    <!-- <div *ngIf="patientdata.visitData.payment.splitPayment">
         <div *ngIf="clickedprocedure.customProcedureId">
             <table class="simple">
                 <thead>
@@ -99,7 +89,7 @@
             <h1>Select procedure to customize</h1>
         </div>
     </div>
-    <div *ngIf="!patientdata.queuedata.payment.splitPayment">
+    <div *ngIf="!patientdata.visitData.payment.splitPayment">
         <table class="simple invoice-table">
             <thead>
             <tr>
@@ -113,16 +103,16 @@
                 <td>
                     <div class="title">
                         <mat-checkbox (change)="setchannel(channel)"
-                                      [checked]="multipayment? false : patientdata.queuedata.payment?.singlePayment?.channelId === channel.id"
+                                      [checked]="multipayment? false : patientdata.visitData.payment?.singlePayment?.channelId === channel.id"
                                       [disabled]="channel.name === 'insurance' && patientdata.patientdata.insurance.length<1">
                             {{channel.name}}
                         </mat-checkbox>
                     </div>
                 </td>
                 <td>
-                    {{patientdata.queuedata.payment.total}}
+                    {{patientdata.visitData.payment.total}}
                 </td>
-                <td *ngIf="channel.name === 'insurance' &&  patientdata.queuedata.payment?.singlePayment?.channelId === channel.id">
+                <td *ngIf="channel.name === 'insurance' &&  patientdata.visitData.payment?.singlePayment?.channelId === channel.id">
                     <div *ngFor="let insurance of patientdata.patientdata.insurance">
                         <mat-checkbox (change)="selectinsurance(insurance)"
                                       [checked]="selectedinsurance === insurance"> {{insurancename(insurance.id)}}
@@ -130,7 +120,7 @@
                     </div>
                 </td>
 
-                <td *ngIf="channel.name!== 'insurance'  &&  patientdata.queuedata.payment?.singlePayment?.channelId === channel.id">
+                <td *ngIf="channel.name!== 'insurance'  &&  patientdata.visitData.payment?.singlePayment?.channelId === channel.id">
                     <div *ngFor="let method of getcativechannelmethods(channel.id)">
                         <mat-form-field appearance="outline" class="pr-4 " fxFlex="100">
                             <mat-label>Method</mat-label>
@@ -149,7 +139,7 @@
 
                         <mat-form-field appearance="outline" class="pr-4 " fxFlex="100">
                             <mat-label>Transaction Code</mat-label>
-                            <input [(ngModel)]="patientdata.queuedata.payment.singlePayment.transactionId"
+                            <input [(ngModel)]="patientdata.visitData.payment.singlePayment.transactionId"
                                    [disabled]="!channel.transactionDetailCollection" matInput
                                    required>
                             <mat-icon class="secondary-text" matSuffix>beenhere</mat-icon>
@@ -165,16 +155,16 @@
 
     <br>
     <div>
-        <!-- <mat-slide-toggle (toggleChange)="togglechange()" [(ngModel)]="patientdata.queuedata.payment.splitPayment"
+        <!-- <mat-slide-toggle (toggleChange)="togglechange()" [(ngModel)]="patientdata.visitData.payment.splitPayment"
                           class="p-24"
                           labelPosition="before" mattooltip="Coming soon...">Split Payment Per procedure
         </mat-slide-toggle> -->
         <mat-slide-toggle (toggleChange)="togglemultipayment()" [(ngModel)]="multipayment" labelPosition="before"
-                          mattooltip="Coming soon...">
+            mattooltip="Coming soon...">
             Multiple Payments
         </mat-slide-toggle>
         <button (click)="printprescription()" [disabled]="disableprecriptionbutton" class="m-12" color="accent"
-                mat-raised-button>
+            mat-raised-button>
             Print Prescription
             <i class="material-icons">print</i>
         </button>

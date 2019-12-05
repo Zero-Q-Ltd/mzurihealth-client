@@ -9,14 +9,13 @@ import { Visit, NewVisit } from '../../models/visit/Visit';
 import { CurrentPatient, MergedPatientQueueModel } from '../../models/visit/MergedPatientQueueModel';
 import * as moment from 'moment';
 import { StitchService } from './stitch/stitch.service';
-import { distinctUntilChanged, distinctUntilKeyChanged } from 'rxjs/operators';
+import { distinctUntilChanged, distinctUntilKeyChanged, skipWhile, take } from 'rxjs/operators';
 import { RemoteInsertOneResult, Stream } from 'mongodb-stitch-browser-sdk';
 import { HospFile } from 'app/models/hospital/HospFile';
-import { emptyqueue, Queue, QueueRef } from 'app/models/hospital/Queue';
 import * as equal from 'deep-equal';
 import { Meta } from 'app/models/universal';
 import * as BSON from 'bson';
-import { ChangeEvent } from 'mongodb-stitch-core-services-mongodb-remote';
+import { ChangeEvent, OperationType } from 'mongodb-stitch-core-services-mongodb-remote';
 import { VisitService } from './visit.service';
 import { MedicalInfo } from 'app/models/patient/MedicalInfo';
 import { MedicalinfoService } from './medicalinfo.service';
@@ -26,7 +25,6 @@ import { MedicalinfoService } from './medicalinfo.service';
 })
 export class QueueService {
     activehospitalid: BSON.ObjectId;
-    queue: BehaviorSubject<Queue> = new BehaviorSubject(emptyqueue);
     /**
      * by using a map instead of a normal array we solve the n+1 problem that we would have
      * otherwise encountered when sifting through the data, as there is a lot of fitering to do
@@ -65,21 +63,12 @@ export class QueueService {
          * Only re-subscribe to hospital queue when the hospital id changes
          * Maybe the admin has been moved to another hospital
          */
-        this.hospitalservice.activehospital.pipe(distinctUntilChanged((prev, curr) => equal(prev._id, curr._id))).subscribe(hospital => {
-            if (hospital._id) {
+        this.hospitalservice.activehospital.pipe(
+            skipWhile(t => !t._id),
+            distinctUntilChanged((prev, curr) => equal(prev._id, curr._id))).subscribe(hospital => {
                 this.activehospitalid = hospital._id;
-                this.getqueue();
-                this.queue.subscribe(qu3 => {
-                    this.fetchingpatientdata.next(true);
-                    if (this.internalSubscriptions.get('queuesub')) {
-                        this.internalSubscriptions.get('queuesub').unsubscribe();
-                    }
-                    const queuesub = this.fetchQueuedPatients();
-                    this.internalSubscriptions.set('queuesub', queuesub);
-                });
-
-            }
-        });
+                this.fetchQueuedPatients();
+            });
 
         /**
          * Only filter if the admin id has changed, ignore every other admin change
@@ -118,7 +107,7 @@ export class QueueService {
         // const batch = this.db.firestore.batch();
         visit.checkin = {
             status: 2,
-            admin: this.adminid
+            admin: this.adminid.toHexString()
         };
         return true;
         // batch.update(this.db.firestore.collection('hospitalvisits').doc(visit.id), visit);
@@ -126,152 +115,224 @@ export class QueueService {
     }
 
 
-    /**
-     * This simply creates  subscription to the hospital queue, from which secondary subscriptions to
-     * patient data and queue info can be made
-     */
-    getqueue(): void {
-        if (this.dbSubscriptions.get('queuewatcher')) {
-            this.dbSubscriptions.get('queuewatcher').close();
+    fetchQueuedPatients() {
+
+        if (this.dbSubscriptions.get('patientVisits')) {
+            this.dbSubscriptions.get('patientVisits').close();
         }
-        this.stitch.db.collection<Queue>('queues')
-            .findOne({ hospitalId: this.activehospitalid })
-            .then(async q => {
-                /**
-                 * Create  new queue object in case it doesnt exist for that hospital
-                 */
-                if (!q) {
-                    this.createq().then(() => {
-                        this.getqueue();
-                    });
-                } else {
-                    this.queue.next(q);
-                    this.dbSubscriptions.set('queuewatcher', await this.stitch.db.collection<Queue>('queues')
-                        .watch([q._id]));
-                    this.dbSubscriptions.get('queuewatcher').onNext(k => {
-                        /**
-                         * keep a local copy of the queue
-                         */
-                        this.queue.next(k.fullDocument);
-                    });
+        this.stitch.db.collection<Visit>('visits')
+            .find({
+                'checkin.status': {
+                    $lte: 3
                 }
+            })
+            .toArray()
+            .then(async activeVisits => {
+                // console.log(activeVisits);
+                this.combinePatientData(activeVisits);
+
+                const visits = await this.stitch.db.collection<Visit>('visits')
+                    .watch();
+                visits.onNext(q => {
+                    console.log(q);
+
+                    switch (q.operationType) {
+                        case OperationType.Delete: {
+                            /**
+                             * remove the deleted item from the array by filtering and only returning true if the id matches
+                             */
+                            activeVisits.filter(t => {
+                                return !equal(t._id, q.id);
+                            });
+                            this.combinePatientData(activeVisits);
+
+                            break;
+                        }
+
+                        case OperationType.Insert: {
+                            /**
+                             * Add the visit to the array
+                             */
+                            activeVisits.push(q.fullDocument);
+                            this.combinePatientData(activeVisits);
+                            break;
+                        }
+
+                        case OperationType.Replace: {
+                            /**
+                             * Check if the patient has left the queue
+                             */
+                            if (q.fullDocument.checkin.status === 4) {
+                                /**
+                                * remove the exited item from the array by filtering and only returning true if the id matches
+                                */
+                                activeVisits.filter(t => {
+                                    return !equal(t._id, q.id);
+                                });
+                                this.combinePatientData(activeVisits);
+                            } else {
+                                /**
+                                 * update the changed item, dont trigger a database query
+                                 */
+
+                                this.updatePatientVisits(q.fullDocument);
+                            }
+                            break;
+                        }
+
+                        case OperationType.Update: {
+                            /**
+                            * Check if the patient has left the queue
+                            */
+                            if (q.fullDocument.checkin.status === 4) {
+                                /**
+                                * remove the exited item from the array by filtering and only returning true if the id matches
+                                */
+                                activeVisits.filter(t => {
+                                    return !equal(t._id, q.id);
+                                });
+                                this.combinePatientData(activeVisits);
+                            } else {
+                                /**
+                                 * update the changed item, dont trigger a database query
+                                 */
+
+                                this.updatePatientVisits(q.fullDocument);
+                            }
+                            break;
+                        }
+
+                        default: {
+                            console.error('An unknown db operatoin occured');
+                            break;
+                        }
+                    }
+
+                    console.log(q.operationType); { }
+                    console.log(q.fullDocument);
+                });
             });
     }
-    /**
-     * Fetch the patient data
-     * Magic code
-     * Using the fetched queue data, fetch patientdata associated with it
-     * Every change in the queue data triggers a new database query..... Maybe this can be optimized???
-     * ---------------------@Todo Suggestion maybe just query the changed queue element id's, maybe use a temporary 
-     * this can be achieved by comparing the array lenths first to determine the added/removed id, or compare the arrays to get
-     * the mutated array pos and fetch just that
-     * Then update the whole variable
-     */
 
-    fetchQueuedPatients(): Subscription {
+    /**
+     * This only updates the status of the patient queue
+     */
+    updatePatientVisits(visit: Visit): void {
+        const patientmap: Map<string, MergedPatientQueueModel> = this.mainpatientsqueue.value;
+        const mypatientsmap: Map<string, MergedPatientQueueModel> = this.mypatientqueue.value;
+
+        const previousData = patientmap.get(visit._id.toHexString());
+        const previousDataQueue = mypatientsmap.get(visit._id.toHexString());
 
         /**
-         * make every entry of the elements in the array create an independent Observable
-         * Then, by using combinelatest, a value will only be emmitted when every Observable emits a value
-         * There afterwards, whenever any of the observables changes, a new set of values is emitted
-         * Although this is not the functionlity we are after... maybe this can be improved???
-         * I don't see any side effects at this time anyway
+         * replace the visit data into the array
          */
-        return combineLatest(...this.queue.value.queue.map(qq => {
-            const patientfile = this.stitch.db.collection<HospFile>('patientfiles')
-                .findOne({
-                    _id: qq.fileId
-                });
-            const patient = this.stitch.db.collection<Patient>('patients')
-                .findOne({
-                    _id: qq.patientId
-                });
-            return combineLatest([patientfile, patient], (f: HospFile, p: Patient) => {
-                const data: MergedPatientQueueModel = {
-                    /**
-                     * Please note
-                     * The three dots below might cause you sleepless nights
-                     * Be veeeery careful when refactoring any of this code
-                     */
-                    patientdata: Object.assign({}, { ...emptypatient }, p, { fileInfo: f }),
-                    queuedata: qq
-                };
-                return data;
-            });
-        })).subscribe((que: Array<MergedPatientQueueModel>) => {
-            const patientmap: Map<string, MergedPatientQueueModel> = new Map();
-            const mypatientsmap: Map<string, MergedPatientQueueModel> = new Map();
+        patientmap.set(visit._id.toHexString(), { visitData: visit, patientdata: previousData.patientdata });
+        /**
+         * replace the patientdata if they're in the current admin queue
+         */
+        if (previousDataQueue) {
             /**
-             * Use this opportunity to filter patients in the queue that belong to this admin
+             * make sure they're still in that admin's queue
              */
-            que.map(async q => {
-                patientmap.set(q.patientdata._id, q);
-                const equality = equal(q.queuedata.checkin.admin, this.adminid);
+            if (visit.checkin.status === 2) {
+                mypatientsmap.set(visit._id.toHexString(), { visitData: visit, patientdata: previousData.patientdata });
 
-                if (equality) {
-                    mypatientsmap.set(q.patientdata._id, q);
-                    /**
-                       * There's only one source of truth for the queue data
-                       * It is obvious that when the current patient changes there must be a refetch of the currentpatient info
-                       * for the rest of the objects
-                       * make sure that this only happens when the patientID changes
-                       * It is safe to make the rest of the objects null since this is the first point of interaction
-                       * This MUST work hand in hand with the variable that checks whether fetchingCurrentpatientdata is complete
-                       */
-                    if (q.queuedata.checkin.status === 2) {
-                        console.log('Current Patient Found');
-                        this.fetchingCurrentpatientdata.next(true);
-                        this.currentpatient.next({
-                            medicalInfo: null,
-                            patientdata: null,
-                            queuedata: q.queuedata,
-                            visitdata: null
-                        });
-                        this.fetchCurrentpatient();
-                        this.fetchCurrentPatientHsistory();
-                    } else {
-                        /**
-                         * possibly remove the patient from current patient in case they left that stage from this Doc
-                         *  
-                         */
-                    }
-                }
-
-            });
-            this.mainpatientsqueue.next(patientmap);
-            this.mypatientqueue.next(mypatientsmap);
-            this.fetchingpatientdata.next(false);
-        });
+            } else {
+                mypatientsmap.delete(visit._id.toHexString());
+            }
+        }
+        /**
+         * Add them to the queue in case they've just been added
+         */
+        else if (equal(visit.checkin.admin, this.adminid)) {
+            mypatientsmap.set(visit.patientId.toHexString(), { visitData: visit, patientdata: previousData.patientdata });
+        }
+        this.mainpatientsqueue.next(patientmap);
+        this.mypatientqueue.next(mypatientsmap);
     }
+
     /**
-     * Fetches the current Patient details
+     * This fetches the patient file and the patient data and merges.
+     * The merged data is then assigned to the respective queue
+     * It also triggers fetching of current patient if they are in the user queue
+     * @param visits the visits array
      */
-    async fetchCurrentpatient() {
-        console.log('Fetching Current Patient Data');
+    combinePatientData(visits: Visit[]): void {
 
-        combineLatest([
-            this.medInfoService.getLatest(this.currentpatient.value.queuedata.patientId),
-            this.visitService.getLatest(this.currentpatient.value.queuedata.visitId),
-            await this.patientservice.watchId(this.currentpatient.value.queuedata.patientId)])
-            .subscribe((data) => {
-                console.log('Current Patient data fetched');
-                // console.log(data);
-                this.fetchingCurrentpatientdata.next(false);
-                this.currentpatient.next({
-                    medicalInfo: data[0],
-                    patientdata: data[2],
-                    queuedata: this.currentpatient.value.queuedata,
-                    visitdata: data[1]
+        /**
+         * create a map of the patient ids to be used in file and patient query
+         */
+        const idMap = visits.map(r => r.patientId);
+        console.log(idMap);
+        const patientFileQuery = {
+            patientId: {
+                $in: idMap
+            }
+        };
+        const patientQuery = {
+            _id: {
+                $in: idMap
+            }
+        };
+
+        const f = this.stitch.db.collection<HospFile>('patientfiles').find(patientFileQuery).toArray();
+        const p = this.stitch.db.collection<Patient>('patients').find(patientQuery).toArray();
+        combineLatest([f, p])
+            /**
+             * Take only the first emission because all subsequent db changes will triegger an equivalent evaluation
+             */
+            .pipe(take(1))
+            .subscribe(result => {
+                console.log('patientfile and patients found');
+                const patientmap: Map<string, MergedPatientQueueModel> = new Map();
+                const mypatientsmap: Map<string, MergedPatientQueueModel> = new Map();
+
+                visits.map(visit => {
+                    /**
+                     * check if the visit is for the current admin
+                     */
+                    const equality = equal(visit.checkin.admin, this.adminid);
+                    const matchingPatient: Patient = result[1].filter(pp => equal(pp._id, visit.patientId))[0];
+                    matchingPatient.fileInfo = result[0].filter(ff => equal(ff.patientId, matchingPatient._id))[0];
+
+                    patientmap.set(visit.patientId.toHexString(), { visitData: visit, patientdata: matchingPatient });
+
+
+                    if (equality) {
+                        mypatientsmap.set(visit.patientId.toHexString(), { visitData: visit, patientdata: matchingPatient });
+                        /**
+                           * There's only one source of truth for the queue data
+                           * It is obvious that when the current patient changes there must be a refetch of the currentpatient info
+                           * for the rest of the objects
+                           * make sure that this only happens when the patientID changes
+                           * It is safe to make the rest of the objects null since this is the first point of interaction
+                           * This MUST work hand in hand with the variable that checks whether fetchingCurrentpatientdata is complete
+                           */
+                        if (visit.checkin.status === 2) {
+                            console.log('Current Patient Found');
+                            this.fetchingCurrentpatientdata.next(true);
+                            this.currentpatient.next({
+                                medicalInfo: null,
+                                patientdata: null,
+                                visitdata: null
+                            });
+                            this.fetchCurrentPatientHsistory();
+                        }
+                    }
                 });
+                this.mainpatientsqueue.next(patientmap);
+                this.mypatientqueue.next(mypatientsmap);
+                this.fetchingpatientdata.next(false);
             });
-
     }
+
     /**
      * Fetches the current patient 
      */
     fetchCurrentPatientHsistory() {
         console.log('Fetching Current Patient History');
-        this.visitService.fetchvisithistory(this.currentpatient.value.queuedata.patientId, 10).then(hist => {
+        this.visitService.fetchvisithistory(this.currentpatient.value.visitdata.patientId, 10).then(hist => {
             console.log('Current Patient history fetched');
             this.currentpatientHistory.next(hist);
         });
@@ -332,41 +393,7 @@ export class QueueService {
         /**
          * update the hospital queue
          */
-        /**
-         * Because of type safety, update the current queue then push it to db
-         */
-        const tempqueue: Queue = this.queue.value;
-        tempqueue.queue.push({
-            checkin: {
-                admin: this.adminservice.userdata._id,
-                status: 0,
-            },
-            fileId: patient.fileInfo._id,
-            patientId: patient._id,
-            visitId: visitId,
-            metadata: {
-                created: meta,
-                edited: meta
-            }
-        });
-        const k = this.updateQueue(tempqueue);
-        return Promise.all([i, j, k]);
-    }
-
-    updateQueue(queue: Queue): Promise<any> {
-        return this.stitch.db.collection('queues')
-            .updateOne({ _id: this.queue.value._id }, queue);
-    }
-
-    /**
-     * Inserts an empty queue to the database
-     */
-    private createq(): Promise<RemoteInsertOneResult> {
-        return this.stitch.db.collection<Queue>('queues')
-            /**
-             * make sure to assign the correct hospitalID
-             */
-            .insertOne(Object.assign({}, { ...emptyqueue }, { hospitalId: this.activehospitalid }));
+        return Promise.all([i, j]);
     }
 
 } 

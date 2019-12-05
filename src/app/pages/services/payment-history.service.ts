@@ -49,7 +49,7 @@ export class PaymentHistoryService {
         //                     .get();
         //                 const file: HospFile = Object.assign({...emptyfile}, filedata.data(), {id: filedata.id});
         //                 patient.fileInfo = file;
-        //                 return {queuedata: visit, patientdata: patient};
+        //                 return {visitData: visit, patientdata: patient};
         //             });
         //
         //         })).then(res => {

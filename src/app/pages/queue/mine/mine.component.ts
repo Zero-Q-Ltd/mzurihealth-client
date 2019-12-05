@@ -26,7 +26,7 @@ export class MineComponent implements OnInit {
         public _matDialog: MatDialog) {
         queue.mypatientqueue.subscribe(value => {
             this.patientsdatasource.data = (Array.from(value.values()) || []).sort((a, b) => {
-                return a.queuedata.metadata.edited.date.getMilliseconds() - b.queuedata.metadata.edited.date.getMilliseconds();
+                return a.visitData.metadata.edited.date.getMilliseconds() - b.visitData.metadata.edited.date.getMilliseconds();
             });
         });
     }
@@ -41,7 +41,7 @@ export class MineComponent implements OnInit {
 
     acceptpatient(data: MergedPatientQueueModel): void {
         event.stopPropagation();
-        // this.queue.acceptpatient(data.queuedata);
+        // this.queue.acceptpatient(data.visitData);
 
         // this.confirmDialogRef = this._matDialog.open(FuseConfirmDialogComponent, {
         //     disableClose: false
@@ -49,7 +49,7 @@ export class MineComponent implements OnInit {
         // this.confirmDialogRef.componentInstance.confirmMessage = 'Accept?';
         // this.confirmDialogRef.afterClosed().subscribe(result => {
         //     if (result) {
-        //         this.queue.acceptpatient(data.queuedata);
+        //         this.queue.acceptpatient(data.visitData);
         //     }
         // });
     }
@@ -81,7 +81,7 @@ export class MineComponent implements OnInit {
                 this.dialogRef.afterClosed().subscribe((res: HospitalAdmin) => {
                     console.log(res);
                     if (res) {
-                        // this.queue.assignadmin(data.queuedata, res._id);
+                        // this.queue.assignadmin(data.visitData, res._id);
                     }
                 });
             }

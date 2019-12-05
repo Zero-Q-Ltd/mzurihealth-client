@@ -15,7 +15,7 @@ import { ProceduresService } from '../../services/procedures.service';
 import { NotificationService } from '../../../shared/services/notifications.service';
 import { FuseConfirmDialogComponent } from '../../../../@fuse/components/confirm-dialog/confirm-dialog.component';
 import { PrescriptionComponent } from '../prescription/prescription.component';
-import { BSON } from 'mongodb-stitch-core-sdk';
+import * as BSON from 'bson';
 
 @Component({
     selector: 'app-invoice-payment',

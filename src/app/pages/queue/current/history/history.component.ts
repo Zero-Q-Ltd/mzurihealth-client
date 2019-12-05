@@ -6,7 +6,7 @@ import { HospitalService } from '../../../services/hospital.service';
 import { Patient } from 'app/models/patient/Patient';
 import { QueueService } from 'app/pages/services/queue.service';
 import { Procedureperformed } from 'app/models/procedure/Procedureperformed';
-import { BSON } from 'mongodb-stitch-core-sdk';
+import * as BSON from 'bson';
 
 @Component({
     selector: 'patient-history',

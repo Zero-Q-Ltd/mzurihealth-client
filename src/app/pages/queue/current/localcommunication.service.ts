@@ -4,7 +4,7 @@ import { MedicalinfoService } from 'app/pages/services/medicalinfo.service';
 import { Condition } from 'app/models/procedure/MedicalConditions.model';
 import { Vitals, MedicalInfo } from 'app/models/patient/MedicalInfo';
 import { Allegy } from 'app/models/procedure/Allergy.model';
-import { BSON } from 'mongodb-stitch-core-sdk';
+import * as BSON from 'bson';
 import * as moment from 'moment';
 import { Meta } from 'app/models/universal';
 import { AdminService } from 'app/pages/services/admin.service';

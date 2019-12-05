@@ -5,14 +5,13 @@ import { AdminService } from './admin.service';
 import { BehaviorSubject, combineLatest, Observable, Subscription, of, Subject, } from 'rxjs';
 import { HospitalAdmin } from '../../models/user/HospitalAdmin';
 import { PatientService } from './patient.service';
-import { Visit, NewVisit } from '../../models/visit/Visit';
+import { Visit, NewVisit, CheckinStatus } from '../../models/visit/Visit';
 import { CurrentPatient, MergedPatientQueueModel } from '../../models/visit/MergedPatientQueueModel';
 import * as moment from 'moment';
 import { StitchService } from './stitch/stitch.service';
 import { distinctUntilChanged, distinctUntilKeyChanged, skipWhile, take } from 'rxjs/operators';
 import { RemoteInsertOneResult, Stream } from 'mongodb-stitch-browser-sdk';
 import { HospFile } from 'app/models/hospital/HospFile';
-import * as equal from 'deep-equal';
 import { Meta } from 'app/models/universal';
 import * as BSON from 'bson';
 import { ChangeEvent, OperationType } from 'mongodb-stitch-core-services-mongodb-remote';
@@ -65,7 +64,7 @@ export class QueueService {
          */
         this.hospitalservice.activehospital.pipe(
             skipWhile(t => !t._id),
-            distinctUntilChanged((prev, curr) => equal(prev._id, curr._id))).subscribe(hospital => {
+            distinctUntilChanged((prev, curr) => prev._id.toHexString() === curr._id.toHexString())).subscribe(hospital => {
                 this.activehospitalid = hospital._id;
                 this.fetchQueuedPatients();
             });
@@ -73,11 +72,13 @@ export class QueueService {
         /**
          * Only filter if the admin id has changed, ignore every other admin change
          */
-        adminservice.observableuserdata.pipe(distinctUntilChanged((prev, curr) => equal(prev._id, curr._id))).subscribe((admin: HospitalAdmin) => {
-            if (admin._id) {
-                this.adminid = admin._id;
-            }
-        });
+        adminservice.observableuserdata
+            .pipe(distinctUntilChanged((prev, curr) => prev._id.toHexString() === curr._id.toHexString()))
+            .subscribe((admin: HospitalAdmin) => {
+                if (admin._id) {
+                    this.adminid = admin._id;
+                }
+            });
 
     }
 
@@ -87,7 +88,7 @@ export class QueueService {
      * @param visit
      * @param adminid
      */
-    assignadmin(visit: Visit, adminid: string) {
+    assignadmin(visit: Visit, adminid: BSON.ObjectID) {
         visit.checkin = {
             status: 1,
             admin: adminid
@@ -107,7 +108,7 @@ export class QueueService {
         // const batch = this.db.firestore.batch();
         visit.checkin = {
             status: 2,
-            admin: this.adminid.toHexString()
+            admin: this.adminid
         };
         return true;
         // batch.update(this.db.firestore.collection('hospitalvisits').doc(visit.id), visit);
@@ -123,7 +124,7 @@ export class QueueService {
         this.stitch.db.collection<Visit>('visits')
             .find({
                 'checkin.status': {
-                    $lte: 3
+                    $lte: CheckinStatus['waiting for payment']
                 }
             })
             .toArray()
@@ -142,7 +143,7 @@ export class QueueService {
                              * remove the deleted item from the array by filtering and only returning true if the id matches
                              */
                             activeVisits.filter(t => {
-                                return !equal(t._id, q.id);
+                                return t._id.toHexString() !== q.fullDocument._id.toHexString();
                             });
                             this.combinePatientData(activeVisits);
 
@@ -167,7 +168,7 @@ export class QueueService {
                                 * remove the exited item from the array by filtering and only returning true if the id matches
                                 */
                                 activeVisits.filter(t => {
-                                    return !equal(t._id, q.id);
+                                    return t._id.toHexString() !== q.fullDocument._id.toHexString();
                                 });
                                 this.combinePatientData(activeVisits);
                             } else {
@@ -189,7 +190,7 @@ export class QueueService {
                                 * remove the exited item from the array by filtering and only returning true if the id matches
                                 */
                                 activeVisits.filter(t => {
-                                    return !equal(t._id, q.id);
+                                    return t._id.toHexString() !== q.fullDocument._id.toHexString();
                                 });
                                 this.combinePatientData(activeVisits);
                             } else {
@@ -221,13 +222,13 @@ export class QueueService {
         const patientmap: Map<string, MergedPatientQueueModel> = this.mainpatientsqueue.value;
         const mypatientsmap: Map<string, MergedPatientQueueModel> = this.mypatientqueue.value;
 
-        const previousData = patientmap.get(visit._id.toHexString());
-        const previousDataQueue = mypatientsmap.get(visit._id.toHexString());
+        const previousData = patientmap.get(visit.patientId.toHexString());
+        const previousDataQueue = mypatientsmap.get(visit.patientId.toHexString());
 
         /**
          * replace the visit data into the array
          */
-        patientmap.set(visit._id.toHexString(), { visitData: visit, patientdata: previousData.patientdata });
+        patientmap.set(visit.patientId.toHexString(), { visitData: visit, patientdata: previousData.patientdata });
         /**
          * replace the patientdata if they're in the current admin queue
          */
@@ -236,20 +237,33 @@ export class QueueService {
              * make sure they're still in that admin's queue
              */
             if (visit.checkin.status === 2) {
-                mypatientsmap.set(visit._id.toHexString(), { visitData: visit, patientdata: previousData.patientdata });
+                mypatientsmap.set(visit.patientId.toHexString(), { visitData: visit, patientdata: previousData.patientdata });
 
             } else {
-                mypatientsmap.delete(visit._id.toHexString());
+                mypatientsmap.delete(visit.patientId.toHexString());
             }
         }
         /**
          * Add them to the queue in case they've just been added
          */
-        else if (equal(visit.checkin.admin, this.adminid)) {
-            mypatientsmap.set(visit.patientId.toHexString(), { visitData: visit, patientdata: previousData.patientdata });
+        else if (this.checkAdmin(visit.checkin.admin)) {
+            mypatientsmap.set(visit.patientId.toHexString(),
+                { visitData: visit, patientdata: previousData.patientdata });
         }
         this.mainpatientsqueue.next(patientmap);
         this.mypatientqueue.next(mypatientsmap);
+    }
+
+    /**
+     * checks whether a checkin is assigned to the current admin
+     */
+    checkAdmin(checkinAdmin: BSON.ObjectID | null | undefined): boolean {
+        if (!checkinAdmin) {
+            return false;
+        }
+        else {
+            return checkinAdmin.toHexString() === this.adminid.toHexString();
+        }
     }
 
     /**
@@ -292,9 +306,10 @@ export class QueueService {
                     /**
                      * check if the visit is for the current admin
                      */
-                    const equality = equal(visit.checkin.admin, this.adminid);
-                    const matchingPatient: Patient = result[1].filter(pp => equal(pp._id, visit.patientId))[0];
-                    matchingPatient.fileInfo = result[0].filter(ff => equal(ff.patientId, matchingPatient._id))[0];
+                    console.log(visit._id.toHexString());
+                    const equality = this.checkAdmin(visit.checkin.admin);
+                    const matchingPatient: Patient = result[1].filter(pp => pp._id.toHexString() === visit.patientId.toHexString())[0];
+                    matchingPatient.fileInfo = result[0].filter(ff => ff.patientId.toHexString() === matchingPatient._id.toHexString())[0];
 
                     patientmap.set(visit.patientId.toHexString(), { visitData: visit, patientdata: matchingPatient });
 

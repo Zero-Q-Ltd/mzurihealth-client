@@ -46,7 +46,7 @@ export class AllergiesComponent implements OnInit {
   }
 
   appendnew(): void {
-    this.tempAllergies.push(this.addellergy('food', ''));
+    this.tempAllergies.push(this.addellergy(allergy.Food, ''));
   }
   /**
    * 

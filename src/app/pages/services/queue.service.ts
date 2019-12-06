@@ -64,7 +64,8 @@ export class QueueService {
          */
         this.hospitalservice.activehospital.pipe(
             skipWhile(t => !t._id),
-            distinctUntilChanged((prev, curr) => prev._id.toHexString() === curr._id.toHexString())).subscribe(hospital => {
+            distinctUntilChanged((prev, curr) => prev._id.toHexString() === curr._id.toHexString()))
+            .subscribe(hospital => {
                 this.activehospitalid = hospital._id;
                 this.fetchQueuedPatients();
             });
@@ -105,7 +106,7 @@ export class QueueService {
     }
 
 
-    fetchQueuedPatients() {
+    fetchQueuedPatients(): void {
 
         if (this.dbSubscriptions.get('patientVisits')) {
             this.dbSubscriptions.get('patientVisits').close();
@@ -334,7 +335,8 @@ export class QueueService {
     async fetchCurrentPatientData(visitdata: Visit, patient: Patient, updatePatientdata: boolean): Promise<CurrentPatient> {
         console.log('Current Patient Found');
         this.fetchingCurrentpatientdata.next(true);
-        this.fetchCurrentPatientHsistory(visitdata.patientId);
+
+        this.fetchCurrentPatientHsistory(visitdata.patientId, 10);
 
         return {
             /**
@@ -349,8 +351,8 @@ export class QueueService {
     /**
      * Fetches the current patient 
      */
-    fetchCurrentPatientHsistory(patientId: BSON.ObjectID) {
-        this.visitService.fetchvisithistory(patientId, 10).then(hist => {
+    fetchCurrentPatientHsistory(patientId: BSON.ObjectID, size: number): void {
+        this.visitService.fetchvisithistory(patientId, size).then(hist => {
             console.log('Current Patient history fetched');
             this.currentpatientHistory.next(hist);
         });

@@ -334,7 +334,7 @@ export class QueueService {
      */
     async fetchCurrentPatientData(visitdata: Visit, patient: Patient, updatePatientdata: boolean): Promise<CurrentPatient> {
         console.log('Current Patient Found');
-        this.fetchingCurrentpatientdata.next(true);
+        // this.fetchingCurrentpatientdata.next(true);
 
         this.fetchCurrentPatientHsistory(visitdata.patientId, 10);
 

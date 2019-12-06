@@ -10,7 +10,7 @@ import * as moment from 'moment';
 import { Meta } from 'app/models/universal';
 import { Prescription } from 'app/models/visit/Prescription';
 import { Stream } from 'mongodb-stitch-core-sdk';
-import { ChangeEvent, RemoteUpdateResult } from 'mongodb-stitch-core-services-mongodb-remote';
+import { ChangeEvent, RemoteUpdateResult, RemoteInsertOneResult } from 'mongodb-stitch-core-services-mongodb-remote';
 import { StitchService } from './stitch/stitch.service';
 import { Patient } from 'app/models/patient/Patient';
 import * as BSON from 'bson';
@@ -44,40 +44,47 @@ export class VisitService {
      * @param procedure
      * @param per
      */
-    addprocedure(visitid: string, procedure: MergedProcedureModel, per: Procedureperformed) {
-        per.name = procedure.rawProcedure.name;
-        per.category = procedure.rawProcedure.category;
+    // addprocedure(visitid: string, procedure: MergedProcedureModel, per: Procedureperformed) {
+    //     per.name = procedure.rawProcedure.name;
+    //     per.category = procedure.rawProcedure.category;
 
-        const meta: Meta = {
-            date: moment().toDate(),
-            adminId: this.adminservice.userdata._id,
-            hospitalId: this.hospitalService.activehospital.value._id
-        };
+    //     const meta: Meta = {
+    //         date: moment().toDate(),
+    //         adminId: this.adminservice.userdata._id,
+    //         hospitalId: this.hospitalService.activehospital.value._id
+    //     };
 
-        per.metadata = {
-            created: meta,
-            edited: meta,
-        };
-        per.adminid = this.adminservice.userdata._id;
-        per.payment = {
-            amount: 0,
-            hasInsurance: false,
-            methods: []
-        };
-        per.originalProcedureId = procedure.rawProcedure._id;
-        // per.customProcedureId = procedure.customProcedure._id;
-        // return this.db.collection('hospitalvisits').doc(visitid).update({
-        //     procedures: firestore.FieldValue.arrayUnion(per)
-        // });
-        return true as any;
+    //     per.metadata = {
+    //         created: meta,
+    //         edited: meta,
+    //     };
+    //     per.adminid = this.adminservice.userdata._id;
+    //     per.payment = {
+    //         amount: 0,
+    //         hasInsurance: false,
+    //         methods: []
+    //     };
+    //     per.originalProcedureId = procedure.rawProcedure._id;
+    //     // per.customProcedureId = procedure.customProcedure._id;
+    //     // return this.db.collection('hospitalvisits').doc(visitid).update({
+    //     //     procedures: firestore.FieldValue.arrayUnion(per)
+    //     // });
+    //     const query = {
+    //         _id: visitid
+    //     };
+    //     return this.stitch.db.collection('hospitalvisits')
+    //         .updateOne(query, {
+    //             $push: { procedures: procedures }
+    //         });
+    //     return true as any;
 
-    }
+    // }
     /**
      * Fetches the latest patient visit ONCE
      * NOT REALTIME
      * @param id 
      */
-    getLatest(id: BSON.ObjectId) {
+    getLatest(id: BSON.ObjectId): Promise<Visit> {
         const query = {
             _id: id
         };
@@ -95,9 +102,6 @@ export class VisitService {
      * @param id 
      */
     async watchId(id: BSON.ObjectId): Promise<ReplaySubject<Visit>> {
-
-
-
         const query = {
             _id: id
         };
@@ -125,16 +129,22 @@ export class VisitService {
      * @param procedure
      * @param per
      */
-    addprocedures(visitid: string, procedures: Array<Procedureperformed>) {
-        // return this.db.collection('hospitalvisits').doc(visitid).update({
-        //     procedures: firestore.FieldValue.arrayUnion(...procedures)
-        // });
+    addProcedure(visitid: BSON.ObjectId, procedures: Procedureperformed): Promise<RemoteUpdateResult> {
+        const query = {
+            _id: visitid
+        };
+        return this.stitch.db.collection('hospitalvisits')
+            .updateOne(query, {
+                $push: { procedures: procedures }
+            });
     }
 
-    updateprocedures(visitid: string, procedures: Array<Procedureperformed>) {
-        // return this.db.collection('hospitalvisits').doc(visitid).update({
-        //     procedures: procedures
-        // });
+    updateprocedures(visitId: string, procedures: Array<Procedureperformed>): Promise<RemoteUpdateResult> {
+        const query = {
+            _id: visitId
+        };
+        return this.stitch.db.collection('hospitalvisits')
+            .updateOne(query, { procedures: procedures });
     }
 
     fetchvisithistory(patientId: BSON.ObjectId, limit: number): Promise<Array<Visit>> {
@@ -147,48 +157,32 @@ export class VisitService {
         return this.stitch.db.collection<Visit>('visits').find(query, options).toArray();
     }
 
-    addVisit(visit: Visit) {
-        this.stitch.db.collection('visits')
+    addVisit(visit: Visit): Promise<RemoteInsertOneResult> {
+        return this.stitch.db.collection('visits')
             .insertOne(visit);
     }
 
-    editpatientvisit(visit: Visit) {
-        // return this.db.collection('hospitalvisits').doc(visit.id).update(visit);
+
+    awaitPayment(visitId: BSON.ObjectId): Promise<RemoteUpdateResult> {
+        return this.updateVisitStatus(visitId, CheckinStatus['waiting for payment'], this.adminservice.userdata._id);
     }
 
-    awaitpayment(visitid) {
-        // return this.db.collection('hospitalvisits').doc(visitid).update({
-        //     checkin: {
-        //         status: 3,
-        //         admin: null,
-        //     }
-        // });
-        return true as any;
 
-    }
 
-    payandexit(visit: Visit) {
-        visit.checkin = {
-            status: 4,
-            admin: null,
+    setprescription(visitId: BSON.ObjectId, prescription: Prescription): Promise<RemoteUpdateResult> {
+        const query = {
+            _id: visitId
         };
-        visit.payment.status = true;
-        // return this.db.collection('hospitalvisits').doc(visit.id).update(visit);
-    }
-
-    setprescription(visitid: BSON.ObjectId, prescription: Prescription): Promise<RemoteUpdateResult> {
-        // return this.db.collection('hospitalvisits').doc(visitid).update({
-        //     prescription: prescription
-        // });
-        return true as any;
+        return this.stitch.db.collection('hospitalvisits')
+            .updateOne(query, { prescription });
 
     }
     /**
      * Updataes a visit status to completed
      * @param visitId 
      */
-    terminatepatientvisit(visitId: BSON.ObjectId): Promise<RemoteUpdateResult> {
-        return this.updateVisitStatus(visitId, CheckinStatus.completed, this.adminservice.userdata._id);
+    payandexit(visitId: BSON.ObjectId): Promise<RemoteUpdateResult> {
+        return this.updateVisitStatus(visitId, CheckinStatus.completed, this.adminservice.userdata._id, true);
     }
 
     /**
@@ -204,13 +198,22 @@ export class VisitService {
      * @param visitId 
      * @param status 
      * @param adminId can be null because exited and newly created patients are not assigned to any admins
+     * @param paymentStatus
      */
-    updateVisitStatus(visitId: BSON.ObjectId, status: CheckinStatus, adminId: BSON.ObjectId | null): Promise<RemoteUpdateResult> {
+    updateVisitStatus(visitId: BSON.ObjectId, status: CheckinStatus, adminId: BSON.ObjectId | null, paymentStatus?: boolean): Promise<RemoteUpdateResult> {
         const updatedCheckin: Checkin = {
             status: status,
             admin: adminId,
         };
-        return this.stitch.db.collection<Visit>('visits').updateOne({ _id: visitId }, { $set: { checkin: updatedCheckin } });
+        /**
+         * prevent the possibility of setting payment as true when the visit has not been completed
+         */
+        if (paymentStatus === true && status !== CheckinStatus.completed) {
+            console.error('Cannot set visit as paid when not completed');
+            status = CheckinStatus['waiting for payment'];
+        }
+        return this.stitch.db.collection<Visit>('visits')
+            .updateOne({ _id: visitId }, { $set: { checkin: updatedCheckin, 'payment.status': paymentStatus || false } });
 
     }
 

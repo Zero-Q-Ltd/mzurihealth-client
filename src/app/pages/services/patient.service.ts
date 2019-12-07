@@ -38,18 +38,19 @@ export class PatientService {
 
 
     getpatientbyid(patientid: BSON.ObjectId): Promise<Patient> {
-        const patientfile = this.stitch.db.collection<HospFile>('patientfiles')
+        const f = this.stitch.db.collection<HospFile>('patientfiles')
             .findOne({
-                hospitalId: this.hospitalservice.activehospital.value._id,
                 patientId: patientid
             });
 
-        const patientwatcher = this.stitch.db.collection<Patient>('patients')
+        const p = this.stitch.db.collection<Patient>('patients')
             .findOne({ _id: patientid });
 
-        const pt = combineLatest([patientfile, patientwatcher], (file, patient) => {
-            return Object.assign({}, { ...emptypatient }, patient, { fileInfo: file }) as Patient;
-        });
+        const pt = combineLatest([p, f])
+            .map(result => {
+                const combined: Patient = { ...emptypatient, ...result[0], ...{ fileInfo: result[1] } };
+                return combined;
+            });
 
         return pt.toPromise();
     }
@@ -268,46 +269,6 @@ export class PatientService {
 
     searchPatient(field: string, value: string): any {
         return true as any;
-    }
-
-    updateVitalsAllegiesConditions(patientID: string, vitals, conditions: Array<any>, allegies: Array<any>): Promise<RemoteUpdateResult> {
-        // get current user
-        // const patientsDocRef = this.stitch.db.firestore.collection('patients').doc(patientID);
-        //
-        // return this.stitch.db.firestore.runTransaction(transaction => {
-        //     return transaction.get(patientsDocRef).then(patientDoc => {
-        //         if (!patientDoc.exists) {
-        //             Promise.reject('No such document');
-        //             return;
-        //         }
-        //
-        //         const patientData = Object.assign({}, {...emptypatient}, patientDoc.data()) as Patient;
-        //
-        //         let tempMeta = null;
-        //         if (patientData.medicalInfo.metadata.date === null) {
-        //             tempMeta = {
-        //                 date: moment().toDate(),
-        //                 lastedit: moment().toDate()
-        //             };
-        //         } else {
-        //             tempMeta = {
-        //                 date: patientData.medicalInfo.metadata.date,
-        //                 lastedit: moment().toDate()
-        //             };
-        //         }
-        //
-        //         transaction.update(patientsDocRef, Object.assign({}, patientData, {
-        //             medicalinfo: {
-        //                 vitals,
-        //                 conditions,
-        //                 allergies: allegies,
-        //                 metadata: tempMeta
-        //             }
-        //         }));
-        //     });
-        // });
-        return true as any;
-
     }
 
     /*

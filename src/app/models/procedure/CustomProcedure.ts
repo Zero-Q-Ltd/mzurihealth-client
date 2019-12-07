@@ -18,6 +18,9 @@ export interface CustomProcedureConfig {
     _id: BSON.ObjectId;
     metadata: Metadata;
     hospitalId: BSON.ObjectId;
+    /**
+     * These are stored in the same document as they are often needed together and rarely change
+     */
     procedures: Array<CustomProcedure>;
 }
 export const emptycustomprocedure: CustomProcedure = {

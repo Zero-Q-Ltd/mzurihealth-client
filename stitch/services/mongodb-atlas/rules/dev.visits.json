@@ -4,12 +4,25 @@
     "collection": "visits",
     "roles": [
         {
-            "name": "default",
-            "apply_when": {},
-            "write": true,
+            "name": "AllowHospital",
+            "apply_when": {
+                "%%true": true
+            },
             "insert": true,
             "delete": true,
+            "write": true,
+            "fields": {},
             "additional_fields": {}
+        }
+    ],
+    "filters": [
+        {
+            "name": "Relevant hospital ONLY",
+            "query": {
+                "hospitalId": "%%user.custom_data.config.hospitalId"
+            },
+            "apply_when": {},
+            "projection": {}
         }
     ],
     "schema": {

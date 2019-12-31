@@ -6,9 +6,9 @@ import { NotificationService } from '../../shared/services/notifications.service
 import { AdminCategory } from '../../models/user/AdminCategory';
 import { AdminInvite } from '../../models/user/AdminInvite';
 import { StitchService } from './stitch/stitch.service';
-import { BSON, StitchUser, Stream, } from 'mongodb-stitch-browser-sdk';
+import { StitchUser, Stream, } from 'mongodb-stitch-browser-sdk';
 import { ChangeEvent } from 'mongodb-stitch-core-services-mongodb-remote';
-
+import * as BSON from 'bson';
 @Injectable({
     providedIn: 'root'
 })
@@ -53,6 +53,7 @@ export class AdminService {
             .findOne({ _id: new BSON.ObjectId(user.id) })
             .then(async userdata => {
                 this.observableuserdata.next(userdata);
+
                 console.log('User data fetched');
                 const stream = await this.stitch.db.collection<HospitalAdmin>('hospitaladmins')
                     .watch([new BSON.ObjectId(user.id)]);

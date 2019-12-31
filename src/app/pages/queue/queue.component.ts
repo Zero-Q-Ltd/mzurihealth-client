@@ -41,6 +41,7 @@ export class QueueComponent implements OnInit, OnDestroy {
                 if (!main) {
                     return;
                 }
+                console.log(main);
                 this.mainQueue = main.size;
             });
         this.queueservice.mypatientqueue

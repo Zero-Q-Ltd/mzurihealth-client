@@ -14,6 +14,7 @@ import { StitchService } from './stitch/stitch.service';
 import { NewPatientForm } from 'app/models/patient/NewPatientForm';
 import * as equal from 'deep-equal';
 import { ChangeEvent, RemoteUpdateResult } from 'mongodb-stitch-core-services-mongodb-remote';
+import { Meta } from 'app/models/universal';
 @Injectable({
     providedIn: 'root'
 })
@@ -123,7 +124,7 @@ export class PatientService {
          * **/
         const patientID = new BSON.ObjectID();
 
-        const newmeta = {
+        const newmeta: Meta = {
             date: moment().toDate(),
             adminId: this.adminservice.userdata._id,
             hospitalId: this.hospitalservice.activehospital.value._id

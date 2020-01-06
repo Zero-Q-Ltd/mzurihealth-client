@@ -35,6 +35,7 @@ export class AdminService {
         private stitch: StitchService) {
         this.stitch.user.subscribe(value => {
             this.getuser(value);
+            console.log(value);
         });
         this.observableuserdata.subscribe(value => {
             this.userdata = value;

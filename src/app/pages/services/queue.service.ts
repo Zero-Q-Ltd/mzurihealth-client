@@ -200,6 +200,16 @@ export class QueueService {
                 });
             });
     }
+    /**
+     * @todo Impliment to reduce db overhead
+     */
+    removePatientFromQUeue() {
+
+    }
+
+    updatePatientInQueue() {
+
+    }
 
     /**
      * This only updates the status of the patient queue
@@ -293,40 +303,32 @@ export class QueueService {
 
         const f = this.stitch.db.collection<HospFile>('patientfiles').find(patientFileQuery).toArray();
         const p = this.stitch.db.collection<Patient>('patients').find(patientQuery).toArray();
-        /**
-         * USE PROMISE.all
-         */
-        // combineLatest([f, p])
-        //     /**
-        //      * Take only the first emission because all subsequent db changes will triegger an equivalent evaluation
-        //      */
-        //     .pipe(take(1))
-        //     .subscribe(result => {
-        //         console.log('queued patients data fetched');
-        //         const patientmap: Map<string, MergedPatientQueueModel> = new Map();
-        //         const mypatientsmap: Map<string, MergedPatientQueueModel> = new Map();
+        Promise.all([f, p]).then(result => {
+            console.log('queued patients data fetched');
+            const patientmap: Map<string, MergedPatientQueueModel> = new Map();
+            const mypatientsmap: Map<string, MergedPatientQueueModel> = new Map();
 
-        //         visits.map(async visit => {
-        //             /**
-        //              * check if the visit is for the current admin
-        //              */
-        //             const matchingPatient: Patient = result[1].filter(pp => pp._id.toHexString() === visit.patientId.toHexString())[0];
-        //             matchingPatient.fileInfo = result[0].filter(ff => ff.patientId.toHexString() === matchingPatient._id.toHexString())[0];
+            visits.map(async visit => {
+                /**
+                 * check if the visit is for the current admin
+                 */
+                const matchingPatient: Patient = result[1].filter(pp => pp._id.toHexString() === visit.patientId.toHexString())[0];
+                matchingPatient.fileInfo = result[0].filter(ff => ff.patientId.toHexString() === matchingPatient._id.toHexString())[0];
 
-        //             patientmap.set(visit.patientId.toHexString(), { visitData: visit, patientdata: matchingPatient });
+                patientmap.set(visit.patientId.toHexString(), { visitData: visit, patientdata: matchingPatient });
 
 
-        //             if (this.checkAdmin(visit.checkin.admin)) {
-        //                 mypatientsmap.set(visit.patientId.toHexString(), { visitData: visit, patientdata: matchingPatient });
-        //                 if (visit.checkin.status === CheckinStatus['being attended']) {
-        //                     this.currentpatient.next(await this.fetchCurrentPatientData(visit, matchingPatient, false));
-        //                 }
-        //             }
-        //         });
-        //         this.mainpatientsqueue.next(patientmap);
-        //         this.mypatientqueue.next(mypatientsmap);
-        //         this.fetchingpatientdata.next(false);
-        //     });
+                if (this.checkAdmin(visit.checkin.admin)) {
+                    mypatientsmap.set(visit.patientId.toHexString(), { visitData: visit, patientdata: matchingPatient });
+                    if (visit.checkin.status === CheckinStatus['being attended']) {
+                        this.currentpatient.next(await this.fetchCurrentPatientData(visit, matchingPatient, false));
+                    }
+                }
+            });
+            this.mainpatientsqueue.next(patientmap);
+            this.mypatientqueue.next(mypatientsmap);
+            this.fetchingpatientdata.next(false);
+        });
     }
 
     /**

@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
+import { BaseMongoObject } from 'app/models/universal';
 import { BSON, RemoteMongoCollection, Stream } from 'mongodb-stitch-browser-sdk';
-import { ChangeEvent } from 'mongodb-stitch-core-services-mongodb-remote';
+import { ChangeEvent, OperationType } from 'mongodb-stitch-core-services-mongodb-remote';
 import { ReplaySubject } from 'rxjs';
+import { take } from 'rxjs/operators';
 import { StitchService } from './stitch.service';
 
 @Injectable({
@@ -35,6 +37,7 @@ export class GenericQueryService {
 
     this.dbSubscriptions.get(queryid.toString()).onNext(data => {
       response.next(data.fullDocument);
+
     });
     this.dbSubscriptions.get(queryid.toString()).onError(e => {
       response.error(e);
@@ -43,16 +46,10 @@ export class GenericQueryService {
   }
 
 
-  async watchIds<T>(Ids: BSON.ObjectId[], collectionName: RemoteMongoCollection<T>): Promise<ReplaySubject<T[]>> {
-    const query = {
-      _id: { $in: Ids }
-    };
+  async watchCollection<T extends BaseMongoObject>(query: object, collection: RemoteMongoCollection<T>): Promise<ReplaySubject<T[]>> {
     const queryid = new BSON.ObjectId();
-
     const response: ReplaySubject<T[]> = new ReplaySubject(1);
-    const collection = this.stitch.db.collection<T>('patients');
-    this.dbSubscriptions.set(queryid.toString(), await collection.watch(Ids));
-
+    this.dbSubscriptions.set(queryid.toString(), await collection.watch());
     collection.find(query)
       .toArray()
       .then(async value => {
@@ -61,7 +58,60 @@ export class GenericQueryService {
       .catch(e => response.error(e));
 
     this.dbSubscriptions.get(queryid.toString()).onNext(data => {
-      response.next(data.fullDocument);
+      switch (data.operationType) {
+        case OperationType.Delete: {
+          /**
+           * remove the deleted element from the array by filtering and only returning true if the id matches
+           */
+          response.pipe(take(1)).subscribe(val => response.next(val.filter(t => {
+            return t._id.toHexString() !== data.fullDocument._id;
+          })));
+          break;
+        }
+        case OperationType.Insert: {
+          /**
+           * Add the element to the array
+           */
+          response.pipe(take(1)).subscribe(val => {
+            val.push(data.fullDocument);
+            response.next(val);
+          });
+          break;
+        }
+
+        case OperationType.Replace: {
+          /**
+           * replace the edited element in the array and return whole array
+           */
+          response.pipe(take(1)).subscribe(val => response.next(val.map(t => {
+            if (t._id.toHexString() !== data.fullDocument._id) {
+              t = data.fullDocument;
+            } else {
+              return t;
+            }
+          })));
+          break;
+        }
+
+        case OperationType.Update: {
+          /**
+           * replace the edited element in the array and return whole array
+           */
+          response.pipe(take(1)).subscribe(val => response.next(val.map(t => {
+            if (t._id.toHexString() !== data.fullDocument._id) {
+              t = data.fullDocument;
+            } else {
+              return t;
+            }
+          })));
+          break;
+        }
+
+        default: {
+          response.error('An unknown db operation occured');
+          break;
+        }
+      }
     });
     this.dbSubscriptions.get(queryid.toString()).onError(e => {
       response.error(e);

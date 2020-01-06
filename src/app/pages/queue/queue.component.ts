@@ -8,6 +8,7 @@ import { QueueService } from '../services/queue.service';
 import { PaymentmethodService } from 'app/pages/services/paymentmethod.service';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { Codec, CoreStitchServiceClient, Stream } from 'mongodb-stitch-core-sdk';
 
 @Component({
     selector: 'app-queue',

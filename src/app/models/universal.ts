@@ -24,3 +24,7 @@ export const emptymetadata: Metadata = {
     created: null,
     edited: null,
 };
+
+export interface BaseMongoObject {
+    _id: BSON.ObjectID;
+}

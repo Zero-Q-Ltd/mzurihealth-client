@@ -46,16 +46,10 @@ export class GenericQueryService {
   }
 
 
-  async watchCollection<T extends BaseMongoObject>(query: object, collection: RemoteMongoCollection<T>): Promise<ReplaySubject<T[]>> {
+  async watchCollection<T extends BaseMongoObject>(dataArray: T[], collection: RemoteMongoCollection<T>): Promise<ReplaySubject<T[]>> {
     const queryid = new BSON.ObjectId();
     const response: ReplaySubject<T[]> = new ReplaySubject(1);
     this.dbSubscriptions.set(queryid.toString(), await collection.watch());
-    collection.find(query)
-      .toArray()
-      .then(async value => {
-        response.next(value);
-      })
-      .catch(e => response.error(e));
 
     this.dbSubscriptions.get(queryid.toString()).onNext(data => {
       switch (data.operationType) {
@@ -63,19 +57,17 @@ export class GenericQueryService {
           /**
            * remove the deleted element from the array by filtering and only returning true if the id matches
            */
-          response.pipe(take(1)).subscribe(val => response.next(val.filter(t => {
+          response.next(dataArray.filter(t => {
             return t._id.toHexString() !== data.fullDocument._id;
-          })));
+          }));
           break;
         }
         case OperationType.Insert: {
           /**
            * Add the element to the array
            */
-          response.pipe(take(1)).subscribe(val => {
-            val.push(data.fullDocument);
-            response.next(val);
-          });
+          dataArray.push(data.fullDocument);
+          response.next(dataArray);
           break;
         }
 
@@ -83,13 +75,13 @@ export class GenericQueryService {
           /**
            * replace the edited element in the array and return whole array
            */
-          response.pipe(take(1)).subscribe(val => response.next(val.map(t => {
+          response.next(dataArray.map(t => {
             if (t._id.toHexString() !== data.fullDocument._id) {
               t = data.fullDocument;
             } else {
               return t;
             }
-          })));
+          }));
           break;
         }
 
@@ -97,13 +89,13 @@ export class GenericQueryService {
           /**
            * replace the edited element in the array and return whole array
            */
-          response.pipe(take(1)).subscribe(val => response.next(val.map(t => {
+          response.next(dataArray.map(t => {
             if (t._id.toHexString() !== data.fullDocument._id) {
               t = data.fullDocument;
             } else {
               return t;
             }
-          })));
+          }));
           break;
         }
 

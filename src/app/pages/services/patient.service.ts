@@ -20,6 +20,12 @@ import { Meta } from 'app/models/universal';
 })
 export class PatientService {
 
+    constructor(
+        private hospitalservice: HospitalService,
+        private adminservice: AdminService,
+        private stitch: StitchService) {
+    }
+
     /**
      * This keeps a list of all the DATABASE SUBSCRIPTIONS that have been made by this service
      * It's to be maintined as a standard across all services
@@ -30,13 +36,6 @@ export class PatientService {
      * It's to be maintined as a standard across all services
      */
     internalSubscriptions: Map<string, Subscription> = new Map();
-
-    constructor(
-        private hospitalservice: HospitalService,
-        private adminservice: AdminService,
-        private stitch: StitchService) {
-    }
-
 
     getpatientbyid(patientid: BSON.ObjectId): Promise<Patient> {
         const f = this.stitch.db.collection<HospFile>('patientfiles')
@@ -215,6 +214,7 @@ export class PatientService {
         return Promise.all([i, j, k]);
 
     }
+
 
 
     /**

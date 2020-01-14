@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
 import { Observable } from 'rxjs';
-import 'rxjs/add/operator/map';
 import { AdminService } from '../services/admin.service';
 import { StitchService } from '../services/stitch/stitch.service';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class UsersGuard implements CanActivate {
@@ -16,7 +16,7 @@ export class UsersGuard implements CanActivate {
         if (this.stitch.auth.isLoggedIn) {
             console.log('logged in');
             return this.adminservice.observableuserdata
-                .map(userdata => {
+                .pipe(map(userdata => {
                     console.log(userdata);
                     if (userdata && userdata.hasOwnProperty('data')) {
 
@@ -31,7 +31,7 @@ export class UsersGuard implements CanActivate {
                         this.router.navigate(['authentication/signin']);
                         return false;
                     }
-                });
+                }));
         } else {
             this.router.navigate(['authentication/signin']);
             console.log('logged out');

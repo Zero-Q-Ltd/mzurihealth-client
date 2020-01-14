@@ -31,7 +31,6 @@ import {
     MatTooltipModule
 } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { FuseSharedModule } from '../../../@fuse/shared.module';
 import { FuseConfirmDialogModule, FuseProgressBarModule, FuseSidebarModule, FuseThemeOptionsModule } from '../../../@fuse/components';
 import { RouterModule } from '@angular/router';
@@ -83,7 +82,6 @@ import { AdminNamePipe } from './reveal-admin.pipe';
         ReactiveFormsModule,
         // Fuse shared Module
         FuseSharedModule,
-        MatMomentDateModule,
         // Other key fuse modules
         FuseConfirmDialogModule,
         FuseProgressBarModule,
@@ -131,7 +129,6 @@ import { AdminNamePipe } from './reveal-admin.pipe';
         ReactiveFormsModule,
         // Fuse shared Module
         FuseSharedModule,
-        MatMomentDateModule,
         // Other key fuse modules
         FuseConfirmDialogModule,
         FuseProgressBarModule,

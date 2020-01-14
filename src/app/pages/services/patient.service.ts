@@ -1,20 +1,18 @@
 import { Injectable } from '@angular/core';
-import { emptypatient, Insurance, NextofKin, Patient } from '../../models/patient/Patient';
-import { Hospital } from '../../models/hospital/Hospital';
-import { HospitalAdmin } from '../../models/user/HospitalAdmin';
-import { HospitalService } from './hospital.service';
-import { AdminService } from './admin.service';
-import * as moment from 'moment';
-import { emptyfile, HospFile } from '../../models/hospital/HospFile';
-import { BehaviorSubject, combineLatest, Observable, Subscription, ReplaySubject, Subject } from 'rxjs';
-import 'rxjs/add/observable/empty';
-
-import { BSON, Stream } from 'mongodb-stitch-browser-sdk';
-import { StitchService } from './stitch/stitch.service';
 import { NewPatientForm } from 'app/models/patient/NewPatientForm';
-import * as equal from 'deep-equal';
-import { ChangeEvent, RemoteUpdateResult } from 'mongodb-stitch-core-services-mongodb-remote';
 import { Meta } from 'app/models/universal';
+import * as equal from 'deep-equal';
+import * as moment from 'moment';
+import { BSON, Stream } from 'mongodb-stitch-browser-sdk';
+import { ChangeEvent, RemoteUpdateResult } from 'mongodb-stitch-core-services-mongodb-remote';
+import { combineLatest, Observable, ReplaySubject, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { emptyfile, HospFile } from '../../models/hospital/HospFile';
+import { emptypatient, Insurance, NextofKin, Patient } from '../../models/patient/Patient';
+import { AdminService } from './admin.service';
+import { HospitalService } from './hospital.service';
+import { StitchService } from './stitch/stitch.service';
+
 @Injectable({
     providedIn: 'root'
 })
@@ -47,10 +45,10 @@ export class PatientService {
             .findOne({ _id: patientid });
 
         const pt = combineLatest([p, f])
-            .map(result => {
+            .pipe(map(result => {
                 const combined: Patient = { ...emptypatient, ...result[0], ...{ fileInfo: result[1] } };
                 return combined;
-            });
+            }));
 
         return pt.toPromise();
     }

@@ -1,7 +1,7 @@
-import { Injectable, NgZone } from '@angular/core';
-import { GoogleRedirectCredential, RemoteMongoClient, RemoteMongoDatabase, Stitch, StitchAppClient, StitchAuth, StitchUser } from 'mongodb-stitch-browser-sdk';
-import { HttpStitchTransport } from './http-stitch-transport';
-import { ReplaySubject } from 'rxjs';
+import {Injectable, NgZone} from '@angular/core';
+import {GoogleRedirectCredential, RemoteMongoClient, RemoteMongoDatabase, Stitch, StitchAppClient, StitchAuth, StitchUser} from 'mongodb-stitch-browser-sdk';
+import {HttpStitchTransport} from './http-stitch-transport';
+import {ReplaySubject} from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
@@ -18,7 +18,7 @@ export class StitchService {
         /**
          * connect to the database as soo as the service is loaded onto mem
          */
-        this.auth.addAuthListener({ onAuthEvent: this.onStitchAuthEvent.bind(this) });
+        this.auth.addAuthListener({onAuthEvent: this.onStitchAuthEvent.bind(this)});
 
     }
 
@@ -76,7 +76,6 @@ export class StitchService {
     }
 
     private onStitchAuthEvent(auth: StitchAuth): void {
-        // console.log('AuthService#onStitchAuthEvent', auth);
         if (auth.user && auth.user.loggedInProviderType !== 'anon-user') {
             this.user.next(auth.user);
         }

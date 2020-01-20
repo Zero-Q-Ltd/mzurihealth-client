@@ -43,7 +43,8 @@
 
         <mat-header-row *matHeaderRowDef="procedureheaders"></mat-header-row>
         <mat-row (click)="onSelect(row)" *matRowDef="let row; columns: procedureheaders;"
-            [@animate]="{value:'*',params:{y:'100%'}}" [ngClass]="{'highlight' : row == selectedprocedure}" matRipple>
+                 [@animate]="{value:'*',params:{y:'100%'}}" [ngClass]="{'highlight' : row == selectedprocedure}"
+                 matRipple>
         </mat-row>
     </mat-table>
     <mat-paginator [length]="categoryprocedures.data.length" [pageSizeOptions]="[10, 25, 50, 100]" [pageSize]="10">

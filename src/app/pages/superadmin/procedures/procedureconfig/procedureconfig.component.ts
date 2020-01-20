@@ -7,8 +7,8 @@ import { ProceduresService } from '../../../services/procedures.service';
 import { NotificationService } from '../../../../shared/services/notifications.service';
 import * as moment from 'moment';
 import { FormControl, Validators } from '@angular/forms';
-import { PaymentmethodService } from '../../../services/paymentmethod.service';
 import { Paymentmethods } from '../../../../models/payment/PaymentChannel';
+import { CoreService } from 'app/pages/services/core/core.service';
 
 @Component({
     selector: 'app-procedureconfig',
@@ -28,7 +28,7 @@ export class ProcedureconfigComponent implements OnInit {
     ]);
 
     constructor(private communicatioservice: LocalcommunicationService,
-        private paymentethods: PaymentmethodService,
+        private core: CoreService,
         private procedureservice: ProceduresService,
         private notificationservice: NotificationService) {
         this.communicatioservice.onprocedureselected.subscribe(selection => {
@@ -39,7 +39,7 @@ export class ProcedureconfigComponent implements OnInit {
             this.regularpricecontrol.patchValue(this.selectecustomprocedure.customprocedure.regularPrice);
         });
 
-        this.paymentethods.allinsurance.subscribe(insurance => {
+        this.core.allinsurance.subscribe(insurance => {
             this.filteredinsurance = insurance;
         });
     }
@@ -52,14 +52,14 @@ export class ProcedureconfigComponent implements OnInit {
             const temp = {};
             filterValue = filterValue.trim();
             filterValue = filterValue.toLowerCase();
-            Object.keys(this.paymentethods.allinsurance.value).forEach(key => {
-                if (this.paymentethods.allinsurance.value[key].name.toLowerCase().indexOf(filterValue) > -1) {
-                    temp[key] = this.paymentethods.allinsurance.value[key];
+            Object.keys(this.core.allinsurance.value).forEach(key => {
+                if (this.core.allinsurance.value[key].name.toLowerCase().indexOf(filterValue) > -1) {
+                    temp[key] = this.core.allinsurance.value[key];
                 }
             });
             this.filteredinsurance = temp;
         } else {
-            this.filteredinsurance = this.paymentethods.allinsurance.value;
+            this.filteredinsurance = this.core.allinsurance.value;
         }
     }
 
@@ -80,7 +80,7 @@ export class ProcedureconfigComponent implements OnInit {
             this.selectecustomprocedure.customprocedure.regularPrice = this.regularpricecontrol.value;
             if (this.communicatioservice.onprocedureselected.value.selectiontype === 'newprocedure') {
                 this.selectecustomprocedure.customprocedure.parentId = this.selectecustomprocedure.rawprocedure._id;
-                this.procedureservice.addcustomprocedure(this.selectecustomprocedure.customprocedure).then(() => {
+                this.procedureservice.addcustomprocedure(this.selectecustomprocedure.customprocedure, this.core.activeHospitalId, this.core.adminId).then(() => {
                     this.notificationservice.notify({
                         placement: {
                             vertical: 'top',
@@ -90,13 +90,19 @@ export class ProcedureconfigComponent implements OnInit {
                         alertType: 'success',
                         body: 'Successfully saved'
                     });
-                    this.procedureservice.getprocedures();
+                    /**
+                     * Fetch all procedures after a successful update
+                     */
+                    // this.procedureservice.getprocedures(this.core.activeHospitalId);
                     this.communicatioservice.resetall();
                 });
             } else {
-                this.procedureservice.editcustomprocedure(this.selectecustomprocedure.customprocedure).then(() => {
-                    this.communicatioservice.resetall();
-                });
+                this.procedureservice.editcustomprocedure(this.selectecustomprocedure.customprocedure,
+                    this.core.adminId,
+                    this.core.activeHospitalId,
+                    this.core.hospitalCustomProcedureConfig._id).then(() => {
+                        this.communicatioservice.resetall();
+                    });
             }
         } else {
             this.notificationservice.notify({

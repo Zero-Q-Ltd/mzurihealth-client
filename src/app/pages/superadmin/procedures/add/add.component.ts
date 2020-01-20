@@ -10,6 +10,7 @@ import { LocalcommunicationService } from '../../localcommunication.service';
 import { NotificationService } from '../../../../shared/services/notifications.service';
 import { emptycustomprocedure } from '../../../../models/procedure/CustomProcedure';
 import { Paymentmethods } from '../../../../models/payment/PaymentChannel';
+import { CoreService } from 'app/pages/services/core/core.service';
 
 @Component({
     selector: 'procedure-add',
@@ -36,8 +37,9 @@ export class AddComponent implements OnInit, AfterViewInit {
         private _fuseSidebarService: FuseSidebarService,
         private procedureservice: ProceduresService,
         private communicatioservice: LocalcommunicationService,
+        private core: CoreService,
         private notificationservice: NotificationService) {
-        procedureservice.categories.subscribe(categories => {
+        this.core.categories.subscribe(categories => {
             this.categories = categories;
         });
     }
@@ -81,7 +83,7 @@ export class AddComponent implements OnInit, AfterViewInit {
      * @param selected
      */
     onSelect(selected: RawProcedure): void {
-        if (this.procedureservice.hospitalprocedures.value.get(selected._id.toHexString())) {
+        if (this.core.hospitalprocedures.value.get(selected._id.toHexString())) {
             this.notificationservice.notify({
                 placement: {
                     vertical: 'bottom',

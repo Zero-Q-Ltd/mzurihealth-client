@@ -1,14 +1,12 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { VisitService } from '../../../services/visit.service';
-import { Visit } from '../../../../models/visit/Visit';
-import { HospitalAdmin } from '../../../../models/user/HospitalAdmin';
-import { HospitalService } from '../../../services/hospital.service';
-import { Patient } from 'app/models/patient/Patient';
-import { QueueService } from 'app/pages/services/queue.service';
-import { Procedureperformed } from 'app/models/procedure/Procedureperformed';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Visit} from '../../../../models/visit/Visit';
+import {HospitalAdmin} from '../../../../models/user/HospitalAdmin';
+import {QueueService} from 'app/pages/services/core/queue.service';
+import {Procedureperformed} from 'app/models/procedure/Procedureperformed';
 import * as BSON from 'bson';
-import { ReplaySubject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import {ReplaySubject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
+import {CoreService} from 'app/pages/services/core/core.service';
 
 @Component({
     selector: 'patient-history',
@@ -22,9 +20,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
     comopnentDestroyed: ReplaySubject<boolean> = new ReplaySubject<boolean>();
 
     flattenedProcedures: Array<Procedureperformed & { id: BSON.ObjectID }> = [];
-    constructor(private patientvisitService: VisitService,
+
+    constructor(
         private queue: QueueService,
-        private hospitalservice: HospitalService, ) {
+        private core: CoreService,) {
 
         this.queue.currentpatientHistory
             .pipe(takeUntil(this.comopnentDestroyed))
@@ -34,17 +33,18 @@ export class HistoryComponent implements OnInit, OnDestroy {
                 this.flattenedProcedures = [];
                 visits.map(visit => {
                     this.flattenedProcedures.push(...visit.procedures.map(t => {
-                        return Object.assign({}, t, { id: visit._id });
+                        return Object.assign({}, t, {id: visit._id});
                     }));
                 });
             });
-        this.hospitalservice.hospitaladmins.subscribe(admins => {
+        this.core.hospitaladmins.subscribe(admins => {
             this.hospitaladmins = admins;
         });
     }
 
     ngOnInit(): void {
     }
+
     ngOnDestroy(): void {
         this.comopnentDestroyed.next(true);
     }

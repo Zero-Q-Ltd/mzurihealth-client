@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { MedicalinfoService } from 'app/pages/services/medicalinfo.service';
-import { Condition } from 'app/models/procedure/MedicalConditions.model';
-import { Vitals, MedicalInfo } from 'app/models/patient/MedicalInfo';
+import { MedicalInfo, Vitals } from 'app/models/patient/MedicalInfo';
 import { Allegy } from 'app/models/procedure/Allergy.model';
+import { Condition } from 'app/models/procedure/MedicalConditions.model';
+import { Meta } from 'app/models/universal';
+import { CoreService } from 'app/pages/services/core/core.service';
+import { MedicalinfoService } from 'app/pages/services/medicalinfo.service';
+import { QueueService } from 'app/pages/services/core/queue.service';
 import * as BSON from 'bson';
 import * as moment from 'moment';
-import { Meta } from 'app/models/universal';
-import { AdminService } from 'app/pages/services/admin.service';
-import { HospitalService } from 'app/pages/services/hospital.service';
-import { QueueService } from 'app/pages/services/queue.service';
+import { BehaviorSubject } from 'rxjs';
+
 @Injectable({
     providedIn: 'root'
 })
@@ -22,9 +22,9 @@ export class LocalcommunicationService {
     conditions: Array<Condition>;
 
     medInfochhanged = false;
+
     constructor(private medInfo: MedicalinfoService,
-        private adminservice: AdminService,
-        private hospService: HospitalService,
+        private core: CoreService,
         private queue: QueueService
     ) {
         // queue.currentpatient.subscribe(patient=>{
@@ -35,14 +35,15 @@ export class LocalcommunicationService {
     resetall(): void {
         // this.onprocedureselected.next({selectiontype: null, selection: null});
     }
+
     saveMedinfo() {
         if (!this.medInfochhanged) {
             return;
         }
         const meta: Meta = {
             date: moment().toDate(),
-            adminId: this.adminservice.userdata._id,
-            hospitalId: this.hospService.activehospital.value._id
+            adminId: this.core.userData.id,
+            hospitalId: this.core.activeHospital.value._id
         };
 
         const medinfo: MedicalInfo = {

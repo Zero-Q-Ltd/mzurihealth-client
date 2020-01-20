@@ -43,7 +43,7 @@ export class SuperadminComponent implements OnInit {
             this.clickedadmin = admin;
         });
         communication.onadminselected.subscribe(admin => {
-            if (admin._id) {
+            if (admin.id) {
                 this.sidebarstatus = 2;
             } else {
                 this.sidebarstatus = 0;

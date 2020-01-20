@@ -1,7 +1,6 @@
 import { emptymetadata, Metadata } from '../universal';
 import { Procedureperformed } from '../procedure/Procedureperformed';
 import { Prescription } from './Prescription';
-import { PaymentMethod } from '../payment/CustomPaymentMethod.model';
 import { Insurance } from '../patient/Patient';
 import { PaymentChannel } from '../payment/PaymentChannel';
 import * as BSON from 'bson';
@@ -16,7 +15,6 @@ export interface Visit {
         notes: string
     }>;
     patientId: BSON.ObjectId;
-    hospitalId: BSON.ObjectId;
     prescription: Prescription;
     metadata: Metadata;
     payment: {
@@ -37,7 +35,7 @@ export interface Visit {
 }
 
 export interface Checkin {
-    admin: BSON.ObjectId;
+    admin: string;
     /**
      * 0 new
      * 1 waiting
@@ -47,6 +45,7 @@ export interface Checkin {
      */
     status: CheckinStatus;
 }
+
 export enum CheckinStatus {
     'new',
     'waiting',
@@ -54,6 +53,7 @@ export enum CheckinStatus {
     'waiting for payment',
     'completed'
 }
+
 /**
  * During reg it is important to distinguish between cash and isurance patients
  * In case it's a cash method, don't bother with details until during payment
@@ -86,7 +86,6 @@ export const emptypatientvisit: Visit = {
         hasInsurance: false,
     },
     patientId: null,
-    hospitalId: null,
     prescription: null,
     metadata: emptymetadata,
     _id: null

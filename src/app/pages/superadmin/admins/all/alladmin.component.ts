@@ -4,12 +4,12 @@ import { HospitalAdmin } from '../../../../models/user/HospitalAdmin';
 import { fuseAnimations } from '../../../../../@fuse/animations';
 import { HospitalService } from '../../../services/hospital.service';
 import { AdminService } from '../../../services/admin.service';
-import { ProceduresService } from '../../../services/procedures.service';
 import { LocalcommunicationService } from '../../localcommunication.service';
 import { AdminInvite } from '../../../../models/user/AdminInvite';
 import { AdminCategory } from '../../../../models/user/AdminCategory';
 import { FuseConfirmDialogComponent } from '../../../../../@fuse/components/confirm-dialog/confirm-dialog.component';
 import { NotificationService } from '../../../../shared/services/notifications.service';
+import { CoreService } from 'app/pages/services/core/core.service';
 
 @Component({
     selector: 'admins-all',
@@ -29,20 +29,20 @@ export class AlladminComponent implements OnInit {
 
     constructor(private hospitalservice: HospitalService,
         private adminservice: AdminService,
-        private procedureservice: ProceduresService,
+        private core: CoreService,
         private _matDialog: MatDialog,
         private notificationservice: NotificationService,
         private communicationService: LocalcommunicationService) {
-        this.hospitalservice.hospitaladmins.subscribe(admins => {
+        this.core.hospitaladmins.subscribe(admins => {
             this.adminsdatasource.data = admins;
         });
         // this.hospitalservice.invitedadmins.subscribe(admins => {
         //     this.invitedadminsdatasource.data = admins;
         // });
-        this.adminservice.observableuserdata.subscribe(value => {
+        this.core.observableUserData.subscribe(value => {
             this.userdata = value;
         });
-        this.adminservice.admincategories.subscribe(categories => {
+        this.core.adminCategories.subscribe(categories => {
             this.admincategories = categories;
         });
     }
@@ -102,7 +102,7 @@ export class AlladminComponent implements OnInit {
         this.confirmDialogRef.componentInstance.confirmMessage = 'Are you sure you want disable this admin?';
         this.confirmDialogRef.afterClosed().subscribe(result => {
             if (result) {
-                this.adminservice.disableadmin(user._id).then(() => {
+                this.adminservice.disableadmin(user.id).then(() => {
                     this.communicationService.resetall();
 
                     this.notificationservice.notify({
@@ -128,7 +128,7 @@ export class AlladminComponent implements OnInit {
         this.confirmDialogRef.componentInstance.confirmMessage = 'Are you sure you want enable this admin?';
         this.confirmDialogRef.afterClosed().subscribe(result => {
             if (result) {
-                this.adminservice.enableadmin(user._id).then(() => {
+                this.adminservice.enableadmin(user.id).then(() => {
                     this.communicationService.resetall();
 
                     this.notificationservice.notify({

@@ -19,25 +19,25 @@
             <!-- CONTENT TOOLBAR -->
             <div class="toolbar px-24 py-8">
                 <button (click)="changecriteria('day')" [color]="viewcriteria === 'day' ? 'primary' : ''" class="mx-8"
-                    mat-button mat-raised-button>
+                        mat-button mat-raised-button>
                     Day
                 </button>
                 <button (click)="changecriteria('week')" [color]="viewcriteria === 'week' ? 'primary' : ''" class="mx-8"
-                    mat-button mat-raised-button>
+                        mat-button mat-raised-button>
                     Week
                 </button>
                 <button (click)="changecriteria('month')" [color]="viewcriteria === 'month' ? 'primary' : ''"
-                    class="mx-8" mat-button mat-raised-button>
+                        class="mx-8" mat-button mat-raised-button>
                     Month
                 </button>
                 <button (click)="changecriteria('year')" [color]="viewcriteria === 'year' ? 'primary' : ''" class="mx-8"
-                    mat-button mat-raised-button>Year
+                        mat-button mat-raised-button>Year
                 </button>
             </div>
             <!-- / CONTENT TOOLBAR -->
 
             <mat-table #table [@animateStagger]="{value:'50'}" [dataSource]="patientshistorydatasource"
-                class="patients-table" fusePerfectScrollbar matSort>
+                       class="patients-table" fusePerfectScrollbar matSort>
 
                 <!-- ID Column -->
                 <ng-container matColumnDef="FileNo">
@@ -55,12 +55,12 @@
 
                         <p>
                             <img *ngIf="patient.patientdata.personalinfo.gender == 1"
-                                [src]="patient.patientdata.personalinfo.photoURL || 'assets/images/avatars/male.png'"
-                                alt="male avatar" class="avatar" />
+                                 [src]="patient.patientdata.personalinfo.photoURL || 'assets/images/avatars/male.png'"
+                                 alt="male avatar" class="avatar"/>
 
                             <img *ngIf="patient.patientdata.personalinfo.gender == 0"
-                                [src]="patient.patientdata.personalinfo.photoURL || 'assets/images/avatars/female.png'"
-                                alt="female avatar" class="avatar" />
+                                 [src]="patient.patientdata.personalinfo.photoURL || 'assets/images/avatars/female.png'"
+                                 alt="female avatar" class="avatar"/>
                         </p>
 
                     </mat-cell>
@@ -71,7 +71,7 @@
                     <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
                     <mat-cell *matCellDef="let patient">
                         <button class="text-truncate"
-                            mat-raised-button>{{patient.patientdata.personalinfo.name}}</button>
+                                mat-raised-button>{{patient.patientdata.personalinfo.name}}</button>
                     </mat-cell>
                 </ng-container>
 
@@ -124,13 +124,13 @@
                 <mat-header-row *matHeaderRowDef="patientheaders; sticky:true"></mat-header-row>
 
                 <mat-row (click)="viewinvoice(patient)" *matRowDef="let patient; columns: patientheaders;"
-                    class="product" matRipple>
+                         class="product" matRipple>
                 </mat-row>
 
             </mat-table>
 
             <mat-paginator #paginator [length]="patientshistorydatasource.data.length" [pageIndex]="0"
-                [pageSizeOptions]="[5, 10, 25, 100]" [pageSize]="10">
+                           [pageSizeOptions]="[5, 10, 25, 100]" [pageSize]="10">
             </mat-paginator>
         </div>
         <!-- / CONTENT CARD -->

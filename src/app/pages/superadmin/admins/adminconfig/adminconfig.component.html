@@ -9,15 +9,15 @@
                 </button>
             </div>
             <div fxFlex="50" fxLayoutAlign="end">
-                <button (click)="saveadminconfig()" aria-label="More" mat-icon-button
-                        mat-raised-button matTooltip="Save">
+                <button (click)="saveadminconfig()" aria-label="More" mat-icon-button mat-raised-button
+                        matTooltip="Save">
                     <mat-icon>save</mat-icon>
                 </button>
             </div>
         </div>
 
         <div>
-            <div class="h3"><strong>{{clickedadmin.data.displayName| titlecase}}</strong></div>
+            <div class="h3"><strong>{{clickedadmin.profile.name| titlecase}}</strong></div>
             <div class="h4 secondary-text">Level :
                 <span *ngFor="let text of categoryarray()">
                     {{text}}

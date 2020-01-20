@@ -1,15 +1,14 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormArray, FormControl, FormGroup, FormBuilder } from 'ngx-strongly-typed-forms';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup } from 'ngx-strongly-typed-forms';
 import { Allegy as Allergy, allergy, allerytypearray } from 'app/models/procedure/Allergy.model';
-import { QueueService } from 'app/pages/services/queue.service';
+import { QueueService } from 'app/pages/services/core/queue.service';
 import { LocalcommunicationService } from '../localcommunication.service';
-import { Vitals } from 'app/models/patient/MedicalInfo';
-import { Validators } from '@angular/forms';
 import { Meta, Metadata } from 'app/models/universal';
 import { AdminService } from 'app/pages/services/admin.service';
 import { HospitalService } from 'app/pages/services/hospital.service';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { CoreService } from 'app/pages/services/core/core.service';
 
 @Component({
   selector: 'app-allergies',
@@ -25,6 +24,7 @@ export class AllergiesComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private comm: LocalcommunicationService,
     private hospitalservice: HospitalService,
+    private core: CoreService,
     private adminservice: AdminService) {
     this.queue.currentpatient
       .pipe(takeUntil(this.comopnentDestroyed))
@@ -50,6 +50,7 @@ export class AllergiesComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
   }
+
   ngOnDestroy(): void {
     this.comopnentDestroyed.next(true);
   }
@@ -58,18 +59,19 @@ export class AllergiesComponent implements OnInit, OnDestroy {
   appendnew(): void {
     this.tempAllergies.push(this.addellergy(allergy.Food, ''));
   }
+
   /**
-   * 
-   * @param type 
-   * @param detail 
-   * @param metadata 
+   *
+   * @param type
+   * @param detail
+   * @param metadata
    */
   addellergy(type: allergy, detail: string, metadata?: Metadata): FormGroup<Allergy> {
     if (!metadata) {
       const m: Meta = {
-        adminId: this.adminservice.userdata._id,
+        adminId: this.core.userData.id,
         date: new Date(),
-        hospitalId: this.hospitalservice.activehospital.value._id
+        hospitalId: this.core.activeHospital.value._id
       };
       metadata = {
         created: m,
@@ -82,9 +84,10 @@ export class AllergiesComponent implements OnInit, OnDestroy {
       metadata
     });
   }
+
   /**
-   * 
-   * @param index 
+   *
+   * @param index
    */
   removeAllergy(index: number): void {
 

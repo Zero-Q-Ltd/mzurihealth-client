@@ -6,6 +6,7 @@ import {FuseNavigationModule} from '@fuse/components';
 import {FuseSharedModule} from '@fuse/shared.module';
 import {NavbarVerticalStyle1Component} from './style-1.component';
 import {RouterModule} from '@angular/router';
+import {MatProgressBarModule} from '@angular/material';
 
 
 @NgModule({
@@ -18,7 +19,9 @@ import {RouterModule} from '@angular/router';
 
         FuseSharedModule,
         FuseNavigationModule,
-        RouterModule
+        RouterModule,
+        MatProgressBarModule,
+
     ],
     exports: [
         NavbarVerticalStyle1Component

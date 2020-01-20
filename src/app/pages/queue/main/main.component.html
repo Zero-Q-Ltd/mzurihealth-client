@@ -13,12 +13,12 @@
         <mat-header-cell *matHeaderCellDef>Photo</mat-header-cell>
         <mat-cell *matCellDef="let patient">
             <img *ngIf="patient.patientdata.personalInfo.gender == 1"
-                [src]="patient.patientdata.personalInfo.photoURL || 'assets/images/avatars/male.png'" alt="male avatar"
-                class="avatar" />
+                 [src]="patient.patientdata.personalInfo.photoURL || 'assets/images/avatars/male.png'" alt="male avatar"
+                 class="avatar"/>
 
             <img *ngIf="patient.patientdata.personalInfo.gender == 0"
-                [src]="patient.patientdata.personalInfo.photoURL || 'assets/images/avatars/female.png'"
-                alt="female avatar" class="avatar" />
+                 [src]="patient.patientdata.personalInfo.photoURL || 'assets/images/avatars/female.png'"
+                 alt="female avatar" class="avatar"/>
         </mat-cell>
     </ng-container>
 
@@ -79,17 +79,17 @@
                     &nbsp;New
                 </mat-chip>
                 <mat-chip *ngSwitchCase="1" class="text-truncate" color="primary" mat-raised-button matTooltip="Waiting"
-                    selected>
+                          selected>
                     <mat-icon>av_timer</mat-icon>
                     &nbsp;{{hospitaladmins| adminName : patient.visitData.checkin.admin }}
                 </mat-chip>
                 <mat-chip *ngSwitchCase="2" class="text-truncate" color="primary" mat-raised-button
-                    matTooltip="In Progress" selected>
+                          matTooltip="In Progress" selected>
                     <mat-icon>done</mat-icon>
                     &nbsp;{{hospitaladmins| adminName : patient.visitData.checkin.admin }}
                 </mat-chip>
                 <mat-chip *ngSwitchCase="3" class="text-truncate" color="accent" mat-raised-button
-                    matTooltip="Waiting For Payment" selected>
+                          matTooltip="Waiting For Payment" selected>
                     <mat-icon>done_all</mat-icon>
                     &nbsp;Done
                 </mat-chip>
@@ -105,7 +105,7 @@
                 <button (click)="showadminchoice(patient)" *ngSwitchCase="0" color="accent" mat-raised-button>Choose
                     Admin </button>
                 <button (click)="redirectadmin(patient)" *ngSwitchDefault color="accent"
-                    mat-raised-button>Redirect</button>
+                        mat-raised-button>Redirect</button>
             </span>
         </mat-cell>
 
@@ -119,5 +119,5 @@
 </mat-table>
 
 <mat-paginator #paginator [length]="patientsdatasource.data.length" [pageIndex]="0" [pageSizeOptions]="[5, 10, 25, 100]"
-    [pageSize]="10">
+               [pageSize]="10">
 </mat-paginator>

@@ -1,5 +1,5 @@
-import { emptymetadata, Metadata } from '../universal';
-import { RawProcedureCategory } from './RawProcedure';
+import {emptymetadata, Metadata} from '../universal';
+import {RawProcedureCategory} from './RawProcedure';
 import * as BSON from 'bson';
 
 
@@ -62,7 +62,7 @@ export interface ProcedureNotes {
 
     note: string;
     admin: {
-        _id: BSON.ObjectId,
+        id: string,
         name: string
     };
 

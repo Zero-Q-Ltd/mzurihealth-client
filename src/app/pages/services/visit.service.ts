@@ -1,19 +1,12 @@
-import { Injectable } from '@angular/core';
-import { QueueService } from './queue.service';
-import { HospitalService } from './hospital.service';
-import { emptypatientvisit, Visit, Checkin, CheckinStatus } from '../../models/visit/Visit';
-import { BehaviorSubject, Observable, Subscription, Subject, ReplaySubject } from 'rxjs';
-import { Procedureperformed } from '../../models/procedure/Procedureperformed';
-import { MergedProcedureModel } from '../../models/procedure/MergedProcedure.model';
-import { AdminService } from './admin.service';
-import * as moment from 'moment';
-import { Meta } from 'app/models/universal';
-import { Prescription } from 'app/models/visit/Prescription';
-import { Stream } from 'mongodb-stitch-core-sdk';
-import { ChangeEvent, RemoteUpdateResult, RemoteInsertOneResult } from 'mongodb-stitch-core-services-mongodb-remote';
-import { StitchService } from './stitch/stitch.service';
-import { Patient } from 'app/models/patient/Patient';
+import {Injectable} from '@angular/core';
+import {Prescription} from 'app/models/visit/Prescription';
 import * as BSON from 'bson';
+import {Stream} from 'mongodb-stitch-core-sdk';
+import {ChangeEvent, RemoteInsertOneResult, RemoteUpdateResult} from 'mongodb-stitch-core-services-mongodb-remote';
+import {ReplaySubject, Subscription} from 'rxjs';
+import {Procedureperformed} from '../../models/procedure/Procedureperformed';
+import {Checkin, CheckinStatus, Visit} from '../../models/visit/Visit';
+import {StitchService} from './stitch/stitch.service';
 
 @Injectable({
     providedIn: 'root'
@@ -31,8 +24,6 @@ export class VisitService {
     internalSubscriptions: Map<string, Subscription> = new Map();
 
     constructor(
-        private adminservice: AdminService,
-        private hospitalService: HospitalService,
         private stitch: StitchService) {
 
     }
@@ -82,7 +73,7 @@ export class VisitService {
     /**
      * Fetches the latest patient visit ONCE
      * NOT REALTIME
-     * @param id 
+     * @param id
      */
     getLatest(id: BSON.ObjectId): Promise<Visit> {
         const query = {
@@ -97,9 +88,10 @@ export class VisitService {
         return collection.findOne(query, options);
 
     }
+
     /**
      * Creates a realtime database subscription
-     * @param id 
+     * @param id
      */
     async watchId(id: BSON.ObjectId): Promise<ReplaySubject<Visit>> {
         const query = {
@@ -124,6 +116,7 @@ export class VisitService {
         });
         return response;
     }
+
     /**
      * @param visitid
      * @param procedure
@@ -135,7 +128,7 @@ export class VisitService {
         };
         return this.stitch.db.collection('hospitalvisits')
             .updateOne(query, {
-                $push: { procedures: procedures }
+                $push: {procedures: procedures}
             });
     }
 
@@ -144,7 +137,7 @@ export class VisitService {
             _id: visitId
         };
         return this.stitch.db.collection('hospitalvisits')
-            .updateOne(query, { procedures: procedures });
+            .updateOne(query, {procedures: procedures});
     }
 
     fetchvisithistory(patientId: BSON.ObjectId, limit: number): Promise<Array<Visit>> {
@@ -163,10 +156,9 @@ export class VisitService {
     }
 
 
-    awaitPayment(visitId: BSON.ObjectId): Promise<RemoteUpdateResult> {
-        return this.updateVisitStatus(visitId, CheckinStatus['waiting for payment'], this.adminservice.userdata._id);
+    awaitPayment(visitId: BSON.ObjectId, adminId: string): Promise<RemoteUpdateResult> {
+        return this.updateVisitStatus(visitId, CheckinStatus['waiting for payment'], adminId);
     }
-
 
 
     setprescription(visitId: BSON.ObjectId, prescription: Prescription): Promise<RemoteUpdateResult> {
@@ -174,33 +166,34 @@ export class VisitService {
             _id: visitId
         };
         return this.stitch.db.collection('hospitalvisits')
-            .updateOne(query, { prescription });
+            .updateOne(query, {prescription});
 
     }
+
     /**
      * Updataes a visit status to completed
-     * @param visitId 
+     * @param visitId
      */
-    payandexit(visitId: BSON.ObjectId): Promise<RemoteUpdateResult> {
-        return this.updateVisitStatus(visitId, CheckinStatus.completed, this.adminservice.userdata._id, true);
+    payandexit(visitId: BSON.ObjectId, adminId: string): Promise<RemoteUpdateResult> {
+        return this.updateVisitStatus(visitId, CheckinStatus.completed, adminId, true);
     }
 
     /**
      * Updates a visit status to have the currently logged in admin as the one attending to the patient
      * @param visitId The visit to accept
      */
-    acceptPatient(visitId: BSON.ObjectId): Promise<RemoteUpdateResult> {
-        return this.updateVisitStatus(visitId, CheckinStatus['being attended'], this.adminservice.userdata._id);
+    acceptPatient(visitId: BSON.ObjectId, adminId: string): Promise<RemoteUpdateResult> {
+        return this.updateVisitStatus(visitId, CheckinStatus['being attended'], adminId);
     }
 
     /**
      * Updates the visit status to the specified value and assisn the specified admin
-     * @param visitId 
-     * @param status 
+     * @param visitId
+     * @param status
      * @param adminId can be null because exited and newly created patients are not assigned to any admins
      * @param paymentStatus
      */
-    updateVisitStatus(visitId: BSON.ObjectId, status: CheckinStatus, adminId: BSON.ObjectId | null, paymentStatus?: boolean): Promise<RemoteUpdateResult> {
+    updateVisitStatus(visitId: BSON.ObjectId, status: CheckinStatus, adminId: string | null, paymentStatus?: boolean): Promise<RemoteUpdateResult> {
         const updatedCheckin: Checkin = {
             status: status,
             admin: adminId,
@@ -213,7 +206,7 @@ export class VisitService {
             status = CheckinStatus['waiting for payment'];
         }
         return this.stitch.db.collection<Visit>('visits')
-            .updateOne({ _id: visitId }, { $set: { checkin: updatedCheckin, 'payment.status': paymentStatus || false } });
+            .updateOne({_id: visitId}, {$set: {checkin: updatedCheckin, 'payment.status': paymentStatus || false}});
 
     }
 

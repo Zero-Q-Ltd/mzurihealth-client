@@ -1,13 +1,13 @@
-import { Component, OnInit, ViewEncapsulation, OnDestroy } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { fuseAnimations } from '../../../@fuse/animations';
-import { FuseSidebarService } from '../../../@fuse/components/sidebar/sidebar.service';
-import { MatTabChangeEvent } from '@angular/material';
-import { LocalcommunicationService } from './current/localcommunication.service';
-import { QueueService } from '../services/queue.service';
-import { PaymentmethodService } from 'app/pages/services/paymentmethod.service';
-import { ReplaySubject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import {Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
+import {FormControl} from '@angular/forms';
+import {fuseAnimations} from '../../../@fuse/animations';
+import {FuseSidebarService} from '../../../@fuse/components/sidebar/sidebar.service';
+import {MatTabChangeEvent} from '@angular/material';
+import {LocalcommunicationService} from './current/localcommunication.service';
+import {QueueService} from '../services/core/queue.service';
+import {PaymentmethodService} from 'app/pages/services/paymentmethod.service';
+import {ReplaySubject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
 
 @Component({
     selector: 'app-queue',
@@ -28,8 +28,8 @@ export class QueueComponent implements OnInit, OnDestroy {
     comopnentDestroyed: ReplaySubject<boolean> = new ReplaySubject<boolean>();
 
     constructor(private _fuseSidebarService: FuseSidebarService,
-        private communication: LocalcommunicationService, private payment: PaymentmethodService,
-        private queueservice: QueueService) {
+                private communication: LocalcommunicationService, private payment: PaymentmethodService,
+                private queueservice: QueueService) {
         this.communication.ontabchanged
             .pipe(takeUntil(this.comopnentDestroyed))
             .subscribe(tabindex => {
@@ -41,6 +41,7 @@ export class QueueComponent implements OnInit, OnDestroy {
                 if (!main) {
                     return;
                 }
+                console.log(main);
                 this.mainQueue = main.size;
             });
         this.queueservice.mypatientqueue
@@ -64,6 +65,7 @@ export class QueueComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
     }
+
     ngOnDestroy(): void {
         this.comopnentDestroyed.next(true);
     }
@@ -80,5 +82,5 @@ export class QueueComponent implements OnInit, OnDestroy {
     tabChanged = (tabChangeEvent: MatTabChangeEvent): void => {
         this.communication.resetall();
         this.communication.ontabchanged.next(tabChangeEvent.index);
-    }
+    };
 }

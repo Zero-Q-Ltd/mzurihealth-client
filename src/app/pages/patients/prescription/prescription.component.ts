@@ -1,6 +1,6 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {HospitalService} from '../../services/hospital.service';
-import {QueueService} from '../../services/queue.service';
+import {QueueService} from '../../services/core/queue.service';
 import {PaymentmethodService} from '../../services/paymentmethod.service';
 import {VisitService} from '../../services/visit.service';
 import {MAT_DIALOG_DATA} from '@angular/material';

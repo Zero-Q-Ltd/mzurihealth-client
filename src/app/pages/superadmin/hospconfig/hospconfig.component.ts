@@ -11,6 +11,7 @@ import { emptypaymentmethod } from '../../../models/payment/CustomPaymentMethod.
 import { LocalcommunicationService } from '../localcommunication.service';
 import { fuseAnimations } from '../../../../@fuse/animations';
 import { BSON } from 'mongodb-stitch-browser-sdk';
+import { CoreService } from 'app/pages/services/core/core.service';
 
 declare let google: any;
 
@@ -37,9 +38,10 @@ export class HospconfigComponent implements OnInit {
     constructor(private paymentmethodService: PaymentmethodService,
         private hospitalservice: HospitalService,
         private notificationservice: NotificationService,
+        private core: CoreService,
         private communicatioservice: LocalcommunicationService,
         private _matDialog: MatDialog) {
-        this.paymentmethodService.allpaymentchannels.subscribe(channels => {
+        this.core.allpaymentchannels.subscribe(channels => {
             this.customizablepaymentchannels = channels.filter(channel => {
                 return channel.transactionDetailCollection;
             });
@@ -48,7 +50,7 @@ export class HospconfigComponent implements OnInit {
          * because this component is ot using reactive forms which is not neccessary, subscribe to tab changes and reset the values so
          * that unsaved changes are ignored and the view is reset to the old values
          */
-        communicatioservice.ontabchanged.subscribe(tab => {
+        this.communicatioservice.ontabchanged.subscribe(tab => {
             if (tab === 2) {
                 this.initvalues();
             }
@@ -56,7 +58,7 @@ export class HospconfigComponent implements OnInit {
     }
 
     initvalues(): void {
-        this.hospitalservice.activehospital.subscribe(hosp => {
+        this.core.activeHospital.subscribe(hosp => {
             // console.log(hosp);
             /**
              * create a new variable

@@ -9,11 +9,11 @@ import { FuseSidebarService } from '@fuse/components/sidebar/sidebar.service';
 
 import { navigation } from '../../../../navigation/navigation';
 import { emptyhospital, Hospital } from 'app/models/hospital/Hospital';
-import { emptyadmin, HospitalAdmin } from 'app/models/user/HospitalAdmin';
+import { HospitalAdmin } from 'app/models/user/HospitalAdmin';
 import { AdminService } from 'app/pages/services/admin.service';
-import { HospitalService } from 'app/pages/services/hospital.service';
 import { Router } from '@angular/router';
 import { StitchService } from 'app/pages/services/stitch/stitch.service';
+import { CoreService } from 'app/pages/services/core/core.service';
 
 @Component({
     selector: 'toolbar',
@@ -36,7 +36,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
     url: string;
     authstate: boolean;
     activehospital: Hospital = Object.assign({}, emptyhospital);
-    userdata: HospitalAdmin = Object.assign({}, emptyadmin);
+    userdata: HospitalAdmin;
 
     // Private
     private _unsubscribeAll: Subject<any>;
@@ -54,7 +54,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
         private _translateService: TranslateService,
         private adminservice: AdminService,
         private stitch: StitchService,
-        private hospitalservice: HospitalService,
+        private core: CoreService,
         private router: Router,
     ) {
         // Set the defaults
@@ -108,12 +108,12 @@ export class ToolbarComponent implements OnInit, OnDestroy {
         /**
          * custom code
          */
-        adminservice.observableuserdata.subscribe((admin: HospitalAdmin) => {
-            if (admin._id) {
+        this.core.observableUserData.subscribe((admin: HospitalAdmin) => {
+            if (admin.id) {
                 this.userdata = admin;
             }
         });
-        this.hospitalservice.activehospital.subscribe(hospital => {
+        this.core.activeHospital.subscribe(hospital => {
             if (hospital._id) {
                 this.activehospital = hospital;
             }
@@ -163,6 +163,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
     toggleSidebarOpen(key): void {
         this._fuseSidebarService.getSidebar(key).toggleOpen();
     }
+
     logout(): void {
         console.log('Logging out');
         this.stitch.logout()
@@ -173,6 +174,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
                 console.error('error logging out, please try again ');
             });
     }
+
     /**
      * Search
      *

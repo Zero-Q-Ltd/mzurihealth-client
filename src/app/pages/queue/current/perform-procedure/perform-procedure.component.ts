@@ -4,7 +4,7 @@ import { MergedProcedureModel } from '../../../../models/procedure/MergedProcedu
 import { MatTableDataSource } from '@angular/material';
 import { ProceduresService } from '../../../services/procedures.service';
 import { emptyprocedureperformed, Procedureperformed } from '../../../../models/procedure/Procedureperformed';
-import { AdminService } from '../../../services/admin.service';
+import { CoreService } from 'app/pages/services/core/core.service';
 
 @Component({
     selector: 'app-perform-procedure',
@@ -19,13 +19,13 @@ export class PerformProcedureComponent implements OnInit {
 
     constructor(
         private procedureservice: ProceduresService,
-        private adminservice: AdminService,
+        private core: CoreService,
     ) {
         /**
          *TODO: Here I've had to device a temporary hack that should be fixed
          * Iterate through the procedures and create resulst for all of them, so that the html renders without errors
          */
-        procedureservice.hospitalprocedures.subscribe(mergedprocedures => {
+        this.core.hospitalprocedures.subscribe(mergedprocedures => {
             const vals = Array.from(mergedprocedures.values());
             vals.forEach((r, i) => {
                 console.log(r, i);
@@ -38,8 +38,8 @@ export class PerformProcedureComponent implements OnInit {
                 this.procedureResults[i].notes[0] = {
                     note: '',
                     admin: {
-                        _id: this.adminservice.userdata._id,
-                        name: this.adminservice.userdata.data.displayName
+                        id: this.core.userData.id,
+                        name: this.core.userData.profile.name
                     }
                 };
             });

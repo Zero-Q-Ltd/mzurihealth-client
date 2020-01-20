@@ -20,19 +20,20 @@
 </div>
 
 
-<div [fusePerfectScrollbarOptions]="{suppressScrollX: true}" [ngClass]="fuseConfig.layout.navbar.primaryBackground" class="navbar-scroll-container"
-     fusePerfectScrollbar>
+<div [fusePerfectScrollbarOptions]="{suppressScrollX: true}" [ngClass]="fuseConfig.layout.navbar.primaryBackground"
+     class="navbar-scroll-container" fusePerfectScrollbar>
 
-    <div [ngClass]="fuseConfig.layout.navbar.secondaryBackground" class="user" fxLayout="column">
-        <div class="h3 username">{{userdata.data.displayName}}</div>
-        <div class="h5 email hint-text mt-8">{{userdata.data.email}}</div>
+    <div *ngIf="userdata" [ngClass]="fuseConfig.layout.navbar.secondaryBackground" class="user" fxLayout="column">
+        <div class="h3 username">{{userdata.profile.name}}</div>
+        <div class="h5 email hint-text mt-8">{{userdata.profile.email}}</div>
         <div [ngClass]="fuseConfig.layout.navbar.primaryBackground" class="avatar-container">
             <a [routerLink]="'profile'">
-                <img alt="" class="avatar" src="{{userdata.data.photoURL || 'assets/images/avatars/docicon.svg'}}">
+                <img alt="" class="avatar" src="{{userdata.profile.pictureUrl || 'assets/images/avatars/docicon.svg'}}">
             </a>
         </div>
 
     </div>
+    <mat-progress-bar *ngIf="!userdata" mode="indeterminate"></mat-progress-bar>
 
     <div class="navbar-content">
         <fuse-navigation class="material2" layout="vertical"></fuse-navigation>

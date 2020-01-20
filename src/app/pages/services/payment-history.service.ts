@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { MergedPatientQueueModel } from '../../models/visit/MergedPatientQueueModel';
-import { HospitalService } from './hospital.service';
 import * as moment from 'moment';
-
-import { BSON, Stream } from 'mongodb-stitch-browser-sdk';
+import { Stream } from 'mongodb-stitch-browser-sdk';
 import { ChangeEvent } from 'mongodb-stitch-core-services-mongodb-remote';
+import { CoreService } from './core/core.service';
+
 
 @Injectable({
     providedIn: 'root'
@@ -18,12 +16,12 @@ export class PaymentHistoryService {
      */
     subscriptions: Map<string, Stream<ChangeEvent<any>>> = new Map();
 
-    constructor(private hospitalservice: HospitalService) {
-        this.hospitalservice.activehospital.subscribe(hospital => {
-            if (hospital._id) {
-                this.gethistory('day');
-            }
-        });
+    constructor() {
+        // this.core.activeHospital.subscribe(hospital => {
+        //     if (hospital._id) {
+        //         this.gethistory('day');
+        //     }
+        // });
     }
 
     /**

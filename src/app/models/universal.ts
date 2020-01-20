@@ -10,13 +10,13 @@ export interface Metadata {
     /**
      * Sometimes we may just want to modify the last edited date
      */
-    created?: Meta;
+    created: Meta;
     edited: Meta;
 }
 
 export interface Meta {
     date: Date;
-    adminId: BSON.ObjectId;
+    adminId: string;
     hospitalId: BSON.ObjectId;
 }
 
@@ -24,3 +24,7 @@ export const emptymetadata: Metadata = {
     created: null,
     edited: null,
 };
+
+export interface BaseMongoObject {
+    _id: BSON.ObjectID;
+}

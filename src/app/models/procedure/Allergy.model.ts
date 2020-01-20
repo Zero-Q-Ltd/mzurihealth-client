@@ -1,4 +1,4 @@
-import { Metadata } from '../universal';
+import {Metadata} from '../universal';
 
 export enum allergy {
     'Respiratory' = 'respiratory',
@@ -6,6 +6,7 @@ export enum allergy {
     'skin' = 'skin',
     'other' = 'other'
 }
+
 export const allerytypearray = Object.values(allergy);
 
 export interface Allegy {

@@ -104,9 +104,9 @@ $default-warn-palette: mat-palette($mat-red);
 
 // Create the Material theme object
 $theme: mat-light-theme(
-    $default-primary-palette,
-    $default-accent-palette,
-    $default-warn-palette
+        $default-primary-palette,
+        $default-accent-palette,
+        $default-warn-palette
 );
 
 // Add ".theme-default" class to the body to activate this theme.
@@ -142,9 +142,9 @@ $yellow-light-theme-warn-palette: mat-palette($mat-red);
 
 // Create the Material theme object
 $yellow-light-theme: mat-light-theme(
-    $yellow-light-theme-primary-palette,
-    $yellow-light-theme-accent-palette,
-    $yellow-light-theme-warn-palette
+        $yellow-light-theme-primary-palette,
+        $yellow-light-theme-accent-palette,
+        $yellow-light-theme-warn-palette
 );
 
 // Add ".theme-yellow-light" class to the body to activate this theme.
@@ -180,9 +180,9 @@ $blue-gray-dark-theme-warn-palette: mat-palette($mat-red);
 
 // Create the Material theme object
 $blue-gray-dark-theme: mat-dark-theme(
-    $blue-gray-dark-theme-primary-palette,
-    $blue-gray-dark-theme-accent-palette,
-    $blue-gray-dark-theme-warn-palette
+        $blue-gray-dark-theme-primary-palette,
+        $blue-gray-dark-theme-accent-palette,
+        $blue-gray-dark-theme-warn-palette
 );
 
 // Add ".theme-blue-gray-dark" class to the body to activate this theme.
@@ -218,9 +218,9 @@ $pink-dark-theme-warn-palette: mat-palette($mat-red);
 
 // Create the Material theme object
 $pink-dark-theme: mat-dark-theme(
-    $pink-dark-theme-primary-palette,
-    $pink-dark-theme-accent-palette,
-    $pink-dark-theme-warn-palette
+        $pink-dark-theme-primary-palette,
+        $pink-dark-theme-accent-palette,
+        $pink-dark-theme-warn-palette
 );
 
 // Add ".theme-pink-dark" class to the body to activate this theme.

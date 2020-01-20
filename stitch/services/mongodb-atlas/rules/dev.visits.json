@@ -4,12 +4,60 @@
     "collection": "visits",
     "roles": [
         {
-            "name": "default",
-            "apply_when": {},
-            "write": true,
-            "insert": true,
-            "delete": true,
+            "name": "No Hospital",
+            "apply_when": {
+                "%%user.custom_data.config.hospitalId": {
+                    "%exists": false
+                }
+            },
+            "insert": false,
+            "delete": false,
+            "write": false,
+            "fields": {},
             "additional_fields": {}
+        },
+        {
+            "name": "Valid Hospital",
+            "apply_when": {
+                "%%user.custom_data.config.hospitalId": {
+                    "%exists": true
+                }
+            },
+            "insert": true,
+            "delete": false,
+            "write": true,
+            "fields": {},
+            "additional_fields": {}
+        }
+    ],
+    "filters": [
+        {
+            "name": "Relevant hospital ONLY",
+            "query": {
+                "hospitalId": "%%user.custom_data.config.hospitalId"
+            },
+            "apply_when": {
+                "%%user.custom_data.config.hospitalId": {
+                    "%exists": true
+                }
+            },
+            "projection": {}
+        },
+        {
+            "name": "Withhold Data",
+            "query": {
+                "hospitalId": null
+            },
+            "apply_when": {
+                "%%user.custom_data.config.hospitalId": {
+                    "%exists": false
+                }
+            },
+            "projection": {
+                "NoField": {
+                    "$numberInt": "1"
+                }
+            }
         }
     ],
     "schema": {

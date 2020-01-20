@@ -8,6 +8,7 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {FuseSearchBarModule, FuseShortcutsModule} from '@fuse/components';
 import {FuseSharedModule} from '@fuse/shared.module';
 import {ToolbarComponent} from './toolbar.component';
+import {MatProgressBarModule} from '@angular/material';
 
 
 @NgModule({
@@ -25,6 +26,7 @@ import {ToolbarComponent} from './toolbar.component';
         FuseSearchBarModule,
         FuseShortcutsModule,
 
+        MatProgressBarModule,
         RouterModule,
     ],
     exports: [

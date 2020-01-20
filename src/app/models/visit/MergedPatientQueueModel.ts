@@ -1,6 +1,6 @@
-import { emptypatient, Patient } from '../patient/Patient';
-import { MedicalInfo } from '../patient/MedicalInfo';
-import { Visit, emptypatientvisit } from './Visit';
+import {emptypatient, Patient} from '../patient/Patient';
+import {MedicalInfo} from '../patient/MedicalInfo';
+import {emptypatientvisit, Visit} from './Visit';
 
 export interface MergedPatientQueueModel {
     patientdata: Patient;
@@ -8,8 +8,8 @@ export interface MergedPatientQueueModel {
 }
 
 export const emptymergedQueueModel: MergedPatientQueueModel = {
-    visitData: { ...emptypatientvisit },
-    patientdata: { ...emptypatient },
+    visitData: {...emptypatientvisit},
+    patientdata: {...emptypatient},
 };
 
 export interface CurrentPatient {

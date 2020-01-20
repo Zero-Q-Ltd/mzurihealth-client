@@ -4,10 +4,6 @@ import * as BSON from 'bson';
 export interface Patientnote {
     title: string;
     note: string;
-    admin: {
-        _id: BSON.ObjectId,
-        name: string
-    };
     _id: BSON.ObjectId;
     patientId: BSON.ObjectId;
     metadata: Metadata;
@@ -23,9 +19,5 @@ export const emptynote: Patientnote = {
     patientId: null,
     _id: null,
     metadata: emptymetadata,
-    admin: {
-        _id: null,
-        name: null
-    },
     helpful: 0
 };

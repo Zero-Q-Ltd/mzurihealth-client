@@ -1,6 +1,6 @@
-import { Condition } from '../procedure/MedicalConditions.model';
-import { Allegy } from '../procedure/Allergy.model';
-import { emptymetadata, Metadata } from '../universal';
+import {Condition} from '../procedure/MedicalConditions.model';
+import {Allegy} from '../procedure/Allergy.model';
+import {emptymetadata, Metadata} from '../universal';
 import * as BSON from 'bson';
 
 export interface MedicalInfo {
@@ -13,6 +13,7 @@ export interface MedicalInfo {
     metadata: Metadata;
     visitId: BSON.ObjectId;
 }
+
 export interface Vitals {
     height: number;
     weight: number;
@@ -22,6 +23,7 @@ export interface Vitals {
     respiration: number;
     hb: string;
 }
+
 export const emptymedicalInfo: MedicalInfo = {
     _id: null,
     patientId: null,

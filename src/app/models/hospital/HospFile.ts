@@ -1,5 +1,5 @@
 import * as BSON from 'bson';
-import { Metadata, emptymetadata } from '../universal';
+import {emptymetadata, Metadata} from '../universal';
 
 export interface HospFile {
     _id: BSON.ObjectId;

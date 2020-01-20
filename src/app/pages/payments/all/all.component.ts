@@ -1,16 +1,16 @@
-import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { MatDialog, MatDialogRef, MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
-import { emptyhospital, Hospital } from '../../../models/hospital/Hospital';
-import { HospitalAdmin } from '../../../models/user/HospitalAdmin';
-import { Paymentmethods } from '../../../models/payment/PaymentChannel';
-import { FuseConfirmDialogComponent } from '../../../../@fuse/components/confirm-dialog/confirm-dialog.component';
-import { FormGroup } from '@angular/forms';
-import { fuseAnimations } from '../../../../@fuse/animations';
-import { MergedPatientQueueModel } from '../../../models/visit/MergedPatientQueueModel';
-import { PatientService } from '../../services/patient.service';
-import { QueueService } from '../../services/queue.service';
-import { PaymentHistoryService } from '../../services/payment-history.service';
-import { InvoiceComponent } from '../invoice/invoice.component';
+import {Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {MatDialog, MatDialogRef, MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
+import {emptyhospital, Hospital} from '../../../models/hospital/Hospital';
+import {HospitalAdmin} from '../../../models/user/HospitalAdmin';
+import {Paymentmethods} from '../../../models/payment/PaymentChannel';
+import {FuseConfirmDialogComponent} from '../../../../@fuse/components/confirm-dialog/confirm-dialog.component';
+import {FormGroup} from '@angular/forms';
+import {fuseAnimations} from '../../../../@fuse/animations';
+import {MergedPatientQueueModel} from '../../../models/visit/MergedPatientQueueModel';
+import {PatientService} from '../../services/patient.service';
+import {QueueService} from '../../services/core/queue.service';
+import {PaymentHistoryService} from '../../services/payment-history.service';
+import {InvoiceComponent} from '../invoice/invoice.component';
 
 @Component({
     selector: 'app-all',
@@ -30,13 +30,13 @@ export class AllComponent implements OnInit {
     allInsurance: { [key: string]: Paymentmethods } = {};
     confirmDialogRef: MatDialogRef<FuseConfirmDialogComponent>;
     searchForm: FormGroup;
-    @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
-    @ViewChild(MatSort, { static: false }) sort: MatSort;
+    @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
+    @ViewChild(MatSort, {static: false}) sort: MatSort;
 
     constructor(public _matDialog: MatDialog,
-        private patientservice: PatientService,
-        private queueService: QueueService,
-        private paymenthistservice: PaymentHistoryService) {
+                private patientservice: PatientService,
+                private queueService: QueueService,
+                private paymenthistservice: PaymentHistoryService) {
         paymenthistservice.gethistory('week').then(hist => {
             this.patientshistorydatasource.data = hist;
         });

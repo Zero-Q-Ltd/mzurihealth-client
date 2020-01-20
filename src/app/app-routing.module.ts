@@ -1,10 +1,9 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { Error404Component } from './errorpages/404/error-404.component';
-import { UsersGuard } from './pages/guards/users.guard';
-import { DashboardComponent } from './pages/dashboard/dashboard.component';
-import { AdminprofileComponent } from './pages/adminprofile/adminprofile.component';
-import { MainLayoutComponent } from './pages/main-layout/main-layout.component';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
+import {UsersGuard} from './pages/guards/users.guard';
+import {DashboardComponent} from './pages/dashboard/dashboard.component';
+import {AdminprofileComponent} from './pages/adminprofile/adminprofile.component';
+import {MainLayoutComponent} from './pages/main-layout/main-layout.component';
 
 const routes: Routes = [
     {

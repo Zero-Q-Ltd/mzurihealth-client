@@ -1,5 +1,5 @@
-import { emptymetadata, Metadata } from '../universal';
-import { PaymentMethod } from '../payment/CustomPaymentMethod.model';
+import {emptymetadata, Metadata} from '../universal';
+import {PaymentMethod} from '../payment/CustomPaymentMethod.model';
 import * as BSON from 'bson';
 
 export interface Hospital {

@@ -1,4 +1,4 @@
-import { emptymetadata, Metadata } from '../universal';
+import {emptymetadata, Metadata} from '../universal';
 import * as BSON from 'bson';
 
 export interface AdminInvite {
@@ -7,7 +7,7 @@ export interface AdminInvite {
     phone: string;
     categoyId: string;
     level: number;
-    inviterId: BSON.ObjectId;
+    inviterId: string;
     hospitalId: BSON.ObjectId;
     metadata: Metadata;
     _id: BSON.ObjectId;

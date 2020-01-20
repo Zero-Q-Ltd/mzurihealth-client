@@ -1,23 +1,22 @@
-import { emptypatient, Patient } from '../../models/patient/Patient';
 import { Injectable } from '@angular/core';
-import { HospitalService } from './hospital.service';
-import { AdminService } from './admin.service';
-import { BehaviorSubject, combineLatest, Observable, Subscription, of, Subject, } from 'rxjs';
-import { HospitalAdmin } from '../../models/user/HospitalAdmin';
-import { PatientService } from './patient.service';
-import { Visit, NewVisit, CheckinStatus } from '../../models/visit/Visit';
-import { CurrentPatient, MergedPatientQueueModel } from '../../models/visit/MergedPatientQueueModel';
-import * as moment from 'moment';
-import { StitchService } from './stitch/stitch.service';
-import { distinctUntilChanged, distinctUntilKeyChanged, skipWhile, take } from 'rxjs/operators';
-import { RemoteInsertOneResult, Stream } from 'mongodb-stitch-browser-sdk';
 import { HospFile } from 'app/models/hospital/HospFile';
+import { emptymedicalInfo } from 'app/models/patient/MedicalInfo';
 import { Meta } from 'app/models/universal';
 import * as BSON from 'bson';
+import * as moment from 'moment';
+import { Stream } from 'mongodb-stitch-browser-sdk';
 import { ChangeEvent, OperationType } from 'mongodb-stitch-core-services-mongodb-remote';
-import { VisitService } from './visit.service';
-import { MedicalInfo, emptymedicalInfo } from 'app/models/patient/MedicalInfo';
-import { MedicalinfoService } from './medicalinfo.service';
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { distinctUntilChanged, skipWhile } from 'rxjs/operators';
+import { Patient } from '../../../models/patient/Patient';
+import { HospitalAdmin } from '../../../models/user/HospitalAdmin';
+import { CurrentPatient, MergedPatientQueueModel } from '../../../models/visit/MergedPatientQueueModel';
+import { CheckinStatus, NewVisit, Visit } from '../../../models/visit/Visit';
+import { CoreService } from './core.service';
+import { MedicalinfoService } from '../medicalinfo.service';
+import { PatientService } from '../patient.service';
+import { StitchService } from '../stitch/stitch.service';
+import { VisitService } from '../visit.service';
 
 @Injectable({
     providedIn: 'root'
@@ -35,7 +34,7 @@ export class QueueService {
     currentpatient: BehaviorSubject<CurrentPatient> = new BehaviorSubject(null);
     currentpatientHistory: BehaviorSubject<Array<Visit>> = new BehaviorSubject<Array<Visit>>([]);
 
-    adminid: BSON.ObjectId;
+    adminid: string;
     fetchingpatientdata: BehaviorSubject<boolean> = new BehaviorSubject(false);
     fetchingCurrentpatientdata: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
@@ -51,8 +50,7 @@ export class QueueService {
      */
     internalSubscriptions: Map<string, Subscription> = new Map();
 
-    constructor(private hospitalservice: HospitalService,
-        private adminservice: AdminService,
+    constructor(private core: CoreService,
         private patientservice: PatientService,
         private visitService: VisitService,
         private medInfoService: MedicalinfoService,
@@ -62,7 +60,7 @@ export class QueueService {
          * Only re-subscribe to hospital queue when the hospital id changes
          * Maybe the admin has been moved to another hospital
          */
-        this.hospitalservice.activehospital.pipe(
+        this.core.activeHospital.pipe(
             skipWhile(t => !t._id),
             distinctUntilChanged((prev, curr) => prev._id.toHexString() === curr._id.toHexString()))
             .subscribe(hospital => {
@@ -73,11 +71,11 @@ export class QueueService {
         /**
          * Only filter if the admin id has changed, ignore every other admin change
          */
-        adminservice.observableuserdata
-            .pipe(distinctUntilChanged((prev, curr) => prev._id.toHexString() === curr._id.toHexString()))
+        this.core.observableUserData
+            .pipe(distinctUntilChanged((prev, curr) => prev.id === curr.id))
             .subscribe((admin: HospitalAdmin) => {
-                if (admin._id) {
-                    this.adminid = admin._id;
+                if (admin.id) {
+                    this.adminid = admin.id;
                 }
             });
 
@@ -89,7 +87,7 @@ export class QueueService {
      * @param visit
      * @param adminid
      */
-    assignadmin(visit: Visit, adminid: BSON.ObjectID) {
+    assignadmin(visit: Visit, adminid: string) {
         visit.checkin = {
             status: 1,
             admin: adminid
@@ -154,8 +152,8 @@ export class QueueService {
                              */
                             if (q.fullDocument.checkin.status === CheckinStatus.completed) {
                                 /**
-                                * remove the exited item from the array by filtering and only returning true if the id matches
-                                */
+                                 * remove the exited item from the array by filtering and only returning true if the id matches
+                                 */
                                 activeVisits.filter(t => {
                                     return t._id.toHexString() !== q.fullDocument._id.toHexString();
                                 });
@@ -172,12 +170,12 @@ export class QueueService {
 
                         case OperationType.Update: {
                             /**
-                            * Check if the patient has left the queue
-                            */
+                             * Check if the patient has left the queue
+                             */
                             if (q.fullDocument.checkin.status === CheckinStatus.completed) {
                                 /**
-                                * remove the exited item from the array by filtering and only returning true if the id matches
-                                */
+                                 * remove the exited item from the array by filtering and only returning true if the id matches
+                                 */
                                 activeVisits.filter(t => {
                                     return t._id.toHexString() !== q.fullDocument._id.toHexString();
                                 });
@@ -202,11 +200,22 @@ export class QueueService {
     }
 
     /**
+     * @todo Impliment to reduce db overhead
+     */
+    removePatientFromQUeue() {
+
+    }
+
+    updatePatientInQueue() {
+
+    }
+
+    /**
      * This only updates the status of the patient queue
      * This logic is very sensitive and arranged the way it is because of the following reason(s)
-     * 1. The patient movement pipeline dictates that a patient is first added to that admin's queue 
+     * 1. The patient movement pipeline dictates that a patient is first added to that admin's queue
      * 2. The admin accepts them (That means they already exist in that admin's queue ^^Above)
-     * Hence if you are edisitng the db direct and skip adding the patient to that admin's queue, 
+     * Hence if you are edisitng the db direct and skip adding the patient to that admin's queue,
      * the patient WILL NOT appear in the current patient tab even if the stage is correct
      */
     async updatePatientVisits(visit: Visit): Promise<void> {
@@ -215,7 +224,7 @@ export class QueueService {
 
         const previousData: MergedPatientQueueModel = patientmap.get(visit.patientId.toHexString());
         /**
-         * There is a possibility that the patient was not previously in the queue, 
+         * There is a possibility that the patient was not previously in the queue,
          * so these two vars might contain different values
          */
         const previousDataQueue: MergedPatientQueueModel = mypatientsmap.get(visit.patientId.toHexString());
@@ -260,12 +269,11 @@ export class QueueService {
     /**
      * checks whether a checkin is assigned to the current admin
      */
-    checkAdmin(checkinAdmin: BSON.ObjectID | null | undefined): boolean {
+    checkAdmin(checkinAdmin: string | null | undefined): boolean {
         if (!checkinAdmin) {
             return false;
-        }
-        else {
-            return checkinAdmin.toHexString() === this.adminid.toHexString();
+        } else {
+            return checkinAdmin === this.adminid;
         }
     }
 
@@ -293,44 +301,39 @@ export class QueueService {
 
         const f = this.stitch.db.collection<HospFile>('patientfiles').find(patientFileQuery).toArray();
         const p = this.stitch.db.collection<Patient>('patients').find(patientQuery).toArray();
-        combineLatest([f, p])
-            /**
-             * Take only the first emission because all subsequent db changes will triegger an equivalent evaluation
-             */
-            .pipe(take(1))
-            .subscribe(result => {
-                console.log('queued patients data fetched');
-                const patientmap: Map<string, MergedPatientQueueModel> = new Map();
-                const mypatientsmap: Map<string, MergedPatientQueueModel> = new Map();
+        Promise.all([f, p]).then(result => {
+            console.log('queued patients data fetched');
+            const patientmap: Map<string, MergedPatientQueueModel> = new Map();
+            const mypatientsmap: Map<string, MergedPatientQueueModel> = new Map();
 
-                visits.map(async visit => {
-                    /**
-                     * check if the visit is for the current admin
-                     */
-                    const matchingPatient: Patient = result[1].filter(pp => pp._id.toHexString() === visit.patientId.toHexString())[0];
-                    matchingPatient.fileInfo = result[0].filter(ff => ff.patientId.toHexString() === matchingPatient._id.toHexString())[0];
+            visits.map(async visit => {
+                /**
+                 * check if the visit is for the current admin
+                 */
+                const matchingPatient: Patient = result[1].filter(pp => pp._id.toHexString() === visit.patientId.toHexString())[0];
+                matchingPatient.fileInfo = result[0].filter(ff => ff.patientId.toHexString() === matchingPatient._id.toHexString())[0];
 
-                    patientmap.set(visit.patientId.toHexString(), { visitData: visit, patientdata: matchingPatient });
+                patientmap.set(visit.patientId.toHexString(), { visitData: visit, patientdata: matchingPatient });
 
 
-                    if (this.checkAdmin(visit.checkin.admin)) {
-                        mypatientsmap.set(visit.patientId.toHexString(), { visitData: visit, patientdata: matchingPatient });
-                        if (visit.checkin.status === CheckinStatus['being attended']) {
-                            this.currentpatient.next(await this.fetchCurrentPatientData(visit, matchingPatient, false));
-                        }
+                if (this.checkAdmin(visit.checkin.admin)) {
+                    mypatientsmap.set(visit.patientId.toHexString(), { visitData: visit, patientdata: matchingPatient });
+                    if (visit.checkin.status === CheckinStatus['being attended']) {
+                        this.currentpatient.next(await this.fetchCurrentPatientData(visit, matchingPatient, false));
                     }
-                });
-                this.mainpatientsqueue.next(patientmap);
-                this.mypatientqueue.next(mypatientsmap);
-                this.fetchingpatientdata.next(false);
+                }
             });
+            this.mainpatientsqueue.next(patientmap);
+            this.mypatientqueue.next(mypatientsmap);
+            this.fetchingpatientdata.next(false);
+        });
     }
 
     /**
      * Uses the patient id to fetch the most recent medicalInfo and conditionally update the patientdata
      * The visit is provided
-     * @param visit 
-     * @param patientId 
+     * @param visit
+     * @param patientId
      */
     async fetchCurrentPatientData(visitdata: Visit, patient: Patient, updatePatientdata: boolean): Promise<CurrentPatient> {
         console.log('Current Patient Found');
@@ -349,7 +352,7 @@ export class QueueService {
     }
 
     /**
-     * Fetches the current patient 
+     * Fetches the current patient
      */
     fetchCurrentPatientHsistory(patientId: BSON.ObjectID, size: number): void {
         this.visitService.fetchvisithistory(patientId, size).then(hist => {
@@ -362,15 +365,15 @@ export class QueueService {
     addPatientToQueue(newvist: NewVisit, patient: Patient): Promise<any> {
         const meta: Meta = {
             date: moment().toDate(),
-            adminId: this.adminservice.userdata._id,
+            adminId: this.core.userData.id,
             hospitalId: this.activehospitalid
         };
         const visitId = new BSON.ObjectId;
         const visitTemp: Visit = {
             visitDescription: newvist.description,
             patientId: patient._id,
-            hospitalId: this.activehospitalid,
             metadata: {
+                created: meta,
                 edited: meta
             },
             payment: {
@@ -391,7 +394,7 @@ export class QueueService {
                 admin: null
             },
             generalNotes: [],
-            invoiceId: this.hospitalservice.activehospital.value.invoiceCount + 1,
+            invoiceId: this.core.activeHospital.value.invoiceCount + 1,
             prescription: null,
             procedures: [],
             totalcost: 0

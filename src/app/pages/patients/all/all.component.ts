@@ -5,7 +5,6 @@ import { Patient } from '../../../models/patient/Patient';
 import * as moment from 'moment';
 import { HospitalAdmin } from '../../../models/user/HospitalAdmin';
 import { emptyhospital, Hospital } from '../../../models/hospital/Hospital';
-import { AdminService } from '../../services/admin.service';
 import { PatientService } from '../../services/patient.service';
 import { HospitalService } from '../../services/hospital.service';
 import { PushqueueComponent } from '../pushqueue/pushqueue.component';
@@ -14,10 +13,11 @@ import { NotificationService } from '../../../shared/services/notifications.serv
 import { Router } from '@angular/router';
 import { PaymentmethodService } from '../../services/paymentmethod.service';
 import { Paymentmethods } from '../../../models/payment/PaymentChannel';
-import { QueueService } from '../../services/queue.service';
+import { QueueService } from '../../services/core/queue.service';
 import { ProfileComponent } from '../profile/profile.component';
 import { FuseConfirmDialogComponent } from '../../../../@fuse/components/confirm-dialog/confirm-dialog.component';
 import { NewVisit } from 'app/models/visit/Visit';
+import { CoreService } from 'app/pages/services/core/core.service';
 
 @Component({
     selector: 'all-patients',
@@ -41,7 +41,7 @@ export class AllComponent implements OnInit, AfterViewInit {
     @ViewChild(MatSort, { static: false }) sort: MatSort;
 
 
-    constructor(private adminservice: AdminService,
+    constructor(private core: CoreService,
         private patientservice: PatientService,
         private hospitalservice: HospitalService,
         private paymentethods: PaymentmethodService,
@@ -51,22 +51,22 @@ export class AllComponent implements OnInit, AfterViewInit {
         private formBuilder: FormBuilder,
         public _matDialog: MatDialog, private router: Router) {
 
-        this.hospitalservice.activehospital.subscribe(hospital => {
+        this.core.activeHospital.subscribe(hospital => {
             if (hospital._id) {
                 this.activehospital = hospital;
             }
         });
         this.queueService.mainpatientsqueue.subscribe();
 
-        this.paymentethods.allinsurance.subscribe(insurance => {
+        this.core.allinsurance.subscribe(insurance => {
             this.allInsurance = insurance;
         });
-        adminservice.observableuserdata.subscribe((admin: HospitalAdmin) => {
-            if (admin.data.uid) {
+        this.core.observableUserData.subscribe((admin: HospitalAdmin) => {
+            if (admin.id) {
                 this.userdata = admin;
             }
         });
-        this.patientservice.getHospitalPatients().subscribe(patients => {
+        this.patientservice.getHospitalPatients(this.core.activeHospitalId).subscribe(patients => {
             this.patientsdatasource.data = patients;
         });
 

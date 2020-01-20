@@ -1,22 +1,22 @@
 import { Component, Inject, OnInit, Optional, ViewEncapsulation } from '@angular/core';
+import { Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material';
+import { Router } from '@angular/router';
+import { NewPatientForm } from 'app/models/patient/NewPatientForm';
+import { Insurance, NextofKin, PersonalInfo } from 'app/models/patient/Patient';
+import { CoreService } from 'app/pages/services/core/core.service';
+import { FilenumberValidator } from 'app/shared/validators/filenumber.validator';
+import * as moment from 'moment';
+import { FormArray, FormBuilder, FormControl, FormGroup } from 'ngx-strongly-typed-forms';
+import { fuseAnimations } from '../../../../@fuse/animations';
+import { emptyfile, HospFile } from '../../../models/hospital/HospFile';
+import { emptyhospital, Hospital } from '../../../models/hospital/Hospital';
+import { Paymentmethods } from '../../../models/payment/PaymentChannel';
 import { NotificationService } from '../../../shared/services/notifications.service';
+import { NumberValidator } from '../../../shared/validators/number.validator';
 import { AdminService } from '../../services/admin.service';
 import { PatientService } from '../../services/patient.service';
-import { HospitalService } from '../../services/hospital.service';
-import { emptyhospital, Hospital } from '../../../models/hospital/Hospital';
-import { emptyfile, HospFile } from '../../../models/hospital/HospFile';
-import * as moment from 'moment';
-import { FormArray, FormControl, FormGroup, FormBuilder } from 'ngx-strongly-typed-forms';
-import { Validators } from '@angular/forms';
-import { fuseAnimations } from '../../../../@fuse/animations';
-import { Router } from '@angular/router';
-import { Paymentmethods } from '../../../models/payment/PaymentChannel';
 import { PaymentmethodService } from '../../services/paymentmethod.service';
-import { NumberValidator } from '../../../shared/validators/number.validator';
-import { FilenumberValidator } from 'app/shared/validators/filenumber.validator';
-import { PersonalInfo, Patient, NextofKin, Insurance } from 'app/models/patient/Patient';
-import { NewPatientForm } from 'app/models/patient/NewPatientForm';
 
 @Component({
     selector: 'app-add',
@@ -39,7 +39,7 @@ export class AddComponent implements OnInit {
     constructor(private adminservice: AdminService,
         private patientservice: PatientService,
         private formBuilder: FormBuilder,
-        private hospitalservice: HospitalService,
+        private core: CoreService,
         private router: Router,
         private paymentethods: PaymentmethodService,
         private notificationservice: NotificationService,
@@ -53,12 +53,12 @@ export class AddComponent implements OnInit {
          * */
         this.initFormBuilder();
 
-        this.paymentethods.allinsurance.subscribe(insurance => {
+        this.core.allinsurance.subscribe(insurance => {
             this.allInsurance = insurance;
         });
 
 
-        this.hospitalservice.activehospital.subscribe(hospital => {
+        this.core.activeHospital.subscribe(hospital => {
             if (hospital._id) {
                 this.activehospital = hospital;
                 this.patientfileno.no = (hospital.patientCount + 1).toString();
@@ -96,7 +96,7 @@ export class AddComponent implements OnInit {
         if (this.patientsForm.valid) {
             // this.savingUser = true;
 
-            this.patientservice.savePatient(this.patientsForm.getRawValue()).then(() => {
+            this.patientservice.savePatient(this.patientsForm.getRawValue(), this.core.adminId, this.core.activeHospitalId).then(() => {
                 console.log('patient added successfully');
                 this.savingUser = false;
                 this.notificationservice.notify({
@@ -136,6 +136,7 @@ export class AddComponent implements OnInit {
             });
         });
     }
+
     /**
      * Retruns the form array for dynamic manipulation
      */
@@ -193,7 +194,7 @@ export class AddComponent implements OnInit {
             }),
             fileNo: ['',
                 Validators.required,
-                FilenumberValidator.validate(this.patientservice)]
+                FilenumberValidator.validate(this.patientservice, this.core)]
         });
 
 

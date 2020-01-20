@@ -1,12 +1,12 @@
 import {TestBed} from '@angular/core/testing';
 
-import {MedicalinfoService} from './medicalinfo.service';
+import {GenericQueryService} from './generic-query.service';
 
-describe('MedicalinfoService', () => {
+describe('GenericQueryService', () => {
     beforeEach(() => TestBed.configureTestingModule({}));
 
     it('should be created', () => {
-        const service: MedicalinfoService = TestBed.get(MedicalinfoService);
+        const service: GenericQueryService = TestBed.get(GenericQueryService);
         expect(service).toBeTruthy();
     });
 });

@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { fuseAnimations } from '../../../../@fuse/animations';
-import { LocalcommunicationService } from './localcommunication.service';
-import { PatientService } from '../../services/patient.service';
+import {Component, OnInit} from '@angular/core';
+import {fuseAnimations} from '../../../../@fuse/animations';
+import {LocalcommunicationService} from './localcommunication.service';
+import {PatientService} from '../../services/patient.service';
 
 @Component({
     selector: 'patient-current',
@@ -12,7 +12,8 @@ import { PatientService } from '../../services/patient.service';
 export class CurrentComponent implements OnInit {
     activepage = 'generaldetails';
     activechip = 'General';
-    constructor(private communication: LocalcommunicationService, private patientservice: PatientService, ) {
+
+    constructor(private communication: LocalcommunicationService, private patientservice: PatientService,) {
         communication.onactivechildpagechanged.subscribe(page => {
             this.activepage = page;
         });
@@ -20,6 +21,7 @@ export class CurrentComponent implements OnInit {
 
     ngOnInit(): void {
     }
+
     savemedinfo() {
         this.communication.saveMedinfo();
     }

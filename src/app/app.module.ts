@@ -1,38 +1,38 @@
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatIconModule, MatSnackBarModule } from '@angular/material';
-import { TranslateModule } from '@ngx-translate/core';
+import {NgModule} from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
+import {HttpClientModule} from '@angular/common/http';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {MatIconModule, MatSnackBarModule} from '@angular/material';
+import {TranslateModule} from '@ngx-translate/core';
 import 'hammerjs';
-import { FuseModule } from '@fuse/fuse.module';
-import { FuseProgressBarModule } from '@fuse/components';
+import {FuseModule} from '@fuse/fuse.module';
+import {FuseProgressBarModule} from '@fuse/components';
 
-import { fuseConfig } from 'app/fuse-config';
+import {fuseConfig} from 'app/fuse-config';
 
-import { AppComponent } from 'app/app.component';
-import { RouterModule } from '@angular/router';
-import { AppRoutingModule } from './app-routing.module';
-import { FuseSharedModule } from '../@fuse/shared.module';
-import { Error404Module } from './errorpages/404/error-404.module';
-import { Error500Module } from './errorpages/500/error-500.module';
-import { AgmCoreModule } from '@agm/core';
-import { CommonModule } from '@angular/common';
-import { NotificationComponent } from './shared/components/notification/notification.component';
-import { Angulartics2Module } from 'angulartics2';
-import { ServiceWorkerModule } from '@angular/service-worker';
-import { environment } from '../environments/environment';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgxStronglyTypedFormsModule } from 'ngx-strongly-typed-forms';
-import { DocumentationModule } from './pages/documentation/documentation.module';
-import { AuthenticationModule } from './authentication/authentication.module';
-import { CalendarModule } from 'angular-calendar';
-import { MainSharedModule } from './pages/shared/main-shared.module';
-import { DashboardComponent } from './pages/dashboard/dashboard.component';
-import { AdminprofileComponent } from './pages/adminprofile/adminprofile.component';
-import { MainLayoutComponent } from './pages/main-layout/main-layout.component';
-import { LayoutModule } from './pages/main-layout/layout/layout.module';
-import { UsersGuard } from './pages/guards/users.guard';
+import {AppComponent} from 'app/app.component';
+import {RouterModule} from '@angular/router';
+import {AppRoutingModule} from './app-routing.module';
+import {FuseSharedModule} from '../@fuse/shared.module';
+import {Error404Module} from './errorpages/404/error-404.module';
+import {Error500Module} from './errorpages/500/error-500.module';
+import {AgmCoreModule} from '@agm/core';
+import {CommonModule} from '@angular/common';
+import {NotificationComponent} from './shared/components/notification/notification.component';
+import {Angulartics2Module} from 'angulartics2';
+import {ServiceWorkerModule} from '@angular/service-worker';
+import {environment} from '../environments/environment';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {NgxStronglyTypedFormsModule} from 'ngx-strongly-typed-forms';
+import {DocumentationModule} from './pages/documentation/documentation.module';
+import {AuthenticationModule} from './authentication/authentication.module';
+import {CalendarModule} from 'angular-calendar';
+import {MainSharedModule} from './pages/shared/main-shared.module';
+import {DashboardComponent} from './pages/dashboard/dashboard.component';
+import {AdminprofileComponent} from './pages/adminprofile/adminprofile.component';
+import {MainLayoutComponent} from './pages/main-layout/main-layout.component';
+import {LayoutModule} from './pages/main-layout/layout/layout.module';
+import {UsersGuard} from './pages/guards/users.guard';
 
 @NgModule({
     declarations: [
@@ -80,7 +80,7 @@ import { UsersGuard } from './pages/guards/users.guard';
 
         MainSharedModule,
         Angulartics2Module.forRoot(),
-        ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+        ServiceWorkerModule.register('ngsw-worker.js', {enabled: environment.production}),
 
     ],
     exports: [MainSharedModule],

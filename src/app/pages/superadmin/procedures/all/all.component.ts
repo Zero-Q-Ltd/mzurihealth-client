@@ -9,6 +9,7 @@ import { fuseAnimations } from '../../../../../@fuse/animations';
 import { FuseConfirmDialogComponent } from '../../../../../@fuse/components/confirm-dialog/confirm-dialog.component';
 import { NotificationService } from '../../../../shared/services/notifications.service';
 import { MergedProcedureModel } from '../../../../models/procedure/MergedProcedure.model';
+import { CoreService } from 'app/pages/services/core/core.service';
 
 @Component({
     selector: 'procedures-all',
@@ -26,15 +27,17 @@ export class AllComponent implements OnInit, AfterViewInit {
     @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
     @ViewChild(MatSort, { static: false }) sort: MatSort;
 
-    constructor(private procedureservice: ProceduresService,
+    constructor(
+        private procedureservice: ProceduresService,
         private communicationservice: LocalcommunicationService,
         private _matDialog: MatDialog,
+        private core: CoreService,
         private notificationservice: NotificationService) {
-        procedureservice.hospitalprocedures.subscribe(mergedprocedures => {
+        this.core.hospitalprocedures.subscribe(mergedprocedures => {
             console.log(Array.from(mergedprocedures.values()));
             this.hospitalprocedures.data = Array.from(mergedprocedures.values());
         });
-        procedureservice.categories.subscribe(categories => {
+        this.core.categories.subscribe(categories => {
             this.procedurecategories = categories;
         });
     }

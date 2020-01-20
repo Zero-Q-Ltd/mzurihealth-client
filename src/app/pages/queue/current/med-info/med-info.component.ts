@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Patient } from 'app/models/patient/Patient';
-import { QueueService } from 'app/pages/services/queue.service';
+import { QueueService } from 'app/pages/services/core/queue.service';
 import { MedicalinfoService } from 'app/pages/services/medicalinfo.service';
 import { MedicalInfo, Vitals } from 'app/models/patient/MedicalInfo';
 import { FormArray, FormControl, FormGroup, FormBuilder } from 'ngx-strongly-typed-forms';

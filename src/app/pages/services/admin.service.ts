@@ -15,11 +15,9 @@ import { CoreService } from './core/core.service';
 })
 export class AdminService {
 
-
-    constructor(private router: Router,
-        private notificationservice: NotificationService,
-        private core: CoreService,
-        private stitch: StitchService) {
+    adminCollection = this.stitch.db.collection<HospitalAdmin>('hospitaladmins');
+    adminInvites = this.stitch.db.collection('admininvites');
+    constructor(private stitch: StitchService) {
 
     }
 
@@ -29,20 +27,24 @@ export class AdminService {
         // config.availability = availability;
     }
 
-
+    gethospitalAdmins(hospitalId: BSON.ObjectId): Promise<HospitalAdmin[]> {
+        return this.adminCollection
+            .find({ 'config.hospitalId': hospitalId })
+            .asArray();
+    }
 
     disableadmin(adminid: string): Promise<any> {
-        return this.stitch.db.collection('hospitaladmins').updateOne({ id: adminid }, { status: false });
+        return this.adminCollection.updateOne({ id: adminid }, { status: false });
         // return this.db.firestore.collection('hospitaladmins').doc(adminid).update({status: false});
     }
 
     enableadmin(adminid: string): Promise<any> {
-        return this.stitch.db.collection('hospitaladmins').updateOne({ id: adminid }, { status: false });
+        return this.adminCollection.updateOne({ id: adminid }, { status: false });
         // return this.db.firestore.collection('hospitaladmins').doc(adminid).update({status: true});
     }
 
     deleteinvite(inviteid: BSON.ObjectID): Promise<any> {
-        return this.stitch.db.collection('admininvites').deleteOne({ _id: inviteid });
+        return this.adminInvites.deleteOne({ _id: inviteid });
 
         // return this.db.firestore.collection('admininvites').doc(inviteid).delete();
     }

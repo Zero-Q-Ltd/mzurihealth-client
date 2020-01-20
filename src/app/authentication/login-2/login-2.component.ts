@@ -8,6 +8,7 @@ import { AdminService } from '../../pages/services/admin.service';
 import { HospitalAdmin } from '../../models/user/HospitalAdmin';
 import { Router } from '@angular/router';
 import { StitchService } from 'app/pages/services/stitch/stitch.service';
+import { CoreService } from 'app/pages/services/core/core.service';
 
 @Component({
     selector: 'login-2',
@@ -34,7 +35,7 @@ export class Login2Component implements OnInit {
         private _fuseConfigService: FuseConfigService,
         private _formBuilder: FormBuilder,
         private _fuseSplashScreenService: FuseSplashScreenService,
-        private adminservice: AdminService,
+        private core: CoreService,
         private router: Router,
         private stitch: StitchService
     ) {
@@ -55,7 +56,7 @@ export class Login2Component implements OnInit {
                 }
             }
         };
-        this.adminservice.observableuserdata.subscribe((admin: HospitalAdmin) => {
+        this.core.observableuserdata.subscribe((admin: HospitalAdmin) => {
             if (admin && admin.id) {
                 this.router.navigate(['/admin']);
             }

@@ -12,15 +12,17 @@ import { emptypatient, Insurance, NextofKin, Patient } from '../../models/patien
 import { AdminService } from './admin.service';
 import { HospitalService } from './hospital.service';
 import { StitchService } from './stitch/stitch.service';
+import { CoreService } from './core/core.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class PatientService {
-
+    patientsCollection = this.stitch.db.collection<Patient>('patients');
+    patientFilesCollection = this.stitch.db.collection<HospFile>('patientfiles');
     constructor(
         private hospitalservice: HospitalService,
-        private adminservice: AdminService,
+        private core: CoreService,
         private stitch: StitchService) {
     }
 
@@ -36,12 +38,12 @@ export class PatientService {
     internalSubscriptions: Map<string, Subscription> = new Map();
 
     getpatientbyid(patientid: BSON.ObjectId): Promise<Patient> {
-        const f = this.stitch.db.collection<HospFile>('patientfiles')
+        const f = this.patientFilesCollection
             .findOne({
                 patientId: patientid
             });
 
-        const p = this.stitch.db.collection<Patient>('patients')
+        const p = this.patientsCollection
             .findOne({ _id: patientid });
 
         const pt = combineLatest([p, f])
@@ -60,9 +62,8 @@ export class PatientService {
         const queryid = new BSON.ObjectId();
 
         const response: ReplaySubject<Patient> = new ReplaySubject(1);
-        const collection = this.stitch.db.collection<Patient>('patients');
-        this.dbSubscriptions.set(queryid.toString(), await collection.watch([id]));
-        collection.findOne(query)
+        this.dbSubscriptions.set(queryid.toString(), await this.patientsCollection.watch([id]));
+        this.patientsCollection.findOne(query)
             .then(async value => {
                 response.next(value);
             })
@@ -123,8 +124,8 @@ export class PatientService {
 
         const newmeta: Meta = {
             date: moment().toDate(),
-            adminId: this.adminservice.userdata.id,
-            hospitalId: this.hospitalservice.activehospital.value._id
+            adminId: this.core.userdata.id,
+            hospitalId: this.core.activehospital.value._id
         };
 
         const modifiedData: Patient = {
@@ -168,7 +169,7 @@ export class PatientService {
                 edited: newmeta
             },
             lastVisit: todayDate,
-            hospitalId: this.hospitalservice.activehospital.value._id,
+            hospitalId: this.core.activehospital.value._id,
             no: data.fileNo,
             visitCount: 0,
             patientId: patientID,
@@ -179,7 +180,7 @@ export class PatientService {
         /**
          * create a file number associated with that hospital only
          */
-        const i = this.stitch.db.collection('patientfiles')
+        const i = this.patientFilesCollection
             .insertOne(hospitalFileNumber).catch(e => {
                 console.log(e);
             });
@@ -187,7 +188,7 @@ export class PatientService {
         /**
          * create the patient
          */
-        const j = this.stitch.db.collection('patients')
+        const j = this.patientsCollection
             .insertOne(patientDoc).catch(e => {
                 console.log(e);
             });
@@ -195,10 +196,10 @@ export class PatientService {
         /**
          * Update the patient count in that hospital
          */
-        const k = this.stitch.db.collection('hospitals')
+        const k = this.hospitalservice.hospitalCollection
             .updateOne(
                 {
-                    _id: this.hospitalservice.activehospital.value._id
+                    _id: this.core.activehospital.value._id
                 },
                 {
                     $inc: {
@@ -220,19 +221,19 @@ export class PatientService {
      * @TODO implement a custom paginator
      * */
     getHospitalPatients(): Observable<Array<Patient>> {
-        const patientdata = this.stitch.db.collection<Patient>('patients')
+        const patientdata = this.patientsCollection
             .find(
                 {
-                    'metadata.created.hospitalId': this.hospitalservice.activehospital.value._id,
+                    'metadata.created.hospitalId': this.core.activehospital.value._id,
                 },
                 {
                     limit: 25
                 })
             .asArray();
-        const patientfiles = this.stitch.db.collection<HospFile>('patientfiles')
+        const patientfiles = this.patientFilesCollection
             .find(
                 {
-                    'metadata.created.hospitalId': this.hospitalservice.activehospital.value._id,
+                    'metadata.created.hospitalId': this.core.activehospital.value._id,
                 },
                 {
                     limit: 25,
@@ -263,7 +264,7 @@ export class PatientService {
 
 
     updatePatient(patientData: Patient): Promise<RemoteUpdateResult> {
-        return this.stitch.db.collection<Patient>('patients').updateOne({ _id: patientData._id }, patientData);
+        return this.patientsCollection.updateOne({ _id: patientData._id }, patientData);
     }
 
     searchPatient(field: string, value: string): any {
@@ -274,9 +275,9 @@ export class PatientService {
     * will use this to check if the file number is available
     * **/
     getHospitalFileByNumber(fileNumber: string): Promise<HospFile> {
-        return this.stitch.db.collection<HospFile>('patientfiles')
+        return this.patientFilesCollection
             .findOne({
-                hospitalId: this.hospitalservice.activehospital.value._id,
+                hospitalId: this.core.activehospital.value._id,
                 no: fileNumber
             });
 

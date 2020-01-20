@@ -1,23 +1,23 @@
-import { emptypatient, Patient } from '../../models/patient/Patient';
 import { Injectable } from '@angular/core';
-import { HospitalService } from './hospital.service';
-import { AdminService } from './admin.service';
-import { BehaviorSubject, combineLatest, Observable, Subscription, of, Subject, } from 'rxjs';
-import { HospitalAdmin } from '../../models/user/HospitalAdmin';
-import { PatientService } from './patient.service';
-import { Visit, NewVisit, CheckinStatus } from '../../models/visit/Visit';
-import { CurrentPatient, MergedPatientQueueModel } from '../../models/visit/MergedPatientQueueModel';
-import * as moment from 'moment';
-import { StitchService } from './stitch/stitch.service';
-import { distinctUntilChanged, distinctUntilKeyChanged, skipWhile, take } from 'rxjs/operators';
-import { RemoteInsertOneResult, Stream } from 'mongodb-stitch-browser-sdk';
 import { HospFile } from 'app/models/hospital/HospFile';
+import { emptymedicalInfo } from 'app/models/patient/MedicalInfo';
 import { Meta } from 'app/models/universal';
 import * as BSON from 'bson';
+import * as moment from 'moment';
+import { Stream } from 'mongodb-stitch-browser-sdk';
 import { ChangeEvent, OperationType } from 'mongodb-stitch-core-services-mongodb-remote';
-import { VisitService } from './visit.service';
-import { MedicalInfo, emptymedicalInfo } from 'app/models/patient/MedicalInfo';
-import { MedicalinfoService } from './medicalinfo.service';
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { distinctUntilChanged, skipWhile } from 'rxjs/operators';
+import { Patient } from '../../../models/patient/Patient';
+import { HospitalAdmin } from '../../../models/user/HospitalAdmin';
+import { CurrentPatient, MergedPatientQueueModel } from '../../../models/visit/MergedPatientQueueModel';
+import { CheckinStatus, NewVisit, Visit } from '../../../models/visit/Visit';
+import { AdminService } from '../admin.service';
+import { CoreService } from './core.service';
+import { MedicalinfoService } from '../medicalinfo.service';
+import { PatientService } from '../patient.service';
+import { StitchService } from '../stitch/stitch.service';
+import { VisitService } from '../visit.service';
 
 @Injectable({
     providedIn: 'root'
@@ -51,8 +51,7 @@ export class QueueService {
      */
     internalSubscriptions: Map<string, Subscription> = new Map();
 
-    constructor(private hospitalservice: HospitalService,
-        private adminservice: AdminService,
+    constructor(private core: CoreService,
         private patientservice: PatientService,
         private visitService: VisitService,
         private medInfoService: MedicalinfoService,
@@ -62,7 +61,7 @@ export class QueueService {
          * Only re-subscribe to hospital queue when the hospital id changes
          * Maybe the admin has been moved to another hospital
          */
-        this.hospitalservice.activehospital.pipe(
+        this.core.activehospital.pipe(
             skipWhile(t => !t._id),
             distinctUntilChanged((prev, curr) => prev._id.toHexString() === curr._id.toHexString()))
             .subscribe(hospital => {
@@ -73,7 +72,7 @@ export class QueueService {
         /**
          * Only filter if the admin id has changed, ignore every other admin change
          */
-        adminservice.observableuserdata
+        this.core.observableuserdata
             .pipe(distinctUntilChanged((prev, curr) => prev.id === curr.id))
             .subscribe((admin: HospitalAdmin) => {
                 if (admin.id) {
@@ -367,7 +366,7 @@ export class QueueService {
     addPatientToQueue(newvist: NewVisit, patient: Patient): Promise<any> {
         const meta: Meta = {
             date: moment().toDate(),
-            adminId: this.adminservice.userdata.id,
+            adminId: this.core.userdata.id,
             hospitalId: this.activehospitalid
         };
         const visitId = new BSON.ObjectId;
@@ -396,7 +395,7 @@ export class QueueService {
                 admin: null
             },
             generalNotes: [],
-            invoiceId: this.hospitalservice.activehospital.value.invoiceCount + 1,
+            invoiceId: this.core.activehospital.value.invoiceCount + 1,
             prescription: null,
             procedures: [],
             totalcost: 0

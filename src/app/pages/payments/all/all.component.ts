@@ -8,7 +8,7 @@ import { FormGroup } from '@angular/forms';
 import { fuseAnimations } from '../../../../@fuse/animations';
 import { MergedPatientQueueModel } from '../../../models/visit/MergedPatientQueueModel';
 import { PatientService } from '../../services/patient.service';
-import { QueueService } from '../../services/queue.service';
+import { QueueService } from '../../services/core/queue.service';
 import { PaymentHistoryService } from '../../services/payment-history.service';
 import { InvoiceComponent } from '../invoice/invoice.component';
 

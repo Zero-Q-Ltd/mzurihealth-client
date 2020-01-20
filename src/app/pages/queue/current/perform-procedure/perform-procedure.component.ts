@@ -5,6 +5,7 @@ import { MatTableDataSource } from '@angular/material';
 import { ProceduresService } from '../../../services/procedures.service';
 import { emptyprocedureperformed, Procedureperformed } from '../../../../models/procedure/Procedureperformed';
 import { AdminService } from '../../../services/admin.service';
+import { CoreService } from 'app/pages/services/core/core.service';
 
 @Component({
     selector: 'app-perform-procedure',
@@ -19,7 +20,7 @@ export class PerformProcedureComponent implements OnInit {
 
     constructor(
         private procedureservice: ProceduresService,
-        private adminservice: AdminService,
+        private core: CoreService,
     ) {
         /**
          *TODO: Here I've had to device a temporary hack that should be fixed
@@ -38,8 +39,8 @@ export class PerformProcedureComponent implements OnInit {
                 this.procedureResults[i].notes[0] = {
                     note: '',
                     admin: {
-                        id: this.adminservice.userdata.id,
-                        name: this.adminservice.userdata.profile.name
+                        id: this.core.userdata.id,
+                        name: this.core.userdata.profile.name
                     }
                 };
             });

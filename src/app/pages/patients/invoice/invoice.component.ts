@@ -4,11 +4,12 @@ import { HospitalService } from '../../services/hospital.service';
 import { Hospital } from '../../../models/hospital/Hospital';
 import { VisitService } from '../../services/visit.service';
 import { emptymergedQueueModel, MergedPatientQueueModel } from '../../../models/visit/MergedPatientQueueModel';
-import { QueueService } from '../../services/queue.service';
+import { QueueService } from '../../services/core/queue.service';
 import { MAT_DIALOG_DATA } from '@angular/material';
 import { PaymentmethodService } from '../../services/paymentmethod.service';
 import { PaymentChannel } from '../../../models/payment/PaymentChannel';
 import * as BSON from 'bson';
+import { CoreService } from 'app/pages/services/core/core.service';
 
 @Component({
     selector: 'app-invoice',
@@ -22,14 +23,13 @@ export class InvoiceComponent implements OnInit, OnDestroy {
     hidden = false;
     private _unsubscribeAll: Subject<any>;
 
-    constructor(private hospitalservice: HospitalService,
+    constructor(private core: CoreService,
         private queue: QueueService,
-        private paymentmethodService: PaymentmethodService,
         private patientvisit: VisitService,
         @Inject(MAT_DIALOG_DATA) public patientid: string) {
         // Set the private defaults
         this._unsubscribeAll = new Subject();
-        this.hospitalservice.activehospital.subscribe(hosp => {
+        this.core.activehospital.subscribe(hosp => {
             this.activehospital = hosp;
         });
         /**
@@ -42,7 +42,7 @@ export class InvoiceComponent implements OnInit, OnDestroy {
             //     }
             // });
         });
-        this.paymentmethodService.allpaymentchannels.subscribe(channels => {
+        this.core.allpaymentchannels.subscribe(channels => {
             this.allpaymentchannels = channels;
         });
     }

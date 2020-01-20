@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { BaseMongoObject } from 'app/models/universal';
-import { BSON, RemoteMongoCollection, Stream } from 'mongodb-stitch-browser-sdk';
+import { RemoteMongoCollection, Stream } from 'mongodb-stitch-browser-sdk';
 import { ChangeEvent, OperationType } from 'mongodb-stitch-core-services-mongodb-remote';
 import { ReplaySubject } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { StitchService } from './stitch.service';
+import * as BSON from 'bson';
 
 @Injectable({
   providedIn: 'root'

@@ -8,6 +8,7 @@ import { PaymentChannel, Paymentmethods } from '../../../models/payment/PaymentC
 import { PatientService } from '../../services/patient.service';
 import { NotificationService } from '../../../shared/services/notifications.service';
 import { NewVisit } from 'app/models/visit/Visit';
+import { CoreService } from 'app/pages/services/core/core.service';
 
 @Component({
     selector: 'app-pushqueue',
@@ -33,15 +34,16 @@ export class PushqueueComponent implements OnInit {
         public matDialogRef: MatDialogRef<PushqueueComponent>,
         private notificationService: NotificationService,
         private paymentmethodService: PaymentmethodService,
+        private core: CoreService,
         private patientService: PatientService) {
 
         this.patient = _data.patient;
         this.dialogTitle = 'Queue Patient';
-        this.paymentmethodService.allpaymentchannels.subscribe(payments => {
+        this.core.allpaymentchannels.subscribe(payments => {
             this.paymentMethods = payments;
         });
 
-        this.paymentmethodService.allinsurance.subscribe(insurance => {
+        this.core.allinsurance.subscribe(insurance => {
             this.allInsurance = insurance;
         });
 

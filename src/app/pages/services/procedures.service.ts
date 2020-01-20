@@ -1,23 +1,18 @@
 import { Injectable } from '@angular/core';
-import { HospitalService } from './hospital.service';
+import { RawProcedure } from 'app/models/procedure/RawProcedure';
+import { Meta } from 'app/models/universal';
+import * as moment from 'moment';
+import { BSON, Stream } from 'mongodb-stitch-core-sdk';
+import { ChangeEvent } from 'mongodb-stitch-core-services-mongodb-remote';
 import { BehaviorSubject } from 'rxjs';
 import { Hospital } from '../../models/hospital/Hospital';
 import { CustomProcedure, CustomProcedureConfig } from '../../models/procedure/CustomProcedure';
+import { MergedProcedureModel } from '../../models/procedure/MergedProcedure.model';
 import { ProcedureCategory } from '../../models/procedure/ProcedureCategory';
 import { NotificationService } from '../../shared/services/notifications.service';
-import { HospitalAdmin } from '../../models/user/HospitalAdmin';
 import { AdminService } from './admin.service';
-import * as moment from 'moment';
-import { MergedProcedureModel } from '../../models/procedure/MergedProcedure.model';
-import { Meta } from 'app/models/universal';
-import { Stream, BSON } from 'mongodb-stitch-core-sdk';
-import { ChangeEvent } from 'mongodb-stitch-core-services-mongodb-remote';
-import * as proceduredata from 'assets/procedures.json';
-import * as procedurecats from 'assets/procedurecategories.json';
+import { CoreService } from './core/core.service';
 import { StitchService } from './stitch/stitch.service';
-import { Visit } from 'app/models/visit/Visit';
-import { RawProcedure } from 'app/models/procedure/RawProcedure';
-import { switchMap, combineLatest } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root'
@@ -33,12 +28,13 @@ export class ProceduresService {
      * It's to be maintined as a standard across all services
      */
     subscriptions: Map<string, Stream<ChangeEvent<any>>> = new Map();
-
-    constructor(private hospitalservice: HospitalService,
+    procedureConfigsCollection = this.stitch.db.collection<CustomProcedureConfig>('procedureconfigs');
+    proceduresCollection = this.stitch.db.collection<RawProcedure>('procedures');
+    constructor(private core: CoreService,
         private notificationservice: NotificationService,
         private adminservice: AdminService,
         private stitch: StitchService) {
-        this.hospitalservice.activehospital.subscribe(hospital => {
+        this.core.activehospital.subscribe(hospital => {
             if (hospital._id) {
                 this.activehospital = hospital;
                 this.getprocedures();
@@ -59,7 +55,7 @@ export class ProceduresService {
         const options = {
         };
 
-        this.stitch.db.collection<CustomProcedureConfig>('procedureconfigs')
+        this.procedureConfigsCollection
             .findOne(query, options)
             .then(data => {
                 if (!data) {
@@ -90,7 +86,7 @@ export class ProceduresService {
                 const inneroptions = {
                 };
 
-                this.stitch.db.collection<RawProcedure>('procedures').find(innerquery, inneroptions)
+                this.proceduresCollection.find(innerquery, inneroptions)
                     .toArray()
                     .then(originalprocedures => {
                         originalprocedures.map(original => {
@@ -110,7 +106,7 @@ export class ProceduresService {
             limit
         };
 
-        return this.stitch.db.collection<RawProcedure>('procedures')
+        return this.proceduresCollection
             .find(query, options)
             .toArray();
     }
@@ -242,7 +238,7 @@ export class ProceduresService {
         //     return newprocedure;
         // });
 
-        // this.stitch.db.collection<RawProcedure>('procedures')
+        // this.proceduresCollection
         //     .insertMany(procedures);
     }
 
@@ -250,11 +246,11 @@ export class ProceduresService {
 
         customprocedure.hospitalId = this.activehospital._id;
         customprocedure.status = true;
-        customprocedure.creatorid = this.adminservice.userdata.id;
+        customprocedure.creatorid = this.core.userdata.id;
 
         const meta: Meta = {
             date: moment().toDate(),
-            adminId: this.adminservice.userdata.id,
+            adminId: this.core.userdata.id,
             hospitalId: this.activehospital._id
         };
 
@@ -281,7 +277,7 @@ export class ProceduresService {
             };
             const temp = { ...this.hospitalCustomProcedureConfig };
             temp.metadata.edited = meta;
-            return this.stitch.db.collection<CustomProcedureConfig>('procedureconfigs').updateOne(query, temp);
+            return this.procedureConfigsCollection.updateOne(query, temp);
         } else {
             newProcedureConfig = {
                 _id: new BSON.ObjectId(),
@@ -292,7 +288,7 @@ export class ProceduresService {
                 },
                 procedures: [customprocedure]
             };
-            return this.stitch.db.collection<CustomProcedureConfig>('procedureconfigs').insertOne(newProcedureConfig);
+            return this.procedureConfigsCollection.insertOne(newProcedureConfig);
         }
     }
 
@@ -307,8 +303,8 @@ export class ProceduresService {
 
         const meta: Meta = {
             date: moment().toDate(),
-            adminId: this.adminservice.userdata.id,
-            hospitalId: this.hospitalservice.activehospital.value._id
+            adminId: this.core.userdata.id,
+            hospitalId: this.core.activehospital.value._id
         };
 
         customprocedure.metadata = {
@@ -327,7 +323,7 @@ export class ProceduresService {
                 position: customprocedure
             }
         };
-        return this.stitch.db.collection<CustomProcedure>('procedureconfigs').updateOne(query, update, options);
+        return this.procedureConfigsCollection.updateOne(query, update, options);
     }
 
     deactivateprocedure(procedureid: string): any {

@@ -7,11 +7,12 @@ import { AdminService } from '../../../services/admin.service';
 import { PatientService } from '../../../services/patient.service';
 import { NotificationService } from '../../../../shared/services/notifications.service';
 import { MAT_DIALOG_DATA } from '@angular/material';
-import { QueueService } from '../../../services/queue.service';
+import { QueueService } from '../../../services/core/queue.service';
 import { Paymentmethods } from '../../../../models/payment/PaymentChannel';
 import { PaymentmethodService } from '../../../services/paymentmethod.service';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { CoreService } from 'app/pages/services/core/core.service';
 
 @Component({
     selector: 'general-details',
@@ -31,11 +32,11 @@ export class GeneralDetailsComponent implements OnInit, OnDestroy {
     constructor(private adminservice: AdminService,
         private formBuilder: FormBuilder,
         private notificationservice: NotificationService,
-        private paymentethods: PaymentmethodService,
+        private core: CoreService,
         private queue: QueueService,
         @Optional() @Inject(MAT_DIALOG_DATA) public data?: any) {
 
-        this.paymentethods.allinsurance.subscribe(insurance => {
+        this.core.allinsurance.subscribe(insurance => {
             this.allInsurance = insurance;
             if (!insurance['0']) {
                 return;

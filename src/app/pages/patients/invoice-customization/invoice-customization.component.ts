@@ -1,21 +1,22 @@
 import { Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
-import { QueueService } from '../../services/queue.service';
-import { VisitService } from '../../services/visit.service';
-import { emptymergedQueueModel, MergedPatientQueueModel } from '../../../models/visit/MergedPatientQueueModel';
-import { emptyprocedureperformed, Procedureperformed } from '../../../models/procedure/Procedureperformed';
-import { PaymentmethodService } from '../../services/paymentmethod.service';
-import { PaymentChannel, Paymentmethods } from '../../../models/payment/PaymentChannel';
-import { HospitalService } from '../../services/hospital.service';
-import { PaymentMethod } from '../../../models/payment/CustomPaymentMethod.model';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatTableDataSource } from '@angular/material';
-import { InvoiceComponent } from '../invoice/invoice.component';
-import { HospitalAdmin } from '../../../models/user/HospitalAdmin';
-import { fuseAnimations } from '../../../../@fuse/animations';
-import { ProceduresService } from '../../services/procedures.service';
-import { NotificationService } from '../../../shared/services/notifications.service';
-import { FuseConfirmDialogComponent } from '../../../../@fuse/components/confirm-dialog/confirm-dialog.component';
-import { PrescriptionComponent } from '../prescription/prescription.component';
+import { MatDialog, MatDialogRef, MatTableDataSource, MAT_DIALOG_DATA } from '@angular/material';
 import * as BSON from 'bson';
+import { fuseAnimations } from '../../../../@fuse/animations';
+import { FuseConfirmDialogComponent } from '../../../../@fuse/components/confirm-dialog/confirm-dialog.component';
+import { PaymentMethod } from '../../../models/payment/CustomPaymentMethod.model';
+import { PaymentChannel, Paymentmethods } from '../../../models/payment/PaymentChannel';
+import { emptyprocedureperformed, Procedureperformed } from '../../../models/procedure/Procedureperformed';
+import { HospitalAdmin } from '../../../models/user/HospitalAdmin';
+import { emptymergedQueueModel, MergedPatientQueueModel } from '../../../models/visit/MergedPatientQueueModel';
+import { NotificationService } from '../../../shared/services/notifications.service';
+import { HospitalService } from '../../services/hospital.service';
+import { PaymentmethodService } from '../../services/paymentmethod.service';
+import { ProceduresService } from '../../services/procedures.service';
+import { QueueService } from '../../services/core/queue.service';
+import { VisitService } from '../../services/visit.service';
+import { InvoiceComponent } from '../invoice/invoice.component';
+import { PrescriptionComponent } from '../prescription/prescription.component';
+import { CoreService } from 'app/pages/services/core/core.service';
 
 @Component({
     selector: 'app-invoice-payment',
@@ -41,9 +42,7 @@ export class InvoiceCustomizationComponent implements OnInit {
 
     constructor(private queue: QueueService,
         private hospital: HospitalService,
-        private visitservice: VisitService,
-        private paymentmethodService: PaymentmethodService,
-        private hospitalservice: HospitalService,
+        private core: CoreService,
         public _matDialog: MatDialog,
         private procedureservice: ProceduresService,
         private notifications: NotificationService,
@@ -51,18 +50,18 @@ export class InvoiceCustomizationComponent implements OnInit {
         @Inject(MAT_DIALOG_DATA) public patient: string) {
 
 
-        hospitalservice.hospitaladmins.subscribe(admins => {
+        this.core.hospitaladmins.subscribe(admins => {
             this.hospitaladmins = admins;
         });
 
         /**
          * make sure the payment methods have been fetched before fetching the queue info,
          */
-        this.paymentmethodService.allpaymentchannels.subscribe(channels => {
+        this.core.allpaymentchannels.subscribe(channels => {
             this.allpaymentchannels = channels;
             this.getqueueinfo();
         });
-        this.hospital.activehospital.subscribe(hosp => {
+        this.core.activehospital.subscribe(hosp => {
             this.hospitalmethods = hosp.paymentMethods;
         });
     }

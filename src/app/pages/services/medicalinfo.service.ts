@@ -10,18 +10,7 @@ import * as BSON from 'bson';
   providedIn: 'root'
 })
 export class MedicalinfoService {
-
-  /**
-   * This keeps a list of all the DATABASE SUBSCRIPTIONS that have been made by this service
-   * It's to be maintined as a standard across all services
-   */
-  dbSubscriptions: Map<string, Stream<ChangeEvent<any>>> = new Map();
-  /**
-   * This keeps a copy of all the internal subscriptions to INTERNAL OBSERVABLES
-   * It's to be maintined as a standard across all services
-   */
-  internalSubscriptions: Map<string, Subscription> = new Map();
-
+  medInfoCOllection = this.stitch.db.collection<MedicalInfo>('medinfo');
   constructor(
     private stitch: StitchService) {
   }
@@ -34,10 +23,10 @@ export class MedicalinfoService {
     const query = {
       patientId
     };
-    return this.stitch.db.collection<MedicalInfo>('medinfo').findOne(query);
+    return this.medInfoCOllection.findOne(query);
   }
 
   updateMedInfo(newData: MedicalInfo): Promise<RemoteUpdateResult> {
-    return this.stitch.db.collection<MedicalInfo>('medinfo').updateOne(newData._id, newData);
+    return this.medInfoCOllection.updateOne(newData._id, newData);
   }
 }

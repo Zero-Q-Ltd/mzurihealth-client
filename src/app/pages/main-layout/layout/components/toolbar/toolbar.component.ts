@@ -14,6 +14,7 @@ import { AdminService } from 'app/pages/services/admin.service';
 import { HospitalService } from 'app/pages/services/hospital.service';
 import { Router } from '@angular/router';
 import { StitchService } from 'app/pages/services/stitch/stitch.service';
+import { CoreService } from 'app/pages/services/core/core.service';
 
 @Component({
     selector: 'toolbar',
@@ -54,7 +55,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
         private _translateService: TranslateService,
         private adminservice: AdminService,
         private stitch: StitchService,
-        private hospitalservice: HospitalService,
+        private core: CoreService,
         private router: Router,
     ) {
         // Set the defaults
@@ -108,12 +109,12 @@ export class ToolbarComponent implements OnInit, OnDestroy {
         /**
          * custom code
          */
-        adminservice.observableuserdata.subscribe((admin: HospitalAdmin) => {
+        this.core.observableuserdata.subscribe((admin: HospitalAdmin) => {
             if (admin.id) {
                 this.userdata = admin;
             }
         });
-        this.hospitalservice.activehospital.subscribe(hospital => {
+        this.core.activehospital.subscribe(hospital => {
             if (hospital._id) {
                 this.activehospital = hospital;
             }

@@ -14,10 +14,11 @@ import { NotificationService } from '../../../shared/services/notifications.serv
 import { Router } from '@angular/router';
 import { PaymentmethodService } from '../../services/paymentmethod.service';
 import { Paymentmethods } from '../../../models/payment/PaymentChannel';
-import { QueueService } from '../../services/queue.service';
+import { QueueService } from '../../services/core/queue.service';
 import { ProfileComponent } from '../profile/profile.component';
 import { FuseConfirmDialogComponent } from '../../../../@fuse/components/confirm-dialog/confirm-dialog.component';
 import { NewVisit } from 'app/models/visit/Visit';
+import { CoreService } from 'app/pages/services/core/core.service';
 
 @Component({
     selector: 'all-patients',
@@ -41,7 +42,7 @@ export class AllComponent implements OnInit, AfterViewInit {
     @ViewChild(MatSort, { static: false }) sort: MatSort;
 
 
-    constructor(private adminservice: AdminService,
+    constructor(private core: CoreService,
         private patientservice: PatientService,
         private hospitalservice: HospitalService,
         private paymentethods: PaymentmethodService,
@@ -51,17 +52,17 @@ export class AllComponent implements OnInit, AfterViewInit {
         private formBuilder: FormBuilder,
         public _matDialog: MatDialog, private router: Router) {
 
-        this.hospitalservice.activehospital.subscribe(hospital => {
+        this.core.activehospital.subscribe(hospital => {
             if (hospital._id) {
                 this.activehospital = hospital;
             }
         });
         this.queueService.mainpatientsqueue.subscribe();
 
-        this.paymentethods.allinsurance.subscribe(insurance => {
+        this.core.allinsurance.subscribe(insurance => {
             this.allInsurance = insurance;
         });
-        adminservice.observableuserdata.subscribe((admin: HospitalAdmin) => {
+        this.core.observableuserdata.subscribe((admin: HospitalAdmin) => {
             if (admin.id) {
                 this.userdata = admin;
             }

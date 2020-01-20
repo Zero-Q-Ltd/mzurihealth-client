@@ -1,15 +1,14 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { MedicalinfoService } from 'app/pages/services/medicalinfo.service';
-import { Condition } from 'app/models/procedure/MedicalConditions.model';
-import { Vitals, MedicalInfo } from 'app/models/patient/MedicalInfo';
+import { MedicalInfo, Vitals } from 'app/models/patient/MedicalInfo';
 import { Allegy } from 'app/models/procedure/Allergy.model';
+import { Condition } from 'app/models/procedure/MedicalConditions.model';
+import { Meta } from 'app/models/universal';
+import { CoreService } from 'app/pages/services/core/core.service';
+import { MedicalinfoService } from 'app/pages/services/medicalinfo.service';
+import { QueueService } from 'app/pages/services/core/queue.service';
 import * as BSON from 'bson';
 import * as moment from 'moment';
-import { Meta } from 'app/models/universal';
-import { AdminService } from 'app/pages/services/admin.service';
-import { HospitalService } from 'app/pages/services/hospital.service';
-import { QueueService } from 'app/pages/services/queue.service';
+import { BehaviorSubject } from 'rxjs';
 @Injectable({
     providedIn: 'root'
 })
@@ -23,8 +22,7 @@ export class LocalcommunicationService {
 
     medInfochhanged = false;
     constructor(private medInfo: MedicalinfoService,
-        private adminservice: AdminService,
-        private hospService: HospitalService,
+        private core: CoreService,
         private queue: QueueService
     ) {
         // queue.currentpatient.subscribe(patient=>{
@@ -41,8 +39,8 @@ export class LocalcommunicationService {
         }
         const meta: Meta = {
             date: moment().toDate(),
-            adminId: this.adminservice.userdata.id,
-            hospitalId: this.hospService.activehospital.value._id
+            adminId: this.core.userdata.id,
+            hospitalId: this.core.activehospital.value._id
         };
 
         const medinfo: MedicalInfo = {

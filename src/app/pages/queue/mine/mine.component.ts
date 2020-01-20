@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewEncapsulation, OnDestroy } from '@angular/core';
 import { MatDialog, MatDialogRef, MatTableDataSource } from '@angular/material';
 import { fuseAnimations } from '../../../../@fuse/animations';
-import { QueueService } from '../../services/queue.service';
+import { QueueService } from '../../services/core/queue.service';
 import { MergedPatientQueueModel } from '../../../models/visit/MergedPatientQueueModel';
 import * as moment from 'moment';
 import { AdminSelectionComponent } from '../admin-selection/admin-selection.component';
@@ -11,6 +11,7 @@ import { InvoiceComponent } from '../../patients/invoice/invoice.component';
 import { VisitService } from 'app/pages/services/visit.service';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { CoreService } from 'app/pages/services/core/core.service';
 
 @Component({
     selector: 'queue-mine',
@@ -28,6 +29,7 @@ export class MineComponent implements OnInit, OnDestroy {
 
     constructor(private queue: QueueService,
         private visit: VisitService,
+        private core: CoreService,
         public _matDialog: MatDialog) {
         queue.mypatientqueue
             .pipe(takeUntil(this.comopnentDestroyed))
@@ -58,7 +60,7 @@ export class MineComponent implements OnInit, OnDestroy {
         this.confirmDialogRef.componentInstance.confirmMessage = 'Accept?';
         this.confirmDialogRef.afterClosed().subscribe(result => {
             if (result) {
-                this.visit.acceptPatient(data.visitData._id);
+                this.visit.acceptPatient(data.visitData._id, this.core.userdata.id);
             }
         });
     }

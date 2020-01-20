@@ -1,19 +1,12 @@
 import { Injectable } from '@angular/core';
-import { QueueService } from './queue.service';
-import { HospitalService } from './hospital.service';
-import { emptypatientvisit, Visit, Checkin, CheckinStatus } from '../../models/visit/Visit';
-import { BehaviorSubject, Observable, Subscription, Subject, ReplaySubject } from 'rxjs';
-import { Procedureperformed } from '../../models/procedure/Procedureperformed';
-import { MergedProcedureModel } from '../../models/procedure/MergedProcedure.model';
-import { AdminService } from './admin.service';
-import * as moment from 'moment';
-import { Meta } from 'app/models/universal';
 import { Prescription } from 'app/models/visit/Prescription';
-import { Stream } from 'mongodb-stitch-core-sdk';
-import { ChangeEvent, RemoteUpdateResult, RemoteInsertOneResult } from 'mongodb-stitch-core-services-mongodb-remote';
-import { StitchService } from './stitch/stitch.service';
-import { Patient } from 'app/models/patient/Patient';
 import * as BSON from 'bson';
+import { Stream } from 'mongodb-stitch-core-sdk';
+import { ChangeEvent, RemoteInsertOneResult, RemoteUpdateResult } from 'mongodb-stitch-core-services-mongodb-remote';
+import { ReplaySubject, Subscription } from 'rxjs';
+import { Procedureperformed } from '../../models/procedure/Procedureperformed';
+import { Checkin, CheckinStatus, Visit } from '../../models/visit/Visit';
+import { StitchService } from './stitch/stitch.service';
 
 @Injectable({
     providedIn: 'root'
@@ -31,8 +24,6 @@ export class VisitService {
     internalSubscriptions: Map<string, Subscription> = new Map();
 
     constructor(
-        private adminservice: AdminService,
-        private hospitalService: HospitalService,
         private stitch: StitchService) {
 
     }
@@ -163,8 +154,8 @@ export class VisitService {
     }
 
 
-    awaitPayment(visitId: BSON.ObjectId): Promise<RemoteUpdateResult> {
-        return this.updateVisitStatus(visitId, CheckinStatus['waiting for payment'], this.adminservice.userdata.id);
+    awaitPayment(visitId: BSON.ObjectId, adminId: string): Promise<RemoteUpdateResult> {
+        return this.updateVisitStatus(visitId, CheckinStatus['waiting for payment'], adminId);
     }
 
 
@@ -181,16 +172,16 @@ export class VisitService {
      * Updataes a visit status to completed
      * @param visitId 
      */
-    payandexit(visitId: BSON.ObjectId): Promise<RemoteUpdateResult> {
-        return this.updateVisitStatus(visitId, CheckinStatus.completed, this.adminservice.userdata.id, true);
+    payandexit(visitId: BSON.ObjectId, adminId: string): Promise<RemoteUpdateResult> {
+        return this.updateVisitStatus(visitId, CheckinStatus.completed, adminId, true);
     }
 
     /**
      * Updates a visit status to have the currently logged in admin as the one attending to the patient
      * @param visitId The visit to accept
      */
-    acceptPatient(visitId: BSON.ObjectId): Promise<RemoteUpdateResult> {
-        return this.updateVisitStatus(visitId, CheckinStatus['being attended'], this.adminservice.userdata.id);
+    acceptPatient(visitId: BSON.ObjectId, adminId: string): Promise<RemoteUpdateResult> {
+        return this.updateVisitStatus(visitId, CheckinStatus['being attended'], adminId);
     }
 
     /**

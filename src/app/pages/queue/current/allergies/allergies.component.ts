@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormArray, FormControl, FormGroup, FormBuilder } from 'ngx-strongly-typed-forms';
 import { Allegy as Allergy, allergy, allerytypearray } from 'app/models/procedure/Allergy.model';
-import { QueueService } from 'app/pages/services/queue.service';
+import { QueueService } from 'app/pages/services/core/queue.service';
 import { LocalcommunicationService } from '../localcommunication.service';
 import { Vitals } from 'app/models/patient/MedicalInfo';
 import { Validators } from '@angular/forms';
@@ -10,6 +10,7 @@ import { AdminService } from 'app/pages/services/admin.service';
 import { HospitalService } from 'app/pages/services/hospital.service';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { CoreService } from 'app/pages/services/core/core.service';
 
 @Component({
   selector: 'app-allergies',
@@ -25,6 +26,7 @@ export class AllergiesComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private comm: LocalcommunicationService,
     private hospitalservice: HospitalService,
+    private core: CoreService,
     private adminservice: AdminService) {
     this.queue.currentpatient
       .pipe(takeUntil(this.comopnentDestroyed))
@@ -67,9 +69,9 @@ export class AllergiesComponent implements OnInit, OnDestroy {
   addellergy(type: allergy, detail: string, metadata?: Metadata): FormGroup<Allergy> {
     if (!metadata) {
       const m: Meta = {
-        adminId: this.adminservice.userdata.id,
+        adminId: this.core.userdata.id,
         date: new Date(),
-        hospitalId: this.hospitalservice.activehospital.value._id
+        hospitalId: this.core.activehospital.value._id
       };
       metadata = {
         created: m,

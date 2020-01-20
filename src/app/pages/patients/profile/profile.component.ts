@@ -6,9 +6,10 @@ import { AdminService } from '../../services/admin.service';
 import { PatientService } from '../../services/patient.service';
 import { NotificationService } from '../../../shared/services/notifications.service';
 import { PaymentmethodService } from '../../services/paymentmethod.service';
-import { QueueService } from '../../services/queue.service';
+import { QueueService } from '../../services/core/queue.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import * as moment from 'moment';
+import { CoreService } from 'app/pages/services/core/core.service';
 
 @Component({
     selector: 'app-profile',
@@ -30,12 +31,12 @@ export class ProfileComponent implements OnInit {
         private patientservice: PatientService,
         private formBuilder: FormBuilder,
         private notificationservice: NotificationService,
-        private paymentethods: PaymentmethodService,
+        private core: CoreService,
         private queue: QueueService,
         public dialogRef: MatDialogRef<any>,
         @Optional() @Inject(MAT_DIALOG_DATA) private data: string) {
 
-        this.paymentethods.allinsurance.subscribe(insurance => {
+        this.core.allinsurance.subscribe(insurance => {
             this.allInsurance = insurance;
             if (!insurance['0']) {
                 return;

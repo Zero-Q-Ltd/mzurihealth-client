@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnInit, ViewChild, ViewEncapsulation, OnDestroy } from '@angular/core';
 import { MatDialog, MatDialogRef, MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { fuseAnimations } from '../../../../@fuse/animations';
-import { QueueService } from '../../services/queue.service';
+import { QueueService } from '../../services/core/queue.service';
 import { MergedPatientQueueModel } from '../../../models/visit/MergedPatientQueueModel';
 import { AdminSelectionComponent } from '../admin-selection/admin-selection.component';
 import { HospitalAdmin } from '../../../models/user/HospitalAdmin';
@@ -10,6 +10,7 @@ import { HospitalService } from '../../services/hospital.service';
 import { InvoiceCustomizationComponent } from '../../patients/invoice-customization/invoice-customization.component';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { CoreService } from 'app/pages/services/core/core.service';
 
 @Component({
     selector: 'queue-main',
@@ -31,14 +32,14 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
     constructor(private queue: QueueService,
-        private hospitalservice: HospitalService,
+        private core: CoreService,
         public _matDialog: MatDialog) {
         queue.mainpatientsqueue
             .pipe(takeUntil(this.comopnentDestroyed))
             .subscribe(value => {
                 this.patientsdatasource.data = Array.from(value.values()) || [];
             });
-        hospitalservice.hospitaladmins.subscribe(admins => {
+        this.core.hospitaladmins.subscribe(admins => {
             this.hospitaladmins = admins;
         });
     }

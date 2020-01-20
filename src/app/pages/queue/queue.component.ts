@@ -4,7 +4,7 @@ import { fuseAnimations } from '../../../@fuse/animations';
 import { FuseSidebarService } from '../../../@fuse/components/sidebar/sidebar.service';
 import { MatTabChangeEvent } from '@angular/material';
 import { LocalcommunicationService } from './current/localcommunication.service';
-import { QueueService } from '../services/queue.service';
+import { QueueService } from '../services/core/queue.service';
 import { PaymentmethodService } from 'app/pages/services/paymentmethod.service';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';

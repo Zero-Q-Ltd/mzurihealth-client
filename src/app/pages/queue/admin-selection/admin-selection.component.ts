@@ -5,6 +5,7 @@ import * as moment from 'moment';
 import { HospitalService } from '../../services/hospital.service';
 import { ReplaySubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { CoreService } from 'app/pages/services/core/core.service';
 
 @Component({
     selector: 'app-admin-selection',
@@ -16,10 +17,10 @@ export class AdminSelectionComponent implements OnInit, OnDestroy {
     hospitaladmins: Array<HospitalAdmin> = [];
     comopnentDestroyed: ReplaySubject<boolean> = new ReplaySubject<boolean>();
 
-    constructor(private hospitalService: HospitalService,
+    constructor(private core: CoreService,
         public dialogRef: MatDialogRef<AdminSelectionComponent>,
         @Optional() @Inject(MAT_DIALOG_DATA) public data?: any) {
-        hospitalService.hospitaladmins
+        this.core.hospitaladmins
             .pipe(takeUntil(this.comopnentDestroyed))
             .subscribe(admins => {
                 this.hospitaladmins = admins;

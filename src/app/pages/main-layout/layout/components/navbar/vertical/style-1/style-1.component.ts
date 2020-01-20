@@ -1,17 +1,17 @@
 import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
+import { FuseNavigationService } from '@fuse/components/navigation/navigation.service';
+import { FuseSidebarService } from '@fuse/components/sidebar/sidebar.service';
+import { FusePerfectScrollbarDirective } from '@fuse/directives/fuse-perfect-scrollbar/fuse-perfect-scrollbar.directive';
+import { FuseConfigService } from '@fuse/services/config.service';
+import { CoreService } from 'app/pages/services/core/core.service';
 import { Subject } from 'rxjs';
 import { delay, filter, take, takeUntil } from 'rxjs/operators';
-
-import { FuseConfigService } from '@fuse/services/config.service';
-import { FuseNavigationService } from '@fuse/components/navigation/navigation.service';
-import { FusePerfectScrollbarDirective } from '@fuse/directives/fuse-perfect-scrollbar/fuse-perfect-scrollbar.directive';
-import { FuseSidebarService } from '@fuse/components/sidebar/sidebar.service';
 // Custom imports
 import { emptyhospital, Hospital } from '../../../../../../../models/hospital/Hospital';
 import { HospitalAdmin } from '../../../../../../../models/user/HospitalAdmin';
-import { AdminService } from '../../../../../../services/admin.service';
 import { HospitalService } from '../../../../../../services/hospital.service';
+
 
 @Component({
     selector: 'navbar-vertical-style-1',
@@ -43,7 +43,7 @@ export class NavbarVerticalStyle1Component implements OnInit, OnDestroy {
         private _fuseNavigationService: FuseNavigationService,
         private _fuseSidebarService: FuseSidebarService,
         private _router: Router,
-        private adminservice: AdminService,
+        private core: CoreService,
         private hospitalservice: HospitalService,
     ) {
         // Set the private defaults
@@ -51,12 +51,12 @@ export class NavbarVerticalStyle1Component implements OnInit, OnDestroy {
         /**
          * custom code
          */
-        adminservice.observableuserdata.subscribe((admin: HospitalAdmin) => {
+        this.core.observableuserdata.subscribe((admin: HospitalAdmin) => {
             if (admin.id) {
                 this.userdata = admin;
             }
         });
-        this.hospitalservice.activehospital.subscribe(hospital => {
+        this.core.activehospital.subscribe(hospital => {
             if (hospital._id) {
                 this.activehospital = hospital;
             }

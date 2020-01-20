@@ -9,6 +9,7 @@ import * as moment from 'moment';
 import { FormControl, Validators } from '@angular/forms';
 import { PaymentmethodService } from '../../../services/paymentmethod.service';
 import { Paymentmethods } from '../../../../models/payment/PaymentChannel';
+import { CoreService } from 'app/pages/services/core/core.service';
 
 @Component({
     selector: 'app-procedureconfig',
@@ -28,7 +29,7 @@ export class ProcedureconfigComponent implements OnInit {
     ]);
 
     constructor(private communicatioservice: LocalcommunicationService,
-        private paymentethods: PaymentmethodService,
+        private core: CoreService,
         private procedureservice: ProceduresService,
         private notificationservice: NotificationService) {
         this.communicatioservice.onprocedureselected.subscribe(selection => {
@@ -39,7 +40,7 @@ export class ProcedureconfigComponent implements OnInit {
             this.regularpricecontrol.patchValue(this.selectecustomprocedure.customprocedure.regularPrice);
         });
 
-        this.paymentethods.allinsurance.subscribe(insurance => {
+        this.core.allinsurance.subscribe(insurance => {
             this.filteredinsurance = insurance;
         });
     }
@@ -52,14 +53,14 @@ export class ProcedureconfigComponent implements OnInit {
             const temp = {};
             filterValue = filterValue.trim();
             filterValue = filterValue.toLowerCase();
-            Object.keys(this.paymentethods.allinsurance.value).forEach(key => {
-                if (this.paymentethods.allinsurance.value[key].name.toLowerCase().indexOf(filterValue) > -1) {
-                    temp[key] = this.paymentethods.allinsurance.value[key];
+            Object.keys(this.core.allinsurance.value).forEach(key => {
+                if (this.core.allinsurance.value[key].name.toLowerCase().indexOf(filterValue) > -1) {
+                    temp[key] = this.core.allinsurance.value[key];
                 }
             });
             this.filteredinsurance = temp;
         } else {
-            this.filteredinsurance = this.paymentethods.allinsurance.value;
+            this.filteredinsurance = this.core.allinsurance.value;
         }
     }
 

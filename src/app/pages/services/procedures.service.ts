@@ -1,101 +1,33 @@
-import {Injectable} from '@angular/core';
-import {RawProcedure} from 'app/models/procedure/RawProcedure';
-import {Meta} from 'app/models/universal';
+import { Injectable } from '@angular/core';
+import { RawProcedure } from 'app/models/procedure/RawProcedure';
+import { Meta } from 'app/models/universal';
 import * as moment from 'moment';
-import {BSON, Stream} from 'mongodb-stitch-core-sdk';
-import {ChangeEvent} from 'mongodb-stitch-core-services-mongodb-remote';
-import {BehaviorSubject} from 'rxjs';
-import {Hospital} from '../../models/hospital/Hospital';
-import {CustomProcedure, CustomProcedureConfig} from '../../models/procedure/CustomProcedure';
-import {MergedProcedureModel} from '../../models/procedure/MergedProcedure.model';
-import {ProcedureCategory} from '../../models/procedure/ProcedureCategory';
-import {NotificationService} from '../../shared/services/notifications.service';
-import {AdminService} from './admin.service';
-import {CoreService} from './core/core.service';
-import {StitchService} from './stitch/stitch.service';
+import { BSON, Stream } from 'mongodb-stitch-core-sdk';
+import { ChangeEvent } from 'mongodb-stitch-core-services-mongodb-remote';
+import { BehaviorSubject } from 'rxjs';
+import { Hospital } from '../../models/hospital/Hospital';
+import { CustomProcedure, CustomProcedureConfig } from '../../models/procedure/CustomProcedure';
+import { MergedProcedureModel } from '../../models/procedure/MergedProcedure.model';
+import { ProcedureCategory } from '../../models/procedure/ProcedureCategory';
+import { NotificationService } from '../../shared/services/notifications.service';
+import { AdminService } from './admin.service';
+import { CoreService } from './core/core.service';
+import { StitchService } from './stitch/stitch.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class ProceduresService {
-    hospitalprocedures: BehaviorSubject<Map<string, MergedProcedureModel>> = new BehaviorSubject(new Map());
-    hospitalCustomProcedureConfig !: CustomProcedureConfig;
-    activehospital: Hospital;
-    categories: BehaviorSubject<Array<ProcedureCategory>> = new BehaviorSubject<Array<ProcedureCategory>>([]);
 
-    /**
-     * This keeps a list of all the subscriptions TO THE DATABASE that have been made by this service
-     * It's to be maintined as a standard across all services
-     */
-    subscriptions: Map<string, Stream<ChangeEvent<any>>> = new Map();
     procedureConfigsCollection = this.stitch.db.collection<CustomProcedureConfig>('procedureconfigs');
     proceduresCollection = this.stitch.db.collection<RawProcedure>('procedures');
+    procedureCategoriesCollection = this.stitch.db.collection<ProcedureCategory>('procedurecategories');
 
-    constructor(private core: CoreService,
-                private notificationservice: NotificationService,
-                private adminservice: AdminService,
-                private stitch: StitchService) {
-        this.core.activehospital.subscribe(hospital => {
-            if (hospital._id) {
-                this.activehospital = hospital;
-                this.getprocedures();
-                this.getprocedurecategories();
-            }
-        });
+    constructor(
+        private stitch: StitchService) {
 
     }
 
-    getprocedures(): void {
-        /**
-         * I honestly am not sure why the following code works so well
-         * Please.... be very careful before changing
-         */
-        const query = {
-            hospitalId: this.activehospital._id
-        };
-        const options = {};
-
-        this.procedureConfigsCollection
-            .findOne(query, options)
-            .then(data => {
-                if (!data) {
-                    return;
-                }
-                this.hospitalCustomProcedureConfig = data;
-                const mapData = new Map<string, MergedProcedureModel>();
-                data.procedures.map(procedure => {
-                    /**
-                     * only fetch proceures that are active
-                     */
-                    if (!procedure.status) {
-                        return;
-                    }
-                    mapData.set(procedure.parentId.toString(), {customProcedure: procedure, rawProcedure: null});
-                });
-
-                const innerquery = {
-                    _id: {
-                        $in: Array.from(mapData
-                            .values())
-                            .map(val => {
-                                return val.customProcedure.parentId;
-                            })
-                    }
-                };
-
-                const inneroptions = {};
-
-                this.proceduresCollection.find(innerquery, inneroptions)
-                    .toArray()
-                    .then(originalprocedures => {
-                        originalprocedures.map(original => {
-                            const match = mapData.get(original._id.toString());
-                            mapData.set(original._id.toString(), {customProcedure: match.customProcedure, rawProcedure: original});
-                        });
-                        this.hospitalprocedures.next(mapData);
-                    });
-            });
-    }
 
     fetchproceduresincategory(categoryid: BSON.ObjectId, limit?: number): any {
         const query = {
@@ -115,27 +47,7 @@ export class ProceduresService {
         // return this.db.firestore.collection('procedureconfigs').doc(procedureid).update({status: false});
     }
 
-    getprocedurecategories(): void {
-        const query = {};
-        const options = {
-            sort: {
-                name: 1
-            }
-        };
 
-        this.stitch.db.collection<ProcedureCategory>('procedurecategories')
-            .find(query, options)
-            .toArray()
-            .then(values => {
-                this.categories.next(values);
-                /**
-                 * in case we ever need to ut all the procedures in the database
-                 * or the categories, this is the right place
-                 */
-                // this.syncprocedures();
-            })
-        ;
-    }
 
     syncprocedures(): any {
         interface RawprocedureFromjson {
@@ -240,16 +152,16 @@ export class ProceduresService {
         //     .insertMany(procedures);
     }
 
-    addcustomprocedure(customprocedure: CustomProcedure): any {
+    addcustomprocedure(customprocedure: CustomProcedure, hospitalId: BSON.ObjectId, userId: string): any {
 
-        customprocedure.hospitalId = this.activehospital._id;
+        customprocedure.hospitalId = hospitalId;
         customprocedure.status = true;
-        customprocedure.creatorid = this.core.userdata.id;
+        customprocedure.creatorid = userId;
 
         const meta: Meta = {
             date: moment().toDate(),
-            adminId: this.core.userdata.id,
-            hospitalId: this.activehospital._id
+            adminId: userId,
+            hospitalId: hospitalId
         };
 
         customprocedure.metadata = {
@@ -269,31 +181,31 @@ export class ProceduresService {
          * wrote this long code for better readability
          */
         let newProcedureConfig: CustomProcedureConfig;
-        if (this.hospitalCustomProcedureConfig) {
-            const query = {
-                _id: this.hospitalCustomProcedureConfig._id
-            };
-            const temp = {...this.hospitalCustomProcedureConfig};
-            temp.metadata.edited = meta;
-            return this.procedureConfigsCollection.updateOne(query, temp);
-        } else {
-            newProcedureConfig = {
-                _id: new BSON.ObjectId(),
-                hospitalId: this.activehospital._id,
-                metadata: {
-                    created: meta,
-                    edited: meta
-                },
-                procedures: [customprocedure]
-            };
-            return this.procedureConfigsCollection.insertOne(newProcedureConfig);
-        }
+        // if (this.core.hospitalCustomProcedureConfig) {
+        //     const query = {
+        //         _id: this.hospitalCustomProcedureConfig._id
+        //     };
+        //     const temp = { ...this.hospitalCustomProcedureConfig };
+        //     temp.metadata.edited = meta;
+        //     return this.procedureConfigsCollection.updateOne(query, temp);
+        // } else {
+        newProcedureConfig = {
+            _id: new BSON.ObjectId(),
+            hospitalId: hospitalId,
+            metadata: {
+                created: meta,
+                edited: meta
+            },
+            procedures: [customprocedure]
+        };
+        return this.procedureConfigsCollection.insertOne(newProcedureConfig);
+        // }
     }
 
 
-    editcustomprocedure(customprocedure: CustomProcedure): any {
+    editcustomprocedure(customprocedure: CustomProcedure, userId: string, hospitalId: BSON.ObjectId, customProcedureId: BSON.ObjectId): any {
         const query = {
-            _id: this.hospitalCustomProcedureConfig._id
+            _id: customProcedureId
         };
         const options = {
             upsert: false
@@ -301,11 +213,12 @@ export class ProceduresService {
 
         const meta: Meta = {
             date: moment().toDate(),
-            adminId: this.core.userdata.id,
-            hospitalId: this.core.activehospital.value._id
+            adminId: userId,
+            hospitalId: hospitalId
         };
 
         customprocedure.metadata = {
+            created: meta,
             edited: meta,
         };
         /**
@@ -326,6 +239,6 @@ export class ProceduresService {
 
     deactivateprocedure(procedureid: string): any {
 
-        // return this.db.firestore.collection('hospitals').doc(this.activehospital._id).collection('procedures').doc(procedureid).delete();
+        // return this.db.firestore.collection('hospitals').doc(hospitalId).collection('procedures').doc(procedureid).delete();
     }
 }

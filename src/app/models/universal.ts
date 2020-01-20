@@ -10,7 +10,7 @@ export interface Metadata {
     /**
      * Sometimes we may just want to modify the last edited date
      */
-    created?: Meta;
+    created: Meta;
     edited: Meta;
 }
 

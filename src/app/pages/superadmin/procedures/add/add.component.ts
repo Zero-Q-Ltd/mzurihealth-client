@@ -1,15 +1,16 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import {fuseAnimations} from '../../../../../@fuse/animations';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {ProceduresService} from '../../../services/procedures.service';
-import {ProcedureCategory} from '../../../../models/procedure/ProcedureCategory';
-import {emptyprawrocedure, RawProcedure, RawProcedureCategory} from '../../../../models/procedure/RawProcedure';
-import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
-import {FuseSidebarService} from '../../../../../@fuse/components/sidebar/sidebar.service';
-import {LocalcommunicationService} from '../../localcommunication.service';
-import {NotificationService} from '../../../../shared/services/notifications.service';
-import {emptycustomprocedure} from '../../../../models/procedure/CustomProcedure';
-import {Paymentmethods} from '../../../../models/payment/PaymentChannel';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { fuseAnimations } from '../../../../../@fuse/animations';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ProceduresService } from '../../../services/procedures.service';
+import { ProcedureCategory } from '../../../../models/procedure/ProcedureCategory';
+import { emptyprawrocedure, RawProcedure, RawProcedureCategory } from '../../../../models/procedure/RawProcedure';
+import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
+import { FuseSidebarService } from '../../../../../@fuse/components/sidebar/sidebar.service';
+import { LocalcommunicationService } from '../../localcommunication.service';
+import { NotificationService } from '../../../../shared/services/notifications.service';
+import { emptycustomprocedure } from '../../../../models/procedure/CustomProcedure';
+import { Paymentmethods } from '../../../../models/payment/PaymentChannel';
+import { CoreService } from 'app/pages/services/core/core.service';
 
 @Component({
     selector: 'procedure-add',
@@ -25,19 +26,20 @@ export class AddComponent implements OnInit, AfterViewInit {
         [key: string]: number
     };
     expandedlist = 0;
-    selectedprocedure: RawProcedure = {...emptyprawrocedure};
+    selectedprocedure: RawProcedure = { ...emptyprawrocedure };
     procedureheaders = ['name', 'category', 'minprice', 'maxprice'];
     categoryprocedures = new MatTableDataSource<RawProcedure>();
     defaultLimit = 10;
-    @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
-    @ViewChild(MatSort, {static: false}) sort: MatSort;
+    @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
+    @ViewChild(MatSort, { static: false }) sort: MatSort;
 
     constructor(private _formBuilder: FormBuilder,
-                private _fuseSidebarService: FuseSidebarService,
-                private procedureservice: ProceduresService,
-                private communicatioservice: LocalcommunicationService,
-                private notificationservice: NotificationService) {
-        procedureservice.categories.subscribe(categories => {
+        private _fuseSidebarService: FuseSidebarService,
+        private procedureservice: ProceduresService,
+        private communicatioservice: LocalcommunicationService,
+        private core: CoreService,
+        private notificationservice: NotificationService) {
+        this.core.categories.subscribe(categories => {
             this.categories = categories;
         });
     }
@@ -81,7 +83,7 @@ export class AddComponent implements OnInit, AfterViewInit {
      * @param selected
      */
     onSelect(selected: RawProcedure): void {
-        if (this.procedureservice.hospitalprocedures.value.get(selected._id.toHexString())) {
+        if (this.core.hospitalprocedures.value.get(selected._id.toHexString())) {
             this.notificationservice.notify({
                 placement: {
                     vertical: 'bottom',
@@ -92,8 +94,8 @@ export class AddComponent implements OnInit, AfterViewInit {
                 body: 'this procedure is already configured'
             });
         } else {
-            this.selectedprocedure = {...selected};
-            this.communicatioservice.onprocedureselected.next({selectiontype: 'newprocedure', selection: {customprocedure: emptycustomprocedure, rawprocedure: selected}});
+            this.selectedprocedure = { ...selected };
+            this.communicatioservice.onprocedureselected.next({ selectiontype: 'newprocedure', selection: { customprocedure: emptycustomprocedure, rawprocedure: selected } });
         }
     }
 

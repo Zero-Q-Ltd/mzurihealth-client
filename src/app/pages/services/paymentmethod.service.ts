@@ -1,7 +1,7 @@
-import {Injectable} from '@angular/core';
-import {PaymentChannel} from '../../models/payment/PaymentChannel';
-import {CoreService} from './core/core.service';
-import {StitchService} from './stitch/stitch.service';
+import { Injectable } from '@angular/core';
+import { PaymentChannel } from '../../models/payment/PaymentChannel';
+import { CoreService } from './core/core.service';
+import { StitchService } from './stitch/stitch.service';
 
 
 @Injectable({
@@ -11,8 +11,8 @@ export class PaymentmethodService {
 
     paymentChannelsCollection = this.stitch.db.collection<PaymentChannel>('paymentchannels');
 
-    constructor(private core: CoreService,
-                private stitch: StitchService) {
+    constructor(
+        private stitch: StitchService) {
 
     }
 

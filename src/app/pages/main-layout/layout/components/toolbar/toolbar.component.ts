@@ -1,19 +1,19 @@
-import {Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
-import {Subject} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
-import {TranslateService} from '@ngx-translate/core';
+import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
 import * as _ from 'lodash';
 
-import {FuseConfigService} from '@fuse/services/config.service';
-import {FuseSidebarService} from '@fuse/components/sidebar/sidebar.service';
+import { FuseConfigService } from '@fuse/services/config.service';
+import { FuseSidebarService } from '@fuse/components/sidebar/sidebar.service';
 
-import {navigation} from '../../../../navigation/navigation';
-import {emptyhospital, Hospital} from 'app/models/hospital/Hospital';
-import {HospitalAdmin} from 'app/models/user/HospitalAdmin';
-import {AdminService} from 'app/pages/services/admin.service';
-import {Router} from '@angular/router';
-import {StitchService} from 'app/pages/services/stitch/stitch.service';
-import {CoreService} from 'app/pages/services/core/core.service';
+import { navigation } from '../../../../navigation/navigation';
+import { emptyhospital, Hospital } from 'app/models/hospital/Hospital';
+import { HospitalAdmin } from 'app/models/user/HospitalAdmin';
+import { AdminService } from 'app/pages/services/admin.service';
+import { Router } from '@angular/router';
+import { StitchService } from 'app/pages/services/stitch/stitch.service';
+import { CoreService } from 'app/pages/services/core/core.service';
 
 @Component({
     selector: 'toolbar',
@@ -108,12 +108,12 @@ export class ToolbarComponent implements OnInit, OnDestroy {
         /**
          * custom code
          */
-        this.core.observableuserdata.subscribe((admin: HospitalAdmin) => {
+        this.core.observableUserData.subscribe((admin: HospitalAdmin) => {
             if (admin.id) {
                 this.userdata = admin;
             }
         });
-        this.core.activehospital.subscribe(hospital => {
+        this.core.activeHospital.subscribe(hospital => {
             if (hospital._id) {
                 this.activehospital = hospital;
             }
@@ -139,7 +139,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
             });
 
         // Set the selected language from default languages
-        this.selectedLanguage = _.find(this.languages, {id: this._translateService.currentLang});
+        this.selectedLanguage = _.find(this.languages, { id: this._translateService.currentLang });
     }
 
     /**

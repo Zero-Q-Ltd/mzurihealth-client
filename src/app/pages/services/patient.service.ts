@@ -1,17 +1,17 @@
-import {Injectable} from '@angular/core';
-import {NewPatientForm} from 'app/models/patient/NewPatientForm';
-import {Meta} from 'app/models/universal';
+import { Injectable } from '@angular/core';
+import { NewPatientForm } from 'app/models/patient/NewPatientForm';
+import { Meta } from 'app/models/universal';
 import * as equal from 'deep-equal';
 import * as moment from 'moment';
-import {BSON, Stream} from 'mongodb-stitch-browser-sdk';
-import {ChangeEvent, RemoteUpdateResult} from 'mongodb-stitch-core-services-mongodb-remote';
-import {combineLatest, Observable, ReplaySubject, Subscription} from 'rxjs';
-import {map} from 'rxjs/operators';
-import {emptyfile, HospFile} from '../../models/hospital/HospFile';
-import {emptypatient, Insurance, NextofKin, Patient} from '../../models/patient/Patient';
-import {HospitalService} from './hospital.service';
-import {StitchService} from './stitch/stitch.service';
-import {CoreService} from './core/core.service';
+import { BSON, Stream } from 'mongodb-stitch-browser-sdk';
+import { ChangeEvent, RemoteUpdateResult } from 'mongodb-stitch-core-services-mongodb-remote';
+import { combineLatest, Observable, ReplaySubject, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { emptyfile, HospFile } from '../../models/hospital/HospFile';
+import { emptypatient, Insurance, NextofKin, Patient } from '../../models/patient/Patient';
+import { HospitalService } from './hospital.service';
+import { StitchService } from './stitch/stitch.service';
+import { CoreService } from './core/core.service';
 
 @Injectable({
     providedIn: 'root'
@@ -32,7 +32,6 @@ export class PatientService {
 
     constructor(
         private hospitalservice: HospitalService,
-        private core: CoreService,
         private stitch: StitchService) {
     }
 
@@ -43,11 +42,11 @@ export class PatientService {
             });
 
         const p = this.patientsCollection
-            .findOne({_id: patientid});
+            .findOne({ _id: patientid });
 
         const pt = combineLatest([p, f])
             .pipe(map(result => {
-                const combined: Patient = {...emptypatient, ...result[0], ...{fileInfo: result[1]}};
+                const combined: Patient = { ...emptypatient, ...result[0], ...{ fileInfo: result[1] } };
                 return combined;
             }));
 
@@ -91,7 +90,7 @@ export class PatientService {
     /**
      * save patient to db
      * */
-    savePatient(data: NewPatientForm): Promise<any> {
+    savePatient(data: NewPatientForm, adminId: string, hospitalId: BSON.ObjectId): Promise<any> {
         /**
          * create data to insert to the patient collection
          * */
@@ -123,8 +122,8 @@ export class PatientService {
 
         const newmeta: Meta = {
             date: moment().toDate(),
-            adminId: this.core.userdata.id,
-            hospitalId: this.core.activehospital.value._id
+            adminId: adminId,
+            hospitalId: hospitalId
         };
 
         const modifiedData: Patient = {
@@ -156,7 +155,7 @@ export class PatientService {
         /**
          * join objects to create a full document
          * */
-        const patientDoc = Object.assign({}, {...emptypatient}, {...modifiedData}) as Patient;
+        const patientDoc = Object.assign({}, { ...emptypatient }, { ...modifiedData }) as Patient;
 
         /**
          * hospital file number
@@ -168,13 +167,13 @@ export class PatientService {
                 edited: newmeta
             },
             lastVisit: todayDate,
-            hospitalId: this.core.activehospital.value._id,
+            hospitalId: hospitalId,
             no: data.fileNo,
             visitCount: 0,
             patientId: patientID,
         };
 
-        const hospitalFileNumber = Object.assign({}, {...emptyfile}, hospitalFileNumberTemp);
+        const hospitalFileNumber = Object.assign({}, { ...emptyfile }, hospitalFileNumberTemp);
 
         /**
          * create a file number associated with that hospital only
@@ -198,7 +197,7 @@ export class PatientService {
         const k = this.hospitalservice.hospitalCollection
             .updateOne(
                 {
-                    _id: this.core.activehospital.value._id
+                    _id: hospitalId
                 },
                 {
                     $inc: {
@@ -218,11 +217,11 @@ export class PatientService {
      * get all patients
      * @TODO implement a custom paginator
      * */
-    getHospitalPatients(): Observable<Array<Patient>> {
+    getHospitalPatients(hospitalId: BSON.ObjectId): Observable<Array<Patient>> {
         const patientdata = this.patientsCollection
             .find(
                 {
-                    'metadata.created.hospitalId': this.core.activehospital.value._id,
+                    'metadata.created.hospitalId': hospitalId,
                 },
                 {
                     limit: 25
@@ -231,7 +230,7 @@ export class PatientService {
         const patientfiles = this.patientFilesCollection
             .find(
                 {
-                    'metadata.created.hospitalId': this.core.activehospital.value._id,
+                    'metadata.created.hospitalId': hospitalId,
                 },
                 {
                     limit: 25,
@@ -261,7 +260,7 @@ export class PatientService {
 
 
     updatePatient(patientData: Patient): Promise<RemoteUpdateResult> {
-        return this.patientsCollection.updateOne({_id: patientData._id}, patientData);
+        return this.patientsCollection.updateOne({ _id: patientData._id }, patientData);
     }
 
     searchPatient(field: string, value: string): any {
@@ -271,10 +270,10 @@ export class PatientService {
     /*
     * will use this to check if the file number is available
     * **/
-    getHospitalFileByNumber(fileNumber: string): Promise<HospFile> {
+    getHospitalFileByNumber(fileNumber: string, hospitalId: BSON.ObjectId): Promise<HospFile> {
         return this.patientFilesCollection
             .findOne({
-                hospitalId: this.core.activehospital.value._id,
+                hospitalId: hospitalId,
                 no: fileNumber
             });
 

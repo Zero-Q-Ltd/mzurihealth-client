@@ -1,22 +1,22 @@
-import {Injectable} from '@angular/core';
-import {HospFile} from 'app/models/hospital/HospFile';
-import {emptymedicalInfo} from 'app/models/patient/MedicalInfo';
-import {Meta} from 'app/models/universal';
+import { Injectable } from '@angular/core';
+import { HospFile } from 'app/models/hospital/HospFile';
+import { emptymedicalInfo } from 'app/models/patient/MedicalInfo';
+import { Meta } from 'app/models/universal';
 import * as BSON from 'bson';
 import * as moment from 'moment';
-import {Stream} from 'mongodb-stitch-browser-sdk';
-import {ChangeEvent, OperationType} from 'mongodb-stitch-core-services-mongodb-remote';
-import {BehaviorSubject, Subscription} from 'rxjs';
-import {distinctUntilChanged, skipWhile} from 'rxjs/operators';
-import {Patient} from '../../../models/patient/Patient';
-import {HospitalAdmin} from '../../../models/user/HospitalAdmin';
-import {CurrentPatient, MergedPatientQueueModel} from '../../../models/visit/MergedPatientQueueModel';
-import {CheckinStatus, NewVisit, Visit} from '../../../models/visit/Visit';
-import {CoreService} from './core.service';
-import {MedicalinfoService} from '../medicalinfo.service';
-import {PatientService} from '../patient.service';
-import {StitchService} from '../stitch/stitch.service';
-import {VisitService} from '../visit.service';
+import { Stream } from 'mongodb-stitch-browser-sdk';
+import { ChangeEvent, OperationType } from 'mongodb-stitch-core-services-mongodb-remote';
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { distinctUntilChanged, skipWhile } from 'rxjs/operators';
+import { Patient } from '../../../models/patient/Patient';
+import { HospitalAdmin } from '../../../models/user/HospitalAdmin';
+import { CurrentPatient, MergedPatientQueueModel } from '../../../models/visit/MergedPatientQueueModel';
+import { CheckinStatus, NewVisit, Visit } from '../../../models/visit/Visit';
+import { CoreService } from './core.service';
+import { MedicalinfoService } from '../medicalinfo.service';
+import { PatientService } from '../patient.service';
+import { StitchService } from '../stitch/stitch.service';
+import { VisitService } from '../visit.service';
 
 @Injectable({
     providedIn: 'root'
@@ -51,16 +51,16 @@ export class QueueService {
     internalSubscriptions: Map<string, Subscription> = new Map();
 
     constructor(private core: CoreService,
-                private patientservice: PatientService,
-                private visitService: VisitService,
-                private medInfoService: MedicalinfoService,
-                private stitch: StitchService) {
+        private patientservice: PatientService,
+        private visitService: VisitService,
+        private medInfoService: MedicalinfoService,
+        private stitch: StitchService) {
 
         /**
          * Only re-subscribe to hospital queue when the hospital id changes
          * Maybe the admin has been moved to another hospital
          */
-        this.core.activehospital.pipe(
+        this.core.activeHospital.pipe(
             skipWhile(t => !t._id),
             distinctUntilChanged((prev, curr) => prev._id.toHexString() === curr._id.toHexString()))
             .subscribe(hospital => {
@@ -71,7 +71,7 @@ export class QueueService {
         /**
          * Only filter if the admin id has changed, ignore every other admin change
          */
-        this.core.observableuserdata
+        this.core.observableUserData
             .pipe(distinctUntilChanged((prev, curr) => prev.id === curr.id))
             .subscribe((admin: HospitalAdmin) => {
                 if (admin.id) {
@@ -232,7 +232,7 @@ export class QueueService {
         /**
          * replace the visit data into the array
          */
-        patientmap.set(visit.patientId.toHexString(), {visitData: visit, patientdata: previousData.patientdata});
+        patientmap.set(visit.patientId.toHexString(), { visitData: visit, patientdata: previousData.patientdata });
         /**
          * replace the patientdata if they're in the current admin queue
          */
@@ -249,7 +249,7 @@ export class QueueService {
                     this.currentpatient.next(null);
                 }
             } else {
-                mypatientsmap.set(visit.patientId.toHexString(), {visitData: visit, patientdata: previousData.patientdata});
+                mypatientsmap.set(visit.patientId.toHexString(), { visitData: visit, patientdata: previousData.patientdata });
                 if (visit.checkin.status === CheckinStatus['being attended']) {
                     this.currentpatient.next(await this.fetchCurrentPatientData(visit, previousData.patientdata, true));
                 }
@@ -260,7 +260,7 @@ export class QueueService {
          */
         else if (this.checkAdmin(visit.checkin.admin)) {
             mypatientsmap.set(visit.patientId.toHexString(),
-                {visitData: visit, patientdata: previousData.patientdata});
+                { visitData: visit, patientdata: previousData.patientdata });
         }
         this.mainpatientsqueue.next(patientmap);
         this.mypatientqueue.next(mypatientsmap);
@@ -313,11 +313,11 @@ export class QueueService {
                 const matchingPatient: Patient = result[1].filter(pp => pp._id.toHexString() === visit.patientId.toHexString())[0];
                 matchingPatient.fileInfo = result[0].filter(ff => ff.patientId.toHexString() === matchingPatient._id.toHexString())[0];
 
-                patientmap.set(visit.patientId.toHexString(), {visitData: visit, patientdata: matchingPatient});
+                patientmap.set(visit.patientId.toHexString(), { visitData: visit, patientdata: matchingPatient });
 
 
                 if (this.checkAdmin(visit.checkin.admin)) {
-                    mypatientsmap.set(visit.patientId.toHexString(), {visitData: visit, patientdata: matchingPatient});
+                    mypatientsmap.set(visit.patientId.toHexString(), { visitData: visit, patientdata: matchingPatient });
                     if (visit.checkin.status === CheckinStatus['being attended']) {
                         this.currentpatient.next(await this.fetchCurrentPatientData(visit, matchingPatient, false));
                     }
@@ -345,7 +345,7 @@ export class QueueService {
             /**
              * make sure that a value is assigned to the med info
              */
-            medicalInfo: await this.medInfoService.getLatest(patient._id) || {...emptymedicalInfo},
+            medicalInfo: await this.medInfoService.getLatest(patient._id) || { ...emptymedicalInfo },
             patientdata: updatePatientdata ? await this.patientservice.getpatientbyid(patient._id) : patient,
             visitdata
         };
@@ -365,15 +365,15 @@ export class QueueService {
     addPatientToQueue(newvist: NewVisit, patient: Patient): Promise<any> {
         const meta: Meta = {
             date: moment().toDate(),
-            adminId: this.core.userdata.id,
+            adminId: this.core.userData.id,
             hospitalId: this.activehospitalid
         };
         const visitId = new BSON.ObjectId;
         const visitTemp: Visit = {
             visitDescription: newvist.description,
             patientId: patient._id,
-            hospitalId: this.activehospitalid,
             metadata: {
+                created: meta,
                 edited: meta
             },
             payment: {
@@ -394,7 +394,7 @@ export class QueueService {
                 admin: null
             },
             generalNotes: [],
-            invoiceId: this.core.activehospital.value.invoiceCount + 1,
+            invoiceId: this.core.activeHospital.value.invoiceCount + 1,
             prescription: null,
             procedures: [],
             totalcost: 0

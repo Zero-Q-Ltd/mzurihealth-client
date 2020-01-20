@@ -61,7 +61,7 @@ export class MineComponent implements OnInit, OnDestroy {
         this.confirmDialogRef.componentInstance.confirmMessage = 'Accept?';
         this.confirmDialogRef.afterClosed().subscribe(result => {
             if (result) {
-                this.visit.acceptPatient(data.visitData._id, this.core.userdata.id);
+                this.visit.acceptPatient(data.visitData._id, this.core.userData.id);
             }
         });
     }

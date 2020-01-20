@@ -1,8 +1,8 @@
-import {emptymetadata, Metadata} from '../universal';
-import {Procedureperformed} from '../procedure/Procedureperformed';
-import {Prescription} from './Prescription';
-import {Insurance} from '../patient/Patient';
-import {PaymentChannel} from '../payment/PaymentChannel';
+import { emptymetadata, Metadata } from '../universal';
+import { Procedureperformed } from '../procedure/Procedureperformed';
+import { Prescription } from './Prescription';
+import { Insurance } from '../patient/Patient';
+import { PaymentChannel } from '../payment/PaymentChannel';
 import * as BSON from 'bson';
 
 export interface Visit {
@@ -15,7 +15,6 @@ export interface Visit {
         notes: string
     }>;
     patientId: BSON.ObjectId;
-    hospitalId: BSON.ObjectId;
     prescription: Prescription;
     metadata: Metadata;
     payment: {
@@ -87,7 +86,6 @@ export const emptypatientvisit: Visit = {
         hasInsurance: false,
     },
     patientId: null,
-    hospitalId: null,
     prescription: null,
     metadata: emptymetadata,
     _id: null

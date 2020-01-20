@@ -1,13 +1,13 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import {FuseConfigService} from '@fuse/services/config.service';
-import {fuseAnimations} from '@fuse/animations';
-import {FuseSplashScreenService} from '../../../@fuse/services/splash-screen.service';
-import {HospitalAdmin} from '../../models/user/HospitalAdmin';
-import {Router} from '@angular/router';
-import {StitchService} from 'app/pages/services/stitch/stitch.service';
-import {CoreService} from 'app/pages/services/core/core.service';
+import { FuseConfigService } from '@fuse/services/config.service';
+import { fuseAnimations } from '@fuse/animations';
+import { FuseSplashScreenService } from '../../../@fuse/services/splash-screen.service';
+import { HospitalAdmin } from '../../models/user/HospitalAdmin';
+import { Router } from '@angular/router';
+import { StitchService } from 'app/pages/services/stitch/stitch.service';
+import { CoreService } from 'app/pages/services/core/core.service';
 
 @Component({
     selector: 'login-2',
@@ -55,7 +55,7 @@ export class Login2Component implements OnInit {
                 }
             }
         };
-        this.core.observableuserdata.subscribe((admin: HospitalAdmin) => {
+        this.core.observableUserData.subscribe((admin: HospitalAdmin) => {
             if (admin && admin.id) {
                 this.router.navigate(['/admin']);
             }

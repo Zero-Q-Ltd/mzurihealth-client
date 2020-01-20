@@ -1,17 +1,17 @@
-import { Component, OnInit, ViewEncapsulation, OnDestroy } from '@angular/core';
-import { MatDialog, MatDialogRef, MatTableDataSource } from '@angular/material';
-import { fuseAnimations } from '../../../../@fuse/animations';
-import { QueueService } from '../../services/core/queue.service';
-import { MergedPatientQueueModel } from '../../../models/visit/MergedPatientQueueModel';
+import {Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
+import {MatDialog, MatDialogRef, MatTableDataSource} from '@angular/material';
+import {fuseAnimations} from '../../../../@fuse/animations';
+import {QueueService} from '../../services/core/queue.service';
+import {MergedPatientQueueModel} from '../../../models/visit/MergedPatientQueueModel';
 import * as moment from 'moment';
-import { AdminSelectionComponent } from '../admin-selection/admin-selection.component';
-import { HospitalAdmin } from '../../../models/user/HospitalAdmin';
-import { FuseConfirmDialogComponent } from '../../../../@fuse/components/confirm-dialog/confirm-dialog.component';
-import { InvoiceComponent } from '../../patients/invoice/invoice.component';
-import { VisitService } from 'app/pages/services/visit.service';
-import { ReplaySubject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { CoreService } from 'app/pages/services/core/core.service';
+import {AdminSelectionComponent} from '../admin-selection/admin-selection.component';
+import {HospitalAdmin} from '../../../models/user/HospitalAdmin';
+import {FuseConfirmDialogComponent} from '../../../../@fuse/components/confirm-dialog/confirm-dialog.component';
+import {InvoiceComponent} from '../../patients/invoice/invoice.component';
+import {VisitService} from 'app/pages/services/visit.service';
+import {ReplaySubject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
+import {CoreService} from 'app/pages/services/core/core.service';
 
 @Component({
     selector: 'queue-mine',
@@ -28,9 +28,9 @@ export class MineComponent implements OnInit, OnDestroy {
     comopnentDestroyed: ReplaySubject<boolean> = new ReplaySubject<boolean>();
 
     constructor(private queue: QueueService,
-        private visit: VisitService,
-        private core: CoreService,
-        public _matDialog: MatDialog) {
+                private visit: VisitService,
+                private core: CoreService,
+                public _matDialog: MatDialog) {
         queue.mypatientqueue
             .pipe(takeUntil(this.comopnentDestroyed))
             .subscribe(value => {
@@ -46,6 +46,7 @@ export class MineComponent implements OnInit, OnDestroy {
     getAge(birtday: Date): number {
         return moment().diff(birtday, 'years');
     }
+
     ngOnDestroy(): void {
         this.comopnentDestroyed.next(true);
     }

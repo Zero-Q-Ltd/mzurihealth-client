@@ -30,7 +30,8 @@
             </ng-container>
             <!-- / TOOLBAR: Below fixed -->
 
-            <div [fusePerfectScrollbarOptions]="{suppressScrollX: true, updateOnRouteChange : true}" class="container" fusePerfectScrollbar
+            <div [fusePerfectScrollbarOptions]="{suppressScrollX: true, updateOnRouteChange : true}" class="container"
+                 fusePerfectScrollbar
                  id="container-3">
 
                 <!-- TOOLBAR: Below static -->
@@ -122,7 +123,8 @@
 
 <!-- RIGHT NAVBAR -->
 <ng-template #rightNavbar>
-    <fuse-sidebar *ngIf="!fuseConfig.layout.navbar.hidden" [folded]="fuseConfig.layout.navbar.folded" class="navbar-fuse-sidebar"
+    <fuse-sidebar *ngIf="!fuseConfig.layout.navbar.hidden" [folded]="fuseConfig.layout.navbar.folded"
+                  class="navbar-fuse-sidebar"
                   lockedOpen="gt-md"
                   name="navbar"
                   position="right">

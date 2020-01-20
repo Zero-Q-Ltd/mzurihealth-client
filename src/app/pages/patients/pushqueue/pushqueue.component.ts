@@ -1,14 +1,14 @@
-import { Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
-import { Validators } from '@angular/forms';
-import { FormArray, FormControl, FormGroup, FormBuilder } from 'ngx-strongly-typed-forms';
-import { Insurance, Patient } from '../../../models/patient/Patient';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-import { PaymentmethodService } from '../../services/paymentmethod.service';
-import { PaymentChannel, Paymentmethods } from '../../../models/payment/PaymentChannel';
-import { PatientService } from '../../services/patient.service';
-import { NotificationService } from '../../../shared/services/notifications.service';
-import { NewVisit } from 'app/models/visit/Visit';
-import { CoreService } from 'app/pages/services/core/core.service';
+import {Component, Inject, OnInit, ViewEncapsulation} from '@angular/core';
+import {Validators} from '@angular/forms';
+import {FormArray, FormBuilder, FormControl, FormGroup} from 'ngx-strongly-typed-forms';
+import {Insurance, Patient} from '../../../models/patient/Patient';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
+import {PaymentmethodService} from '../../services/paymentmethod.service';
+import {PaymentChannel, Paymentmethods} from '../../../models/payment/PaymentChannel';
+import {PatientService} from '../../services/patient.service';
+import {NotificationService} from '../../../shared/services/notifications.service';
+import {NewVisit} from 'app/models/visit/Visit';
+import {CoreService} from 'app/pages/services/core/core.service';
 
 @Component({
     selector: 'app-pushqueue',
@@ -29,13 +29,14 @@ export class PushqueueComponent implements OnInit {
      */
     insuranceSelected: boolean;
     selectedInsuranceId: number;
+
     constructor(private _formBuilder: FormBuilder,
-        @Inject(MAT_DIALOG_DATA) private _data: any,
-        public matDialogRef: MatDialogRef<PushqueueComponent>,
-        private notificationService: NotificationService,
-        private paymentmethodService: PaymentmethodService,
-        private core: CoreService,
-        private patientService: PatientService) {
+                @Inject(MAT_DIALOG_DATA) private _data: any,
+                public matDialogRef: MatDialogRef<PushqueueComponent>,
+                private notificationService: NotificationService,
+                private paymentmethodService: PaymentmethodService,
+                private core: CoreService,
+                private patientService: PatientService) {
 
         this.patient = _data.patient;
         this.dialogTitle = 'Queue Patient';
@@ -69,6 +70,7 @@ export class PushqueueComponent implements OnInit {
             selectedInsurance: null
         });
     }
+
     /**
      * Retruns the form array for dynamic manipulation
      */
@@ -91,7 +93,7 @@ export class PushqueueComponent implements OnInit {
                     alertType: 'info',
                     body: 'Please select Insurance',
                     title: 'Select insurance',
-                    placement: { horizontal: 'right', vertical: 'top' }
+                    placement: {horizontal: 'right', vertical: 'top'}
                 });
                 return;
             }
@@ -101,11 +103,10 @@ export class PushqueueComponent implements OnInit {
                 alertType: 'info',
                 body: 'The user does not have any insurance',
                 title: 'No Insurance',
-                placement: { horizontal: 'right', vertical: 'top' }
+                placement: {horizontal: 'right', vertical: 'top'}
             });
         }
     }
-
 
 
     setSelectedInsurance(index: number): void {
@@ -127,16 +128,16 @@ export class PushqueueComponent implements OnInit {
                     this.addInsurance();
 
                     const mergedData = Object.assign({}, this.allInsurance[insuranceData.id],
-                        { id: insuranceData.id, insuranceno: insuranceData.insuranceNo });
+                        {id: insuranceData.id, insuranceno: insuranceData.insuranceNo});
 
-                    this.getinsuranceArray().controls[index].get('id').patchValue(mergedData.id, { emitEvent: false });
-                    this.getinsuranceArray().controls[index].get('insuranceNo').patchValue(mergedData.insuranceno, { emitEvent: false });
+                    this.getinsuranceArray().controls[index].get('id').patchValue(mergedData.id, {emitEvent: false});
+                    this.getinsuranceArray().controls[index].get('insuranceNo').patchValue(mergedData.insuranceno, {emitEvent: false});
 
                     /*
                     * disable inputs
                     * **/
-                    this.getinsuranceArray().controls[index].get('id').disable({ emitEvent: false });
-                    this.getinsuranceArray().controls[index].get('insuranceNo').disable({ emitEvent: false });
+                    this.getinsuranceArray().controls[index].get('id').disable({emitEvent: false});
+                    this.getinsuranceArray().controls[index].get('insuranceNo').disable({emitEvent: false});
                 });
 
             } else {

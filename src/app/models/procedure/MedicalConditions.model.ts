@@ -1,4 +1,4 @@
-import { Metadata } from '../universal';
+import {Metadata} from '../universal';
 
 export enum MedConditions {
     'Alzheimer\'s' = 'Alzheimer\'s'
@@ -37,7 +37,9 @@ export enum MedConditions {
     , 'Travel Health' = 'Travel Health'
     , 'Women\'s Health' = 'Women\'s Health'
 }
+
 export const medicalconditionsarray = Object.values(MedConditions);
+
 export interface Condition {
     type: MedConditions;
     detail: string;

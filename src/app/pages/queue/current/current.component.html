@@ -9,14 +9,18 @@
         <div fxLayout="row">
             <div class="cardlike mat-elevation-z6" fxFlex="25">
                 <mat-chip-list aria-label="Component selection">
-                    <mat-chip color="accent" [selected]="activechip === 'General'" (click)="activechip = 'General'">
-                        General</mat-chip>
-                    <mat-chip color="accent" [selected]="activechip === 'Conditions'"
-                        (click)="activechip = 'Conditions'">Conditions</mat-chip>
-                    <mat-chip color="accent" [selected]="activechip === 'Allergies'" (click)="activechip = 'Allergies'">
-                        Allergies</mat-chip>
-                    <mat-chip color="accent" selected (click)="savemedinfo()">
-                        SAVE</mat-chip>
+                    <mat-chip (click)="activechip = 'General'" [selected]="activechip === 'General'" color="accent">
+                        General
+                    </mat-chip>
+                    <mat-chip (click)="activechip = 'Conditions'" [selected]="activechip === 'Conditions'"
+                              color="accent">Conditions
+                    </mat-chip>
+                    <mat-chip (click)="activechip = 'Allergies'" [selected]="activechip === 'Allergies'" color="accent">
+                        Allergies
+                    </mat-chip>
+                    <mat-chip (click)="savemedinfo()" color="accent" selected>
+                        SAVE
+                    </mat-chip>
                 </mat-chip-list>
                 <div [ngSwitch]="activechip">
                     <app-med-info *ngSwitchCase="'General'"></app-med-info>

@@ -1,4 +1,4 @@
-import { emptymetadata, Metadata } from '../universal';
+import {emptymetadata, Metadata} from '../universal';
 import * as BSON from 'bson';
 
 export interface CustomProcedure {
@@ -23,6 +23,7 @@ export interface CustomProcedureConfig {
      */
     procedures: Array<CustomProcedure>;
 }
+
 export const emptycustomprocedure: CustomProcedure = {
     creatorid: null,
     status: null,

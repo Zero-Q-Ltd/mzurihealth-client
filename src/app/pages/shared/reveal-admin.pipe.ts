@@ -1,6 +1,5 @@
-import { Pipe, PipeTransform } from '@angular/core';
-import { HospitalAdmin } from '../../models/user/HospitalAdmin';
-import * as BSON from 'bson';
+import {Pipe, PipeTransform} from '@angular/core';
+import {HospitalAdmin} from '../../models/user/HospitalAdmin';
 
 @Pipe({
     name: 'adminName'

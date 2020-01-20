@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import {NgModule} from '@angular/core';
 import {
     MatAutocompleteModule,
     MatBadgeModule,
@@ -30,15 +30,15 @@ import {
     MatToolbarModule,
     MatTooltipModule
 } from '@angular/material';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FuseSharedModule } from '../../../@fuse/shared.module';
-import { FuseConfirmDialogModule, FuseProgressBarModule, FuseSidebarModule, FuseThemeOptionsModule } from '../../../@fuse/components';
-import { RouterModule } from '@angular/router';
-import { AgmCoreModule } from '@agm/core';
-import { CommonModule } from '@angular/common';
-import { PaymentmethodPipe } from './paymentmethod.pipe';
-import { AgePipe } from './age.pipe';
-import { AdminNamePipe } from './reveal-admin.pipe';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {FuseSharedModule} from '../../../@fuse/shared.module';
+import {FuseConfirmDialogModule, FuseProgressBarModule, FuseSidebarModule, FuseThemeOptionsModule} from '../../../@fuse/components';
+import {RouterModule} from '@angular/router';
+import {AgmCoreModule} from '@agm/core';
+import {CommonModule} from '@angular/common';
+import {PaymentmethodPipe} from './paymentmethod.pipe';
+import {AgePipe} from './age.pipe';
+import {AdminNamePipe} from './reveal-admin.pipe';
 
 @NgModule({
     imports: [

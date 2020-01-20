@@ -1,20 +1,22 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ReplaySubject } from 'rxjs';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {ReplaySubject} from 'rxjs';
 
 @Component({
-  selector: 'app-conditions',
-  templateUrl: './conditions.component.html',
-  styleUrls: ['./conditions.component.scss']
+    selector: 'app-conditions',
+    templateUrl: './conditions.component.html',
+    styleUrls: ['./conditions.component.scss']
 })
 export class ConditionsComponent implements OnInit, OnDestroy {
-  comopnentDestroyed: ReplaySubject<boolean> = new ReplaySubject<boolean>();
+    comopnentDestroyed: ReplaySubject<boolean> = new ReplaySubject<boolean>();
 
-  constructor() { }
+    constructor() {
+    }
 
-  ngOnInit() {
-  }
-  ngOnDestroy(): void {
-    this.comopnentDestroyed.next(true);
-  }
+    ngOnInit() {
+    }
+
+    ngOnDestroy(): void {
+        this.comopnentDestroyed.next(true);
+    }
 
 }

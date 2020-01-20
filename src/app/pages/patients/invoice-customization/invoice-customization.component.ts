@@ -1,22 +1,20 @@
-import { Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
-import { MatDialog, MatDialogRef, MatTableDataSource, MAT_DIALOG_DATA } from '@angular/material';
+import {Component, Inject, OnInit, ViewEncapsulation} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatTableDataSource} from '@angular/material';
 import * as BSON from 'bson';
-import { fuseAnimations } from '../../../../@fuse/animations';
-import { FuseConfirmDialogComponent } from '../../../../@fuse/components/confirm-dialog/confirm-dialog.component';
-import { PaymentMethod } from '../../../models/payment/CustomPaymentMethod.model';
-import { PaymentChannel, Paymentmethods } from '../../../models/payment/PaymentChannel';
-import { emptyprocedureperformed, Procedureperformed } from '../../../models/procedure/Procedureperformed';
-import { HospitalAdmin } from '../../../models/user/HospitalAdmin';
-import { emptymergedQueueModel, MergedPatientQueueModel } from '../../../models/visit/MergedPatientQueueModel';
-import { NotificationService } from '../../../shared/services/notifications.service';
-import { HospitalService } from '../../services/hospital.service';
-import { PaymentmethodService } from '../../services/paymentmethod.service';
-import { ProceduresService } from '../../services/procedures.service';
-import { QueueService } from '../../services/core/queue.service';
-import { VisitService } from '../../services/visit.service';
-import { InvoiceComponent } from '../invoice/invoice.component';
-import { PrescriptionComponent } from '../prescription/prescription.component';
-import { CoreService } from 'app/pages/services/core/core.service';
+import {fuseAnimations} from '../../../../@fuse/animations';
+import {FuseConfirmDialogComponent} from '../../../../@fuse/components/confirm-dialog/confirm-dialog.component';
+import {PaymentMethod} from '../../../models/payment/CustomPaymentMethod.model';
+import {PaymentChannel, Paymentmethods} from '../../../models/payment/PaymentChannel';
+import {emptyprocedureperformed, Procedureperformed} from '../../../models/procedure/Procedureperformed';
+import {HospitalAdmin} from '../../../models/user/HospitalAdmin';
+import {emptymergedQueueModel, MergedPatientQueueModel} from '../../../models/visit/MergedPatientQueueModel';
+import {NotificationService} from '../../../shared/services/notifications.service';
+import {HospitalService} from '../../services/hospital.service';
+import {ProceduresService} from '../../services/procedures.service';
+import {QueueService} from '../../services/core/queue.service';
+import {InvoiceComponent} from '../invoice/invoice.component';
+import {PrescriptionComponent} from '../prescription/prescription.component';
+import {CoreService} from 'app/pages/services/core/core.service';
 
 @Component({
     selector: 'app-invoice-payment',
@@ -26,11 +24,11 @@ import { CoreService } from 'app/pages/services/core/core.service';
     animations: fuseAnimations
 })
 export class InvoiceCustomizationComponent implements OnInit {
-    patientdata: MergedPatientQueueModel = { ...emptymergedQueueModel };
+    patientdata: MergedPatientQueueModel = {...emptymergedQueueModel};
     allpaymentchannels: Array<PaymentChannel> = [];
     hospitalmethods: Array<PaymentMethod> = [];
     dialogRef: MatDialogRef<any>;
-    clickedprocedure: Procedureperformed = { ...emptyprocedureperformed };
+    clickedprocedure: Procedureperformed = {...emptyprocedureperformed};
     hospitaladmins: Array<HospitalAdmin> = [];
     proceduresdatasouce: MatTableDataSource<Procedureperformed> = new MatTableDataSource<Procedureperformed>();
     procedureheaders = ['name', 'admin-time', 'payment-method', 'cost'];
@@ -41,13 +39,13 @@ export class InvoiceCustomizationComponent implements OnInit {
     disableprecriptionbutton = true;
 
     constructor(private queue: QueueService,
-        private hospital: HospitalService,
-        private core: CoreService,
-        public _matDialog: MatDialog,
-        private procedureservice: ProceduresService,
-        private notifications: NotificationService,
-        public thisdialogRef: MatDialogRef<InvoiceCustomizationComponent>,
-        @Inject(MAT_DIALOG_DATA) public patient: string) {
+                private hospital: HospitalService,
+                private core: CoreService,
+                public _matDialog: MatDialog,
+                private procedureservice: ProceduresService,
+                private notifications: NotificationService,
+                public thisdialogRef: MatDialogRef<InvoiceCustomizationComponent>,
+                @Inject(MAT_DIALOG_DATA) public patient: string) {
 
 
         this.core.hospitaladmins.subscribe(admins => {

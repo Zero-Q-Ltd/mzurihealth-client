@@ -1,23 +1,22 @@
-import { Injectable } from '@angular/core';
-import { HospFile } from 'app/models/hospital/HospFile';
-import { emptymedicalInfo } from 'app/models/patient/MedicalInfo';
-import { Meta } from 'app/models/universal';
+import {Injectable} from '@angular/core';
+import {HospFile} from 'app/models/hospital/HospFile';
+import {emptymedicalInfo} from 'app/models/patient/MedicalInfo';
+import {Meta} from 'app/models/universal';
 import * as BSON from 'bson';
 import * as moment from 'moment';
-import { Stream } from 'mongodb-stitch-browser-sdk';
-import { ChangeEvent, OperationType } from 'mongodb-stitch-core-services-mongodb-remote';
-import { BehaviorSubject, Subscription } from 'rxjs';
-import { distinctUntilChanged, skipWhile } from 'rxjs/operators';
-import { Patient } from '../../../models/patient/Patient';
-import { HospitalAdmin } from '../../../models/user/HospitalAdmin';
-import { CurrentPatient, MergedPatientQueueModel } from '../../../models/visit/MergedPatientQueueModel';
-import { CheckinStatus, NewVisit, Visit } from '../../../models/visit/Visit';
-import { AdminService } from '../admin.service';
-import { CoreService } from './core.service';
-import { MedicalinfoService } from '../medicalinfo.service';
-import { PatientService } from '../patient.service';
-import { StitchService } from '../stitch/stitch.service';
-import { VisitService } from '../visit.service';
+import {Stream} from 'mongodb-stitch-browser-sdk';
+import {ChangeEvent, OperationType} from 'mongodb-stitch-core-services-mongodb-remote';
+import {BehaviorSubject, Subscription} from 'rxjs';
+import {distinctUntilChanged, skipWhile} from 'rxjs/operators';
+import {Patient} from '../../../models/patient/Patient';
+import {HospitalAdmin} from '../../../models/user/HospitalAdmin';
+import {CurrentPatient, MergedPatientQueueModel} from '../../../models/visit/MergedPatientQueueModel';
+import {CheckinStatus, NewVisit, Visit} from '../../../models/visit/Visit';
+import {CoreService} from './core.service';
+import {MedicalinfoService} from '../medicalinfo.service';
+import {PatientService} from '../patient.service';
+import {StitchService} from '../stitch/stitch.service';
+import {VisitService} from '../visit.service';
 
 @Injectable({
     providedIn: 'root'
@@ -52,10 +51,10 @@ export class QueueService {
     internalSubscriptions: Map<string, Subscription> = new Map();
 
     constructor(private core: CoreService,
-        private patientservice: PatientService,
-        private visitService: VisitService,
-        private medInfoService: MedicalinfoService,
-        private stitch: StitchService) {
+                private patientservice: PatientService,
+                private visitService: VisitService,
+                private medInfoService: MedicalinfoService,
+                private stitch: StitchService) {
 
         /**
          * Only re-subscribe to hospital queue when the hospital id changes
@@ -153,8 +152,8 @@ export class QueueService {
                              */
                             if (q.fullDocument.checkin.status === CheckinStatus.completed) {
                                 /**
-                                * remove the exited item from the array by filtering and only returning true if the id matches
-                                */
+                                 * remove the exited item from the array by filtering and only returning true if the id matches
+                                 */
                                 activeVisits.filter(t => {
                                     return t._id.toHexString() !== q.fullDocument._id.toHexString();
                                 });
@@ -171,12 +170,12 @@ export class QueueService {
 
                         case OperationType.Update: {
                             /**
-                            * Check if the patient has left the queue
-                            */
+                             * Check if the patient has left the queue
+                             */
                             if (q.fullDocument.checkin.status === CheckinStatus.completed) {
                                 /**
-                                * remove the exited item from the array by filtering and only returning true if the id matches
-                                */
+                                 * remove the exited item from the array by filtering and only returning true if the id matches
+                                 */
                                 activeVisits.filter(t => {
                                     return t._id.toHexString() !== q.fullDocument._id.toHexString();
                                 });
@@ -199,6 +198,7 @@ export class QueueService {
                 });
             });
     }
+
     /**
      * @todo Impliment to reduce db overhead
      */
@@ -213,9 +213,9 @@ export class QueueService {
     /**
      * This only updates the status of the patient queue
      * This logic is very sensitive and arranged the way it is because of the following reason(s)
-     * 1. The patient movement pipeline dictates that a patient is first added to that admin's queue 
+     * 1. The patient movement pipeline dictates that a patient is first added to that admin's queue
      * 2. The admin accepts them (That means they already exist in that admin's queue ^^Above)
-     * Hence if you are edisitng the db direct and skip adding the patient to that admin's queue, 
+     * Hence if you are edisitng the db direct and skip adding the patient to that admin's queue,
      * the patient WILL NOT appear in the current patient tab even if the stage is correct
      */
     async updatePatientVisits(visit: Visit): Promise<void> {
@@ -224,7 +224,7 @@ export class QueueService {
 
         const previousData: MergedPatientQueueModel = patientmap.get(visit.patientId.toHexString());
         /**
-         * There is a possibility that the patient was not previously in the queue, 
+         * There is a possibility that the patient was not previously in the queue,
          * so these two vars might contain different values
          */
         const previousDataQueue: MergedPatientQueueModel = mypatientsmap.get(visit.patientId.toHexString());
@@ -232,7 +232,7 @@ export class QueueService {
         /**
          * replace the visit data into the array
          */
-        patientmap.set(visit.patientId.toHexString(), { visitData: visit, patientdata: previousData.patientdata });
+        patientmap.set(visit.patientId.toHexString(), {visitData: visit, patientdata: previousData.patientdata});
         /**
          * replace the patientdata if they're in the current admin queue
          */
@@ -249,7 +249,7 @@ export class QueueService {
                     this.currentpatient.next(null);
                 }
             } else {
-                mypatientsmap.set(visit.patientId.toHexString(), { visitData: visit, patientdata: previousData.patientdata });
+                mypatientsmap.set(visit.patientId.toHexString(), {visitData: visit, patientdata: previousData.patientdata});
                 if (visit.checkin.status === CheckinStatus['being attended']) {
                     this.currentpatient.next(await this.fetchCurrentPatientData(visit, previousData.patientdata, true));
                 }
@@ -260,7 +260,7 @@ export class QueueService {
          */
         else if (this.checkAdmin(visit.checkin.admin)) {
             mypatientsmap.set(visit.patientId.toHexString(),
-                { visitData: visit, patientdata: previousData.patientdata });
+                {visitData: visit, patientdata: previousData.patientdata});
         }
         this.mainpatientsqueue.next(patientmap);
         this.mypatientqueue.next(mypatientsmap);
@@ -272,8 +272,7 @@ export class QueueService {
     checkAdmin(checkinAdmin: string | null | undefined): boolean {
         if (!checkinAdmin) {
             return false;
-        }
-        else {
+        } else {
             return checkinAdmin === this.adminid;
         }
     }
@@ -314,11 +313,11 @@ export class QueueService {
                 const matchingPatient: Patient = result[1].filter(pp => pp._id.toHexString() === visit.patientId.toHexString())[0];
                 matchingPatient.fileInfo = result[0].filter(ff => ff.patientId.toHexString() === matchingPatient._id.toHexString())[0];
 
-                patientmap.set(visit.patientId.toHexString(), { visitData: visit, patientdata: matchingPatient });
+                patientmap.set(visit.patientId.toHexString(), {visitData: visit, patientdata: matchingPatient});
 
 
                 if (this.checkAdmin(visit.checkin.admin)) {
-                    mypatientsmap.set(visit.patientId.toHexString(), { visitData: visit, patientdata: matchingPatient });
+                    mypatientsmap.set(visit.patientId.toHexString(), {visitData: visit, patientdata: matchingPatient});
                     if (visit.checkin.status === CheckinStatus['being attended']) {
                         this.currentpatient.next(await this.fetchCurrentPatientData(visit, matchingPatient, false));
                     }
@@ -333,8 +332,8 @@ export class QueueService {
     /**
      * Uses the patient id to fetch the most recent medicalInfo and conditionally update the patientdata
      * The visit is provided
-     * @param visit 
-     * @param patientId 
+     * @param visit
+     * @param patientId
      */
     async fetchCurrentPatientData(visitdata: Visit, patient: Patient, updatePatientdata: boolean): Promise<CurrentPatient> {
         console.log('Current Patient Found');
@@ -346,14 +345,14 @@ export class QueueService {
             /**
              * make sure that a value is assigned to the med info
              */
-            medicalInfo: await this.medInfoService.getLatest(patient._id) || { ...emptymedicalInfo },
+            medicalInfo: await this.medInfoService.getLatest(patient._id) || {...emptymedicalInfo},
             patientdata: updatePatientdata ? await this.patientservice.getpatientbyid(patient._id) : patient,
             visitdata
         };
     }
 
     /**
-     * Fetches the current patient 
+     * Fetches the current patient
      */
     fetchCurrentPatientHsistory(patientId: BSON.ObjectID, size: number): void {
         this.visitService.fetchvisithistory(patientId, size).then(hist => {

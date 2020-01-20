@@ -1,7 +1,7 @@
-import { AbstractControl, AsyncValidatorFn } from '@angular/forms';
-import { PatientService } from '../../pages/services/patient.service';
-import { of, Observable, timer } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import {AbstractControl, AsyncValidatorFn} from '@angular/forms';
+import {PatientService} from '../../pages/services/patient.service';
+import {of, timer} from 'rxjs';
+import {switchMap} from 'rxjs/operators';
 
 
 export class FilenumberValidator {
@@ -16,7 +16,7 @@ export class FilenumberValidator {
                      * try and fethc the file, return error if it exists
                      */
                     return patientService.getHospitalFileByNumber(control.value).then(file => {
-                        return file ? { fileError: true } : null;
+                        return file ? {fileError: true} : null;
                     });
                 } else {
                     return of([null]);

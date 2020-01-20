@@ -1,5 +1,5 @@
-import { emptymetadata, Metadata } from '../universal';
-import { RawProcedureCategory } from './RawProcedure';
+import {emptymetadata, Metadata} from '../universal';
+import {RawProcedureCategory} from './RawProcedure';
 import * as BSON from 'bson';
 
 

@@ -1,20 +1,19 @@
-import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { TranslateService } from '@ngx-translate/core';
+import {Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
+import {Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
+import {TranslateService} from '@ngx-translate/core';
 import * as _ from 'lodash';
 
-import { FuseConfigService } from '@fuse/services/config.service';
-import { FuseSidebarService } from '@fuse/components/sidebar/sidebar.service';
+import {FuseConfigService} from '@fuse/services/config.service';
+import {FuseSidebarService} from '@fuse/components/sidebar/sidebar.service';
 
-import { navigation } from '../../../../navigation/navigation';
-import { emptyhospital, Hospital } from 'app/models/hospital/Hospital';
-import { HospitalAdmin } from 'app/models/user/HospitalAdmin';
-import { AdminService } from 'app/pages/services/admin.service';
-import { HospitalService } from 'app/pages/services/hospital.service';
-import { Router } from '@angular/router';
-import { StitchService } from 'app/pages/services/stitch/stitch.service';
-import { CoreService } from 'app/pages/services/core/core.service';
+import {navigation} from '../../../../navigation/navigation';
+import {emptyhospital, Hospital} from 'app/models/hospital/Hospital';
+import {HospitalAdmin} from 'app/models/user/HospitalAdmin';
+import {AdminService} from 'app/pages/services/admin.service';
+import {Router} from '@angular/router';
+import {StitchService} from 'app/pages/services/stitch/stitch.service';
+import {CoreService} from 'app/pages/services/core/core.service';
 
 @Component({
     selector: 'toolbar',
@@ -140,7 +139,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
             });
 
         // Set the selected language from default languages
-        this.selectedLanguage = _.find(this.languages, { id: this._translateService.currentLang });
+        this.selectedLanguage = _.find(this.languages, {id: this._translateService.currentLang});
     }
 
     /**
@@ -164,6 +163,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
     toggleSidebarOpen(key): void {
         this._fuseSidebarService.getSidebar(key).toggleOpen();
     }
+
     logout(): void {
         console.log('Logging out');
         this.stitch.logout()
@@ -174,6 +174,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
                 console.error('error logging out, please try again ');
             });
     }
+
     /**
      * Search
      *

@@ -1,5 +1,5 @@
-import { Customfields, emptymetadata, Metadata } from '../universal';
-import { HospFile } from '../hospital/HospFile';
+import {Customfields, emptymetadata, Metadata} from '../universal';
+import {HospFile} from '../hospital/HospFile';
 import * as BSON from 'bson';
 
 export interface Patient {

@@ -1,11 +1,10 @@
-import { Component, Inject, OnInit, Optional, OnDestroy } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-import { HospitalAdmin } from '../../../models/user/HospitalAdmin';
+import {Component, Inject, OnDestroy, OnInit, Optional} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
+import {HospitalAdmin} from '../../../models/user/HospitalAdmin';
 import * as moment from 'moment';
-import { HospitalService } from '../../services/hospital.service';
-import { ReplaySubject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { CoreService } from 'app/pages/services/core/core.service';
+import {ReplaySubject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
+import {CoreService} from 'app/pages/services/core/core.service';
 
 @Component({
     selector: 'app-admin-selection',
@@ -18,8 +17,8 @@ export class AdminSelectionComponent implements OnInit, OnDestroy {
     comopnentDestroyed: ReplaySubject<boolean> = new ReplaySubject<boolean>();
 
     constructor(private core: CoreService,
-        public dialogRef: MatDialogRef<AdminSelectionComponent>,
-        @Optional() @Inject(MAT_DIALOG_DATA) public data?: any) {
+                public dialogRef: MatDialogRef<AdminSelectionComponent>,
+                @Optional() @Inject(MAT_DIALOG_DATA) public data?: any) {
         this.core.hospitaladmins
             .pipe(takeUntil(this.comopnentDestroyed))
             .subscribe(admins => {
@@ -29,6 +28,7 @@ export class AdminSelectionComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
     }
+
     ngOnDestroy(): void {
         this.comopnentDestroyed.next(true);
     }

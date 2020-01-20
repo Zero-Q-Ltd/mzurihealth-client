@@ -1,14 +1,14 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { MatDialog, MatDialogRef, MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
-import { RawProcedure, RawProcedureCategory } from '../../../../models/procedure/RawProcedure';
-import { ProceduresService } from '../../../services/procedures.service';
-import { CustomProcedure, emptycustomprocedure } from '../../../../models/procedure/CustomProcedure';
-import { ProcedureCategory } from '../../../../models/procedure/ProcedureCategory';
-import { LocalcommunicationService } from '../../localcommunication.service';
-import { fuseAnimations } from '../../../../../@fuse/animations';
-import { FuseConfirmDialogComponent } from '../../../../../@fuse/components/confirm-dialog/confirm-dialog.component';
-import { NotificationService } from '../../../../shared/services/notifications.service';
-import { MergedProcedureModel } from '../../../../models/procedure/MergedProcedure.model';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {MatDialog, MatDialogRef, MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
+import {RawProcedure, RawProcedureCategory} from '../../../../models/procedure/RawProcedure';
+import {ProceduresService} from '../../../services/procedures.service';
+import {CustomProcedure, emptycustomprocedure} from '../../../../models/procedure/CustomProcedure';
+import {ProcedureCategory} from '../../../../models/procedure/ProcedureCategory';
+import {LocalcommunicationService} from '../../localcommunication.service';
+import {fuseAnimations} from '../../../../../@fuse/animations';
+import {FuseConfirmDialogComponent} from '../../../../../@fuse/components/confirm-dialog/confirm-dialog.component';
+import {NotificationService} from '../../../../shared/services/notifications.service';
+import {MergedProcedureModel} from '../../../../models/procedure/MergedProcedure.model';
 
 @Component({
     selector: 'procedures-all',
@@ -20,16 +20,16 @@ export class AllComponent implements OnInit, AfterViewInit {
     hospitalprocedures = new MatTableDataSource<MergedProcedureModel>();
     procedurecategories: Array<ProcedureCategory>;
     procedureheaders = ['name', 'category', 'regprice', 'minprice', 'maxprice', 'action'];
-    selectedprocedure: CustomProcedure = { ...emptycustomprocedure };
+    selectedprocedure: CustomProcedure = {...emptycustomprocedure};
     confirmDialogRef: MatDialogRef<FuseConfirmDialogComponent>;
     disableripple: boolean;
-    @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
-    @ViewChild(MatSort, { static: false }) sort: MatSort;
+    @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
+    @ViewChild(MatSort, {static: false}) sort: MatSort;
 
     constructor(private procedureservice: ProceduresService,
-        private communicationservice: LocalcommunicationService,
-        private _matDialog: MatDialog,
-        private notificationservice: NotificationService) {
+                private communicationservice: LocalcommunicationService,
+                private _matDialog: MatDialog,
+                private notificationservice: NotificationService) {
         procedureservice.hospitalprocedures.subscribe(mergedprocedures => {
             console.log(Array.from(mergedprocedures.values()));
             this.hospitalprocedures.data = Array.from(mergedprocedures.values());
@@ -94,7 +94,7 @@ export class AllComponent implements OnInit, AfterViewInit {
      */
     onSelect(selected: { rawprocedure: RawProcedure, customprocedure: CustomProcedure }): void {
         this.selectedprocedure = selected.customprocedure;
-        this.communicationservice.onprocedureselected.next({ selectiontype: 'customProcedure', selection: selected });
+        this.communicationservice.onprocedureselected.next({selectiontype: 'customProcedure', selection: selected});
     }
 
 }

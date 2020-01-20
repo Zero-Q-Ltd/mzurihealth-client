@@ -1,15 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { fuseAnimations } from '../../../../../@fuse/animations';
-import { LocalcommunicationService } from '../../localcommunication.service';
-import { emptyprawrocedure, RawProcedure } from '../../../../models/procedure/RawProcedure';
-import { CustomProcedure, emptycustomprocedure } from '../../../../models/procedure/CustomProcedure';
-import { ProceduresService } from '../../../services/procedures.service';
-import { NotificationService } from '../../../../shared/services/notifications.service';
+import {Component, OnInit} from '@angular/core';
+import {fuseAnimations} from '../../../../../@fuse/animations';
+import {LocalcommunicationService} from '../../localcommunication.service';
+import {emptyprawrocedure, RawProcedure} from '../../../../models/procedure/RawProcedure';
+import {CustomProcedure, emptycustomprocedure} from '../../../../models/procedure/CustomProcedure';
+import {ProceduresService} from '../../../services/procedures.service';
+import {NotificationService} from '../../../../shared/services/notifications.service';
 import * as moment from 'moment';
-import { FormControl, Validators } from '@angular/forms';
-import { PaymentmethodService } from '../../../services/paymentmethod.service';
-import { Paymentmethods } from '../../../../models/payment/PaymentChannel';
-import { CoreService } from 'app/pages/services/core/core.service';
+import {FormControl, Validators} from '@angular/forms';
+import {Paymentmethods} from '../../../../models/payment/PaymentChannel';
+import {CoreService} from 'app/pages/services/core/core.service';
 
 @Component({
     selector: 'app-procedureconfig',
@@ -20,7 +19,7 @@ import { CoreService } from 'app/pages/services/core/core.service';
 })
 export class ProcedureconfigComponent implements OnInit {
     selectecustomprocedure: { rawprocedure: RawProcedure, customprocedure: CustomProcedure } =
-        { customprocedure: { ...emptycustomprocedure }, rawprocedure: { ...emptyprawrocedure } };
+        {customprocedure: {...emptycustomprocedure}, rawprocedure: {...emptyprawrocedure}};
 
     filteredinsurance: { [key: string]: Paymentmethods } = {};
     regularpricecontrol = new FormControl('', [
@@ -29,9 +28,9 @@ export class ProcedureconfigComponent implements OnInit {
     ]);
 
     constructor(private communicatioservice: LocalcommunicationService,
-        private core: CoreService,
-        private procedureservice: ProceduresService,
-        private notificationservice: NotificationService) {
+                private core: CoreService,
+                private procedureservice: ProceduresService,
+                private notificationservice: NotificationService) {
         this.communicatioservice.onprocedureselected.subscribe(selection => {
             if (!selection.selectiontype) {
                 return;

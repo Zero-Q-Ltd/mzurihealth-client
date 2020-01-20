@@ -1,5 +1,5 @@
-import { Pipe, PipeTransform } from '@angular/core';
-import { PaymentChannel } from '../../models/payment/PaymentChannel';
+import {Pipe, PipeTransform} from '@angular/core';
+import {PaymentChannel} from '../../models/payment/PaymentChannel';
 import * as BSON from 'bson';
 
 @Pipe({

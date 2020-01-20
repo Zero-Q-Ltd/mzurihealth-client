@@ -1,10 +1,7 @@
-import { Injectable } from '@angular/core';
-import { Stream } from 'mongodb-stitch-core-sdk';
-import { ChangeEvent } from 'mongodb-stitch-core-services-mongodb-remote';
-import { BehaviorSubject } from 'rxjs';
-import { PaymentChannel, Paymentmethods } from '../../models/payment/PaymentChannel';
-import { CoreService } from './core/core.service';
-import { StitchService } from './stitch/stitch.service';
+import {Injectable} from '@angular/core';
+import {PaymentChannel} from '../../models/payment/PaymentChannel';
+import {CoreService} from './core/core.service';
+import {StitchService} from './stitch/stitch.service';
 
 
 @Injectable({
@@ -15,7 +12,7 @@ export class PaymentmethodService {
     paymentChannelsCollection = this.stitch.db.collection<PaymentChannel>('paymentchannels');
 
     constructor(private core: CoreService,
-        private stitch: StitchService) {
+                private stitch: StitchService) {
 
     }
 

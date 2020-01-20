@@ -1,16 +1,15 @@
-import { AfterViewInit, Component, OnInit, ViewChild, ViewEncapsulation, OnDestroy } from '@angular/core';
-import { MatDialog, MatDialogRef, MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
-import { fuseAnimations } from '../../../../@fuse/animations';
-import { QueueService } from '../../services/core/queue.service';
-import { MergedPatientQueueModel } from '../../../models/visit/MergedPatientQueueModel';
-import { AdminSelectionComponent } from '../admin-selection/admin-selection.component';
-import { HospitalAdmin } from '../../../models/user/HospitalAdmin';
-import { FuseConfirmDialogComponent } from '../../../../@fuse/components/confirm-dialog/confirm-dialog.component';
-import { HospitalService } from '../../services/hospital.service';
-import { InvoiceCustomizationComponent } from '../../patients/invoice-customization/invoice-customization.component';
-import { ReplaySubject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { CoreService } from 'app/pages/services/core/core.service';
+import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {MatDialog, MatDialogRef, MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
+import {fuseAnimations} from '../../../../@fuse/animations';
+import {QueueService} from '../../services/core/queue.service';
+import {MergedPatientQueueModel} from '../../../models/visit/MergedPatientQueueModel';
+import {AdminSelectionComponent} from '../admin-selection/admin-selection.component';
+import {HospitalAdmin} from '../../../models/user/HospitalAdmin';
+import {FuseConfirmDialogComponent} from '../../../../@fuse/components/confirm-dialog/confirm-dialog.component';
+import {InvoiceCustomizationComponent} from '../../patients/invoice-customization/invoice-customization.component';
+import {ReplaySubject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
+import {CoreService} from 'app/pages/services/core/core.service';
 
 @Component({
     selector: 'queue-main',
@@ -27,13 +26,13 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
     hospitaladmins: Array<HospitalAdmin>;
     comopnentDestroyed: ReplaySubject<boolean> = new ReplaySubject<boolean>();
 
-    @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
-    @ViewChild(MatSort, { static: false }) sort: MatSort;
+    @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
+    @ViewChild(MatSort, {static: false}) sort: MatSort;
 
 
     constructor(private queue: QueueService,
-        private core: CoreService,
-        public _matDialog: MatDialog) {
+                private core: CoreService,
+                public _matDialog: MatDialog) {
         queue.mainpatientsqueue
             .pipe(takeUntil(this.comopnentDestroyed))
             .subscribe(value => {
@@ -46,6 +45,7 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
 
     ngOnInit(): void {
     }
+
     ngOnDestroy(): void {
         this.comopnentDestroyed.next(true);
     }

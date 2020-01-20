@@ -1,22 +1,22 @@
-import { Component, Inject, OnInit, Optional, ViewEncapsulation } from '@angular/core';
-import { Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA } from '@angular/material';
-import { Router } from '@angular/router';
-import { NewPatientForm } from 'app/models/patient/NewPatientForm';
-import { Insurance, NextofKin, PersonalInfo } from 'app/models/patient/Patient';
-import { CoreService } from 'app/pages/services/core/core.service';
-import { FilenumberValidator } from 'app/shared/validators/filenumber.validator';
+import {Component, Inject, OnInit, Optional, ViewEncapsulation} from '@angular/core';
+import {Validators} from '@angular/forms';
+import {MAT_DIALOG_DATA} from '@angular/material';
+import {Router} from '@angular/router';
+import {NewPatientForm} from 'app/models/patient/NewPatientForm';
+import {Insurance, NextofKin, PersonalInfo} from 'app/models/patient/Patient';
+import {CoreService} from 'app/pages/services/core/core.service';
+import {FilenumberValidator} from 'app/shared/validators/filenumber.validator';
 import * as moment from 'moment';
-import { FormArray, FormBuilder, FormControl, FormGroup } from 'ngx-strongly-typed-forms';
-import { fuseAnimations } from '../../../../@fuse/animations';
-import { emptyfile, HospFile } from '../../../models/hospital/HospFile';
-import { emptyhospital, Hospital } from '../../../models/hospital/Hospital';
-import { Paymentmethods } from '../../../models/payment/PaymentChannel';
-import { NotificationService } from '../../../shared/services/notifications.service';
-import { NumberValidator } from '../../../shared/validators/number.validator';
-import { AdminService } from '../../services/admin.service';
-import { PatientService } from '../../services/patient.service';
-import { PaymentmethodService } from '../../services/paymentmethod.service';
+import {FormArray, FormBuilder, FormControl, FormGroup} from 'ngx-strongly-typed-forms';
+import {fuseAnimations} from '../../../../@fuse/animations';
+import {emptyfile, HospFile} from '../../../models/hospital/HospFile';
+import {emptyhospital, Hospital} from '../../../models/hospital/Hospital';
+import {Paymentmethods} from '../../../models/payment/PaymentChannel';
+import {NotificationService} from '../../../shared/services/notifications.service';
+import {NumberValidator} from '../../../shared/validators/number.validator';
+import {AdminService} from '../../services/admin.service';
+import {PatientService} from '../../services/patient.service';
+import {PaymentmethodService} from '../../services/paymentmethod.service';
 
 @Component({
     selector: 'app-add',
@@ -37,13 +37,13 @@ export class AddComponent implements OnInit {
     maxDate: Date;
 
     constructor(private adminservice: AdminService,
-        private patientservice: PatientService,
-        private formBuilder: FormBuilder,
-        private core: CoreService,
-        private router: Router,
-        private paymentethods: PaymentmethodService,
-        private notificationservice: NotificationService,
-        @Optional() @Inject(MAT_DIALOG_DATA) public data?: any) {
+                private patientservice: PatientService,
+                private formBuilder: FormBuilder,
+                private core: CoreService,
+                private router: Router,
+                private paymentethods: PaymentmethodService,
+                private notificationservice: NotificationService,
+                @Optional() @Inject(MAT_DIALOG_DATA) public data?: any) {
 
         this.maxDate = moment().toDate();
 
@@ -103,7 +103,7 @@ export class AddComponent implements OnInit {
                     alertType: 'success',
                     body: 'User was successfully added',
                     title: 'Success',
-                    placement: { horizontal: 'right', vertical: 'top' }
+                    placement: {horizontal: 'right', vertical: 'top'}
                 });
 
                 // clear inputs
@@ -118,7 +118,7 @@ export class AddComponent implements OnInit {
                 alertType: 'error',
                 body: 'Please fill all the required inputs',
                 title: 'ERROR',
-                placement: { horizontal: 'right', vertical: 'top' }
+                placement: {horizontal: 'right', vertical: 'top'}
             });
         }
     }
@@ -128,14 +128,15 @@ export class AddComponent implements OnInit {
             x.get('id').valueChanges.subscribe(g => {
                 if (g) {
                     if (x.get('id').value.toString().length > -1) {
-                        x.get('insuranceNo').enable({ emitEvent: false });
+                        x.get('insuranceNo').enable({emitEvent: false});
                     } else {
-                        x.get('insuranceNo').disable({ emitEvent: false });
+                        x.get('insuranceNo').disable({emitEvent: false});
                     }
                 }
             });
         });
     }
+
     /**
      * Retruns the form array for dynamic manipulation
      */

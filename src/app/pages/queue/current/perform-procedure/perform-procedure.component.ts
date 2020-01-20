@@ -1,11 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { SelectionModel } from '@angular/cdk/collections';
-import { MergedProcedureModel } from '../../../../models/procedure/MergedProcedure.model';
-import { MatTableDataSource } from '@angular/material';
-import { ProceduresService } from '../../../services/procedures.service';
-import { emptyprocedureperformed, Procedureperformed } from '../../../../models/procedure/Procedureperformed';
-import { AdminService } from '../../../services/admin.service';
-import { CoreService } from 'app/pages/services/core/core.service';
+import {Component, OnInit} from '@angular/core';
+import {SelectionModel} from '@angular/cdk/collections';
+import {MergedProcedureModel} from '../../../../models/procedure/MergedProcedure.model';
+import {MatTableDataSource} from '@angular/material';
+import {ProceduresService} from '../../../services/procedures.service';
+import {emptyprocedureperformed, Procedureperformed} from '../../../../models/procedure/Procedureperformed';
+import {CoreService} from 'app/pages/services/core/core.service';
 
 @Component({
     selector: 'app-perform-procedure',
@@ -30,7 +29,7 @@ export class PerformProcedureComponent implements OnInit {
             const vals = Array.from(mergedprocedures.values());
             vals.forEach((r, i) => {
                 console.log(r, i);
-                this.procedureResults[i] = { ...emptyprocedureperformed };
+                this.procedureResults[i] = {...emptyprocedureperformed};
                 /**
                  * very useful for later on when dialog is dismissed
                  */

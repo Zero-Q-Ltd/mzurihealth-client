@@ -1,18 +1,17 @@
-import { Injectable } from '@angular/core';
-import { NewPatientForm } from 'app/models/patient/NewPatientForm';
-import { Meta } from 'app/models/universal';
+import {Injectable} from '@angular/core';
+import {NewPatientForm} from 'app/models/patient/NewPatientForm';
+import {Meta} from 'app/models/universal';
 import * as equal from 'deep-equal';
 import * as moment from 'moment';
-import { BSON, Stream } from 'mongodb-stitch-browser-sdk';
-import { ChangeEvent, RemoteUpdateResult } from 'mongodb-stitch-core-services-mongodb-remote';
-import { combineLatest, Observable, ReplaySubject, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { emptyfile, HospFile } from '../../models/hospital/HospFile';
-import { emptypatient, Insurance, NextofKin, Patient } from '../../models/patient/Patient';
-import { AdminService } from './admin.service';
-import { HospitalService } from './hospital.service';
-import { StitchService } from './stitch/stitch.service';
-import { CoreService } from './core/core.service';
+import {BSON, Stream} from 'mongodb-stitch-browser-sdk';
+import {ChangeEvent, RemoteUpdateResult} from 'mongodb-stitch-core-services-mongodb-remote';
+import {combineLatest, Observable, ReplaySubject, Subscription} from 'rxjs';
+import {map} from 'rxjs/operators';
+import {emptyfile, HospFile} from '../../models/hospital/HospFile';
+import {emptypatient, Insurance, NextofKin, Patient} from '../../models/patient/Patient';
+import {HospitalService} from './hospital.service';
+import {StitchService} from './stitch/stitch.service';
+import {CoreService} from './core/core.service';
 
 @Injectable({
     providedIn: 'root'
@@ -20,12 +19,6 @@ import { CoreService } from './core/core.service';
 export class PatientService {
     patientsCollection = this.stitch.db.collection<Patient>('patients');
     patientFilesCollection = this.stitch.db.collection<HospFile>('patientfiles');
-    constructor(
-        private hospitalservice: HospitalService,
-        private core: CoreService,
-        private stitch: StitchService) {
-    }
-
     /**
      * This keeps a list of all the DATABASE SUBSCRIPTIONS that have been made by this service
      * It's to be maintined as a standard across all services
@@ -37,6 +30,12 @@ export class PatientService {
      */
     internalSubscriptions: Map<string, Subscription> = new Map();
 
+    constructor(
+        private hospitalservice: HospitalService,
+        private core: CoreService,
+        private stitch: StitchService) {
+    }
+
     getpatientbyid(patientid: BSON.ObjectId): Promise<Patient> {
         const f = this.patientFilesCollection
             .findOne({
@@ -44,11 +43,11 @@ export class PatientService {
             });
 
         const p = this.patientsCollection
-            .findOne({ _id: patientid });
+            .findOne({_id: patientid});
 
         const pt = combineLatest([p, f])
             .pipe(map(result => {
-                const combined: Patient = { ...emptypatient, ...result[0], ...{ fileInfo: result[1] } };
+                const combined: Patient = {...emptypatient, ...result[0], ...{fileInfo: result[1]}};
                 return combined;
             }));
 
@@ -157,7 +156,7 @@ export class PatientService {
         /**
          * join objects to create a full document
          * */
-        const patientDoc = Object.assign({}, { ...emptypatient }, { ...modifiedData }) as Patient;
+        const patientDoc = Object.assign({}, {...emptypatient}, {...modifiedData}) as Patient;
 
         /**
          * hospital file number
@@ -175,7 +174,7 @@ export class PatientService {
             patientId: patientID,
         };
 
-        const hospitalFileNumber = Object.assign({}, { ...emptyfile }, hospitalFileNumberTemp);
+        const hospitalFileNumber = Object.assign({}, {...emptyfile}, hospitalFileNumberTemp);
 
         /**
          * create a file number associated with that hospital only
@@ -213,7 +212,6 @@ export class PatientService {
         return Promise.all([i, j, k]);
 
     }
-
 
 
     /**
@@ -262,9 +260,8 @@ export class PatientService {
     }
 
 
-
     updatePatient(patientData: Patient): Promise<RemoteUpdateResult> {
-        return this.patientsCollection.updateOne({ _id: patientData._id }, patientData);
+        return this.patientsCollection.updateOne({_id: patientData._id}, patientData);
     }
 
     searchPatient(field: string, value: string): any {

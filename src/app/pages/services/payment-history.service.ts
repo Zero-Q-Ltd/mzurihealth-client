@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import * as moment from 'moment';
-import { Stream } from 'mongodb-stitch-browser-sdk';
-import { ChangeEvent } from 'mongodb-stitch-core-services-mongodb-remote';
-import { CoreService } from './core/core.service';
+import {Stream} from 'mongodb-stitch-browser-sdk';
+import {ChangeEvent} from 'mongodb-stitch-core-services-mongodb-remote';
+import {CoreService} from './core/core.service';
 
 
 @Injectable({

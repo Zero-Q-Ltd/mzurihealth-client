@@ -1,18 +1,15 @@
-import { Component, Inject, OnInit, Optional, OnDestroy } from '@angular/core';
-import { fuseAnimations } from '../../../../../@fuse/animations';
-import { Insurance, Patient } from '../../../../models/patient/Patient';
-import * as moment from 'moment';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { AdminService } from '../../../services/admin.service';
-import { PatientService } from '../../../services/patient.service';
-import { NotificationService } from '../../../../shared/services/notifications.service';
-import { MAT_DIALOG_DATA } from '@angular/material';
-import { QueueService } from '../../../services/core/queue.service';
-import { Paymentmethods } from '../../../../models/payment/PaymentChannel';
-import { PaymentmethodService } from '../../../services/paymentmethod.service';
-import { ReplaySubject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { CoreService } from 'app/pages/services/core/core.service';
+import {Component, Inject, OnDestroy, OnInit, Optional} from '@angular/core';
+import {fuseAnimations} from '../../../../../@fuse/animations';
+import {Patient} from '../../../../models/patient/Patient';
+import {FormArray, FormBuilder} from '@angular/forms';
+import {AdminService} from '../../../services/admin.service';
+import {NotificationService} from '../../../../shared/services/notifications.service';
+import {MAT_DIALOG_DATA} from '@angular/material';
+import {QueueService} from '../../../services/core/queue.service';
+import {Paymentmethods} from '../../../../models/payment/PaymentChannel';
+import {ReplaySubject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
+import {CoreService} from 'app/pages/services/core/core.service';
 
 @Component({
     selector: 'general-details',
@@ -30,11 +27,11 @@ export class GeneralDetailsComponent implements OnInit, OnDestroy {
     private insurance: FormArray;
 
     constructor(private adminservice: AdminService,
-        private formBuilder: FormBuilder,
-        private notificationservice: NotificationService,
-        private core: CoreService,
-        private queue: QueueService,
-        @Optional() @Inject(MAT_DIALOG_DATA) public data?: any) {
+                private formBuilder: FormBuilder,
+                private notificationservice: NotificationService,
+                private core: CoreService,
+                private queue: QueueService,
+                @Optional() @Inject(MAT_DIALOG_DATA) public data?: any) {
 
         this.core.allinsurance.subscribe(insurance => {
             this.allInsurance = insurance;
@@ -55,6 +52,7 @@ export class GeneralDetailsComponent implements OnInit, OnDestroy {
 
 
     }
+
     ngOnDestroy(): void {
         this.comopnentDestroyed.next(true);
     }

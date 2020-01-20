@@ -1,6 +1,5 @@
-import { emptymetadata, Metadata } from '../universal';
 import * as BSON from 'bson';
-import { StitchUser } from 'mongodb-stitch-browser-sdk';
+import {StitchUser} from 'mongodb-stitch-browser-sdk';
 
 export interface HospitalAdmin extends StitchUser {
     status: boolean;

@@ -1,15 +1,9 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, ReplaySubject } from 'rxjs';
-import { Router } from '@angular/router';
-import { HospitalAdmin } from '../../models/user/HospitalAdmin';
-import { NotificationService } from '../../shared/services/notifications.service';
-import { AdminCategory } from '../../models/user/AdminCategory';
-import { AdminInvite } from '../../models/user/AdminInvite';
-import { StitchService } from './stitch/stitch.service';
-import { StitchUser, Stream, } from 'mongodb-stitch-browser-sdk';
-import { ChangeEvent } from 'mongodb-stitch-core-services-mongodb-remote';
+import {Injectable} from '@angular/core';
+import {HospitalAdmin} from '../../models/user/HospitalAdmin';
+import {AdminInvite} from '../../models/user/AdminInvite';
+import {StitchService} from './stitch/stitch.service';
 import * as BSON from 'bson';
-import { CoreService } from './core/core.service';
+
 @Injectable({
     providedIn: 'root'
 })
@@ -17,6 +11,7 @@ export class AdminService {
 
     adminCollection = this.stitch.db.collection<HospitalAdmin>('hospitaladmins');
     adminInvites = this.stitch.db.collection('admininvites');
+
     constructor(private stitch: StitchService) {
 
     }
@@ -29,22 +24,22 @@ export class AdminService {
 
     gethospitalAdmins(hospitalId: BSON.ObjectId): Promise<HospitalAdmin[]> {
         return this.adminCollection
-            .find({ 'config.hospitalId': hospitalId })
+            .find({'config.hospitalId': hospitalId})
             .asArray();
     }
 
     disableadmin(adminid: string): Promise<any> {
-        return this.adminCollection.updateOne({ id: adminid }, { status: false });
+        return this.adminCollection.updateOne({id: adminid}, {status: false});
         // return this.db.firestore.collection('hospitaladmins').doc(adminid).update({status: false});
     }
 
     enableadmin(adminid: string): Promise<any> {
-        return this.adminCollection.updateOne({ id: adminid }, { status: false });
+        return this.adminCollection.updateOne({id: adminid}, {status: false});
         // return this.db.firestore.collection('hospitaladmins').doc(adminid).update({status: true});
     }
 
     deleteinvite(inviteid: BSON.ObjectID): Promise<any> {
-        return this.adminInvites.deleteOne({ _id: inviteid });
+        return this.adminInvites.deleteOne({_id: inviteid});
 
         // return this.db.firestore.collection('admininvites').doc(inviteid).delete();
     }

@@ -1,10 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { LocalcommunicationService } from '../../localcommunication.service';
-import { AdminService } from '../../../services/admin.service';
-import { NotificationService } from '../../../../shared/services/notifications.service';
-import { HospitalAdmin } from '../../../../models/user/HospitalAdmin';
-import { AdminCategory } from '../../../../models/user/AdminCategory';
-import { CoreService } from 'app/pages/services/core/core.service';
+import {Component, Input, OnInit} from '@angular/core';
+import {LocalcommunicationService} from '../../localcommunication.service';
+import {NotificationService} from '../../../../shared/services/notifications.service';
+import {HospitalAdmin} from '../../../../models/user/HospitalAdmin';
+import {AdminCategory} from '../../../../models/user/AdminCategory';
+import {CoreService} from 'app/pages/services/core/core.service';
 
 @Component({
     selector: 'admins-adminconfig',
@@ -16,8 +15,8 @@ export class AdminconfigComponent implements OnInit {
     admincategories: Array<AdminCategory> = [];
 
     constructor(private communicationservice: LocalcommunicationService,
-        private core: CoreService,
-        private notificationservice: NotificationService) {
+                private core: CoreService,
+                private notificationservice: NotificationService) {
         this.communicationservice.onadminselected.subscribe(admin => {
             this.clickedadmin = admin;
         });

@@ -2,51 +2,51 @@
     <!-- <button mat-raised-button (click)="viewhistory()">HISTORY</button>
     <button mat-raised-button color="accent" (click)="save()">SAVE</button> -->
     <br>
-    <form [formGroup]="tempMedinfo" class=" p-24 m-24" *ngIf="init">
+    <form *ngIf="init" [formGroup]="tempMedinfo" class=" p-24 m-24">
         <mat-form-field appearance="outline" class="subheading-2 ">
             <mat-label>Blood Pressure</mat-label>
-            <input matInput required formControlName="pressure">
+            <input formControlName="pressure" matInput required>
             <mat-icon class="secondary-text" matSuffix>title</mat-icon>
         </mat-form-field>
         <br>
         <mat-form-field appearance="outline" class="subheading-2  ">
             <mat-label>Haemoglobin</mat-label>
-            <input matInput required formControlName="hb">
+            <input formControlName="hb" matInput required>
             <mat-icon class="secondary-text" matSuffix>title</mat-icon>
         </mat-form-field>
         <br>
 
         <mat-form-field appearance="outline" class="subheading-2  ">
             <mat-label>Heart Rate</mat-label>
-            <input matInput required formControlName="heartRate">
+            <input formControlName="heartRate" matInput required>
             <mat-icon class="secondary-text" matSuffix>title</mat-icon>
         </mat-form-field>
         <br>
 
         <mat-form-field appearance="outline" class="subheading-2  ">
             <mat-label>Sugar</mat-label>
-            <input matInput required formControlName="sugar">
+            <input formControlName="sugar" matInput required>
             <mat-icon class="secondary-text" matSuffix>title</mat-icon>
         </mat-form-field>
         <br>
 
         <mat-form-field appearance="outline" class="subheading-2  ">
             <mat-label>Weight</mat-label>
-            <input matInput required formControlName="weight">
+            <input formControlName="weight" matInput required>
             <mat-icon class="secondary-text" matSuffix>title</mat-icon>
         </mat-form-field>
         <br>
 
         <mat-form-field appearance="outline" class="subheading-2  ">
             <mat-label>Height</mat-label>
-            <input matInput required formControlName="height">
+            <input formControlName="height" matInput required>
             <mat-icon class="secondary-text" matSuffix>title</mat-icon>
         </mat-form-field>
         <br>
 
         <mat-form-field appearance="outline" class="subheading-2  ">
             <mat-label>BMI</mat-label>
-            <input matInput disabled=required [value]="tempMedinfo?.controls.height">
+            <input [value]="tempMedinfo?.controls.height" disabled=required matInput>
             <mat-icon class="secondary-text" matSuffix>title</mat-icon>
         </mat-form-field>
         <br>

@@ -1,8 +1,8 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import {Component, ViewEncapsulation} from '@angular/core';
 
-import { FuseConfigService } from '@fuse/services/config.service';
-import { fuseAnimations } from '@fuse/animations';
-import { FuseSplashScreenService } from '../../../@fuse/services/splash-screen.service';
+import {FuseConfigService} from '@fuse/services/config.service';
+import {fuseAnimations} from '@fuse/animations';
+import {FuseSplashScreenService} from '../../../@fuse/services/splash-screen.service';
 
 @Component({
     selector: 'mail-confirm',

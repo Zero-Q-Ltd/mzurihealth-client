@@ -33,11 +33,11 @@
             <!--</a>-->
             <!--</nav>-->
             <mat-tab-group (selectedTabChange)="tabChanged($event)" [selectedIndex]="activetabindex"
-                fusePerfectScrollbar>
+                           fusePerfectScrollbar>
                 <mat-tab>
                     <ng-template matTabLabel>
                         <span [matBadge]="mainQueue" matBadgeColor="warn" matBadgeOverlap="false"
-                            matBadgePosition="above after">Main Queue</span>
+                              matBadgePosition="above after">Main Queue</span>
                     </ng-template>
                     <ng-template matTabContent>
                         <div class="tab-content p-24" fusePerfectScrollbar>
@@ -49,7 +49,7 @@
                 <mat-tab>
                     <ng-template matTabLabel>
                         <span [matBadge]="myQueue" matBadgeColor="warn" matBadgeOverlap="false"
-                            matBadgePosition="above after">My Queue</span>
+                              matBadgePosition="above after">My Queue</span>
                     </ng-template>
                     <ng-template matTabContent>
                         <div class="tab-content p-24" fusePerfectScrollbar>
@@ -60,7 +60,7 @@
 
                 <mat-tab [disabled]="!currentpatient">
                     <ng-template matTabLabel>
-                        <span class="pill" [ngClass]="{'activepill': currentpatient}">
+                        <span [ngClass]="{'activepill': currentpatient}" class="pill">
                             Current Patient
                         </span>
                     </ng-template>

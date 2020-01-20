@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { AdminService } from '../../../services/admin.service';
-import { ProceduresService } from '../../../services/procedures.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NotificationService } from '../../../../shared/services/notifications.service';
-import { AdminCategory, Adminsubcategory, emptyadminCategory } from '../../../../models/user/AdminCategory';
-import { AdminInvite, emptyadmininvite } from '../../../../models/user/AdminInvite';
-import { HospitalAdmin } from '../../../../models/user/HospitalAdmin';
-import { CoreService } from 'app/pages/services/core/core.service';
+import {Component, OnInit} from '@angular/core';
+import {AdminService} from '../../../services/admin.service';
+import {ProceduresService} from '../../../services/procedures.service';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {NotificationService} from '../../../../shared/services/notifications.service';
+import {AdminCategory, Adminsubcategory, emptyadminCategory} from '../../../../models/user/AdminCategory';
+import {AdminInvite, emptyadmininvite} from '../../../../models/user/AdminInvite';
+import {HospitalAdmin} from '../../../../models/user/HospitalAdmin';
+import {CoreService} from 'app/pages/services/core/core.service';
 
 @Component({
     selector: 'admin-add',
@@ -17,14 +17,14 @@ export class AddadminComponent implements OnInit {
     admininvite: AdminInvite = emptyadmininvite;
     adminsform: FormGroup;
     admincategories: Array<AdminCategory> = [];
-    chosencategory: AdminCategory = { ...emptyadminCategory };
+    chosencategory: AdminCategory = {...emptyadminCategory};
     userdata: HospitalAdmin;
 
     constructor(private core: CoreService,
-        private adminservice: AdminService,
-        private _formBuilder: FormBuilder,
-        private procedureservice: ProceduresService,
-        private notificationservice: NotificationService) {
+                private adminservice: AdminService,
+                private _formBuilder: FormBuilder,
+                private procedureservice: ProceduresService,
+                private notificationservice: NotificationService) {
         this.core.admincategories.subscribe(categories => {
             this.admincategories = categories;
         });
@@ -85,7 +85,7 @@ export class AddadminComponent implements OnInit {
                         duration: 3000,
                         title: 'Success',
                     });
-                    this.adminsform.reset({ level: { value: '', disabled: true } }, { emitEvent: false });
+                    this.adminsform.reset({level: {value: '', disabled: true}}, {emitEvent: false});
                 });
             } else {
                 this.adminservice.createinvite(this.admininvite).then(result => {

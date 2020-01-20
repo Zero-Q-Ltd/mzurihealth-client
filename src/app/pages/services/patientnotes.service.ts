@@ -1,15 +1,14 @@
-import { HospitalService } from './hospital.service';
-import { Injectable } from '@angular/core';
-import { QueueService } from './core/queue.service';
-import { Patientnote, emptynote } from '../../models/patient/Patientnote';
-import { AdminService } from './admin.service';
+import {HospitalService} from './hospital.service';
+import {Injectable} from '@angular/core';
+import {QueueService} from './core/queue.service';
+import {Patientnote} from '../../models/patient/Patientnote';
 import * as moment from 'moment';
-import { Stream, RemoteMongoReadOperation } from 'mongodb-stitch-browser-sdk';
-import { Meta } from 'app/models/universal';
-import { ChangeEvent, RemoteUpdateResult, RemoteInsertOneResult, RemoteFindOptions } from 'mongodb-stitch-core-services-mongodb-remote';
+import {Stream} from 'mongodb-stitch-browser-sdk';
+import {Meta} from 'app/models/universal';
+import {ChangeEvent, RemoteFindOptions, RemoteInsertOneResult} from 'mongodb-stitch-core-services-mongodb-remote';
 import * as BSON from 'bson';
-import { StitchService } from './stitch/stitch.service';
-import { CoreService } from './core/core.service';
+import {StitchService} from './stitch/stitch.service';
+import {CoreService} from './core/core.service';
 
 @Injectable({
     providedIn: 'root'
@@ -24,9 +23,9 @@ export class PatientnotesService {
     subscriptions: Map<string, Stream<ChangeEvent<any>>> = new Map();
 
     constructor(private queueservice: QueueService,
-        private hospitalservice: HospitalService,
-        private stitch: StitchService,
-        private core: CoreService) {
+                private hospitalservice: HospitalService,
+                private stitch: StitchService,
+                private core: CoreService) {
         queueservice.currentpatient.subscribe(value => {
             if (value.patientdata._id) {
                 this.patientid = value.patientdata._id;

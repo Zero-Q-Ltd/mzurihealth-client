@@ -5,7 +5,7 @@
                 <mat-label>Type</mat-label>
                 <mat-select required>
                     <mat-option *ngFor="let type of allergyArray"
-                        [formControl]="tempAllergies.controls[i].controls.type">
+                                [formControl]="tempAllergies.controls[i].controls.type">
                         {{type |titlecase}}
                     </mat-option>
                 </mat-select>
@@ -16,7 +16,7 @@
 
             <mat-form-field appearance="outline" class="pl-4" fxFlex="45">
                 <mat-label>Detail</mat-label>
-                <input autocomplete="off" [formControl]="tempAllergies.controls[i].controls.detail" matInput required>
+                <input [formControl]="tempAllergies.controls[i].controls.detail" autocomplete="off" matInput required>
                 <mat-icon class="secondary-text" matSuffix>confirmation_number</mat-icon>
                 <mat-error>Allergy detail is required</mat-error>
             </mat-form-field>
@@ -31,7 +31,7 @@
 
 
     </div>
-    <button mat-mini-fab (click)="appendnew()">
+    <button (click)="appendnew()" mat-mini-fab>
         <mat-icon>add</mat-icon>
     </button>
 </div>

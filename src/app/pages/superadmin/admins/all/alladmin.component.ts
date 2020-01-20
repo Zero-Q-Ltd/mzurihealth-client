@@ -102,7 +102,7 @@ export class AlladminComponent implements OnInit {
         this.confirmDialogRef.componentInstance.confirmMessage = 'Are you sure you want disable this admin?';
         this.confirmDialogRef.afterClosed().subscribe(result => {
             if (result) {
-                this.adminservice.disableadmin(user._id).then(() => {
+                this.adminservice.disableadmin(user.id).then(() => {
                     this.communicationService.resetall();
 
                     this.notificationservice.notify({
@@ -128,7 +128,7 @@ export class AlladminComponent implements OnInit {
         this.confirmDialogRef.componentInstance.confirmMessage = 'Are you sure you want enable this admin?';
         this.confirmDialogRef.afterClosed().subscribe(result => {
             if (result) {
-                this.adminservice.enableadmin(user._id).then(() => {
+                this.adminservice.enableadmin(user.id).then(() => {
                     this.communicationService.resetall();
 
                     this.notificationservice.notify({

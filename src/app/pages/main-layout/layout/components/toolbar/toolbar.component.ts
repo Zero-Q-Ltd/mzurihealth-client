@@ -9,7 +9,7 @@ import { FuseSidebarService } from '@fuse/components/sidebar/sidebar.service';
 
 import { navigation } from '../../../../navigation/navigation';
 import { emptyhospital, Hospital } from 'app/models/hospital/Hospital';
-import { emptyadmin, HospitalAdmin } from 'app/models/user/HospitalAdmin';
+import { HospitalAdmin } from 'app/models/user/HospitalAdmin';
 import { AdminService } from 'app/pages/services/admin.service';
 import { HospitalService } from 'app/pages/services/hospital.service';
 import { Router } from '@angular/router';
@@ -36,7 +36,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
     url: string;
     authstate: boolean;
     activehospital: Hospital = Object.assign({}, emptyhospital);
-    userdata: HospitalAdmin = Object.assign({}, emptyadmin);
+    userdata: HospitalAdmin;
 
     // Private
     private _unsubscribeAll: Subject<any>;
@@ -109,7 +109,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
          * custom code
          */
         adminservice.observableuserdata.subscribe((admin: HospitalAdmin) => {
-            if (admin._id) {
+            if (admin.id) {
                 this.userdata = admin;
             }
         });

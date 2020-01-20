@@ -16,7 +16,7 @@ export interface Metadata {
 
 export interface Meta {
     date: Date;
-    adminId: BSON.ObjectId;
+    adminId: string;
     hospitalId: BSON.ObjectId;
 }
 

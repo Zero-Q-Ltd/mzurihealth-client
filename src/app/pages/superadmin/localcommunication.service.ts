@@ -1,8 +1,8 @@
-import {Injectable} from '@angular/core';
-import {BehaviorSubject} from 'rxjs';
-import {RawProcedure} from '../../models/procedure/RawProcedure';
-import {CustomProcedure} from '../../models/procedure/CustomProcedure';
-import {emptyadmin, HospitalAdmin} from '../../models/user/HospitalAdmin';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+import { RawProcedure } from '../../models/procedure/RawProcedure';
+import { CustomProcedure } from '../../models/procedure/CustomProcedure';
+import { HospitalAdmin } from '../../models/user/HospitalAdmin';
 
 @Injectable({
     providedIn: 'root'
@@ -11,8 +11,8 @@ export class LocalcommunicationService {
     onprocedureselected: BehaviorSubject<{
         selectiontype: 'newprocedure' | 'customProcedure' | null,
         selection: { rawprocedure: RawProcedure, customprocedure: CustomProcedure }
-    }> = new BehaviorSubject({selectiontype: null, selection: null});
-    onadminselected: BehaviorSubject<HospitalAdmin> = new BehaviorSubject<HospitalAdmin>({...emptyadmin});
+    }> = new BehaviorSubject({ selectiontype: null, selection: null });
+    onadminselected: BehaviorSubject<HospitalAdmin> = new BehaviorSubject<HospitalAdmin>(null);
     ontabchanged = new BehaviorSubject<number>(0);
 
     constructor() {
@@ -20,7 +20,7 @@ export class LocalcommunicationService {
     }
 
     resetall(): void {
-        this.onprocedureselected.next({selectiontype: null, selection: null});
+        this.onprocedureselected.next({ selectiontype: null, selection: null });
     }
 
     resetselection(): void {

@@ -250,11 +250,11 @@ export class ProceduresService {
 
         customprocedure.hospitalId = this.activehospital._id;
         customprocedure.status = true;
-        customprocedure.creatorid = this.adminservice.userdata._id;
+        customprocedure.creatorid = this.adminservice.userdata.id;
 
         const meta: Meta = {
             date: moment().toDate(),
-            adminId: this.adminservice.userdata._id,
+            adminId: this.adminservice.userdata.id,
             hospitalId: this.activehospital._id
         };
 
@@ -307,7 +307,7 @@ export class ProceduresService {
 
         const meta: Meta = {
             date: moment().toDate(),
-            adminId: this.adminservice.userdata._id,
+            adminId: this.adminservice.userdata.id,
             hospitalId: this.hospitalservice.activehospital.value._id
         };
 

@@ -62,7 +62,7 @@ export class AllComponent implements OnInit, AfterViewInit {
             this.allInsurance = insurance;
         });
         adminservice.observableuserdata.subscribe((admin: HospitalAdmin) => {
-            if (admin.data.uid) {
+            if (admin.id) {
                 this.userdata = admin;
             }
         });

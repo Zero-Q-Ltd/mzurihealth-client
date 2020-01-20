@@ -62,7 +62,7 @@ export interface ProcedureNotes {
 
     note: string;
     admin: {
-        _id: BSON.ObjectId,
+        id: string,
         name: string
     };
 

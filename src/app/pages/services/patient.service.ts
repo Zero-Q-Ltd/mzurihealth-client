@@ -123,7 +123,7 @@ export class PatientService {
 
         const newmeta: Meta = {
             date: moment().toDate(),
-            adminId: this.adminservice.userdata._id,
+            adminId: this.adminservice.userdata.id,
             hospitalId: this.hospitalservice.activehospital.value._id
         };
 

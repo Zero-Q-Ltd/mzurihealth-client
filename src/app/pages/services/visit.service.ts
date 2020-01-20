@@ -164,7 +164,7 @@ export class VisitService {
 
 
     awaitPayment(visitId: BSON.ObjectId): Promise<RemoteUpdateResult> {
-        return this.updateVisitStatus(visitId, CheckinStatus['waiting for payment'], this.adminservice.userdata._id);
+        return this.updateVisitStatus(visitId, CheckinStatus['waiting for payment'], this.adminservice.userdata.id);
     }
 
 
@@ -182,7 +182,7 @@ export class VisitService {
      * @param visitId 
      */
     payandexit(visitId: BSON.ObjectId): Promise<RemoteUpdateResult> {
-        return this.updateVisitStatus(visitId, CheckinStatus.completed, this.adminservice.userdata._id, true);
+        return this.updateVisitStatus(visitId, CheckinStatus.completed, this.adminservice.userdata.id, true);
     }
 
     /**
@@ -190,7 +190,7 @@ export class VisitService {
      * @param visitId The visit to accept
      */
     acceptPatient(visitId: BSON.ObjectId): Promise<RemoteUpdateResult> {
-        return this.updateVisitStatus(visitId, CheckinStatus['being attended'], this.adminservice.userdata._id);
+        return this.updateVisitStatus(visitId, CheckinStatus['being attended'], this.adminservice.userdata.id);
     }
 
     /**
@@ -200,7 +200,7 @@ export class VisitService {
      * @param adminId can be null because exited and newly created patients are not assigned to any admins
      * @param paymentStatus
      */
-    updateVisitStatus(visitId: BSON.ObjectId, status: CheckinStatus, adminId: BSON.ObjectId | null, paymentStatus?: boolean): Promise<RemoteUpdateResult> {
+    updateVisitStatus(visitId: BSON.ObjectId, status: CheckinStatus, adminId: string | null, paymentStatus?: boolean): Promise<RemoteUpdateResult> {
         const updatedCheckin: Checkin = {
             status: status,
             admin: adminId,

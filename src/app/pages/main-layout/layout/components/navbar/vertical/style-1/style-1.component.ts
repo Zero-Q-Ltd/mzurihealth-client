@@ -9,7 +9,7 @@ import { FusePerfectScrollbarDirective } from '@fuse/directives/fuse-perfect-scr
 import { FuseSidebarService } from '@fuse/components/sidebar/sidebar.service';
 // Custom imports
 import { emptyhospital, Hospital } from '../../../../../../../models/hospital/Hospital';
-import { emptyadmin, HospitalAdmin } from '../../../../../../../models/user/HospitalAdmin';
+import { HospitalAdmin } from '../../../../../../../models/user/HospitalAdmin';
 import { AdminService } from '../../../../../../services/admin.service';
 import { HospitalService } from '../../../../../../services/hospital.service';
 
@@ -24,7 +24,7 @@ export class NavbarVerticalStyle1Component implements OnInit, OnDestroy {
     navigation: any;
 
     activehospital: Hospital = Object.assign({}, emptyhospital);
-    userdata: HospitalAdmin = Object.assign({}, emptyadmin);
+    userdata: HospitalAdmin;
 
     // Private
     private _fusePerfectScrollbar: FusePerfectScrollbarDirective;
@@ -52,7 +52,7 @@ export class NavbarVerticalStyle1Component implements OnInit, OnDestroy {
          * custom code
          */
         adminservice.observableuserdata.subscribe((admin: HospitalAdmin) => {
-            if (admin._id) {
+            if (admin.id) {
                 this.userdata = admin;
             }
         });

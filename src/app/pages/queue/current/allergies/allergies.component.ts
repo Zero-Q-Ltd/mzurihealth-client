@@ -67,7 +67,7 @@ export class AllergiesComponent implements OnInit, OnDestroy {
   addellergy(type: allergy, detail: string, metadata?: Metadata): FormGroup<Allergy> {
     if (!metadata) {
       const m: Meta = {
-        adminId: this.adminservice.userdata._id,
+        adminId: this.adminservice.userdata.id,
         date: new Date(),
         hospitalId: this.hospitalservice.activehospital.value._id
       };

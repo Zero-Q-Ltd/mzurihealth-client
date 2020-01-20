@@ -28,9 +28,9 @@ export class HospitalService {
          * only re-fetch the hospital if the admin id or the assigned hospital id changes
          */
         adminservice.observableuserdata.pipe(
-            skipWhile(t => !t._id),
+            skipWhile(t => !t.id),
             distinctUntilChanged<HospitalAdmin>((prev, curr) => {
-                return prev._id.toHexString() === curr._id.toHexString() || prev.config.hospitalId.toHexString() === curr.config.hospitalId.toHexString();
+                return prev.id === curr.id || prev.config.hospitalId.toHexString() === curr.config.hospitalId.toHexString();
             }))
             .subscribe(() => {
                 this.gethospitaldetails();
@@ -66,7 +66,7 @@ export class HospitalService {
 
     adminexists(email: string): HospitalAdmin | undefined {
         return this.hospitaladmins.value.find(admin => {
-            return admin.data.email === email;
+            return admin.profile.email === email;
         });
     }
 

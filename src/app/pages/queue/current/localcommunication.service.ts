@@ -41,7 +41,7 @@ export class LocalcommunicationService {
         }
         const meta: Meta = {
             date: moment().toDate(),
-            adminId: this.adminservice.userdata._id,
+            adminId: this.adminservice.userdata.id,
             hospitalId: this.hospService.activehospital.value._id
         };
 

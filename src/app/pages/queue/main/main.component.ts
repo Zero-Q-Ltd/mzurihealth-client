@@ -78,7 +78,7 @@ export class MainComponent implements OnInit, AfterViewInit, OnDestroy {
         this.dialogRef.afterClosed().subscribe((res: HospitalAdmin) => {
             console.log(res);
             if (res) {
-                this.queue.assignadmin(data.visitData, res._id);
+                this.queue.assignadmin(data.visitData, res.id);
             }
         });
     }

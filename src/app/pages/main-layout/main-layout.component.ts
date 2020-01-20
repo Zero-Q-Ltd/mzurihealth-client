@@ -1,24 +1,18 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { Hospital, emptyhospital } from 'app/models/hospital/Hospital';
-import { HospitalAdmin, emptyadmin } from 'app/models/user/HospitalAdmin';
-import { Subject } from 'rxjs';
+import { Platform } from '@angular/cdk/platform';
 import { DOCUMENT } from '@angular/common';
-import { FuseConfigService } from '@fuse/services/config.service';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FuseNavigationService } from '@fuse/components/navigation/navigation.service';
 import { FuseSidebarService } from '@fuse/components/sidebar/sidebar.service';
+import { FuseConfigService } from '@fuse/services/config.service';
 import { FuseSplashScreenService } from '@fuse/services/splash-screen.service';
 import { FuseTranslationLoaderService } from '@fuse/services/translation-loader.service';
 import { TranslateService } from '@ngx-translate/core';
-import { Platform } from '@angular/cdk/platform';
+import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-
+import { navigation } from '../navigation/navigation';
 import { locale as navigationEnglish } from './../navigation/i18n/en';
 import { locale as navigationSwahili } from './../navigation/i18n/sw';
-import { AdminService } from '../services/admin.service';
-import { HospitalService } from '../services/hospital.service';
-import { ProceduresService } from '../services/procedures.service';
-import { Router } from '@angular/router';
-import { navigation } from '../navigation/navigation';
+
 @Component({
   selector: 'app-main-layout',
   templateUrl: './main-layout.component.html',
@@ -30,13 +24,7 @@ export class MainLayoutComponent implements OnInit {
   previousUrl: string;
   url: string;
   authstate: boolean;
-  headerdata: {
-    activehospital: Hospital
-    userdata: HospitalAdmin
-  } = {
-      activehospital: { ...emptyhospital },
-      userdata: { ...emptyadmin }
-    };
+
   // Private
   private _unsubscribeAll: Subject<any>;
 
@@ -67,10 +55,6 @@ export class MainLayoutComponent implements OnInit {
     private _fuseTranslationLoaderService: FuseTranslationLoaderService,
     private _translateService: TranslateService,
     private _platform: Platform,
-    private adminservice: AdminService,
-    private hospitalservice: HospitalService,
-    private procedureservice: ProceduresService,
-    private router: Router,
   ) {
     // Get default navigation
     this.navigation = navigation;
@@ -133,16 +117,7 @@ export class MainLayoutComponent implements OnInit {
 
     // Set the private defaults
     this._unsubscribeAll = new Subject();
-    adminservice.observableuserdata.subscribe((admin: HospitalAdmin) => {
-      if (admin._id) {
-        this.headerdata.userdata = admin;
-      }
-    });
-    this.hospitalservice.activehospital.subscribe(hospital => {
-      if (hospital._id) {
-        this.headerdata.activehospital = hospital;
-      }
-    });
+
     this.navigation = navigation;
 
     // Set the private defaults

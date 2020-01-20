@@ -51,13 +51,13 @@ export class PatientnotesService {
 
     addnote(note: Patientnote): Promise<RemoteInsertOneResult> {
         note.admin = {
-            _id: this.adminservice.userdata._id,
-            name: this.adminservice.userdata.data.displayName
+            id: this.adminservice.userdata.id,
+            name: this.adminservice.userdata.profile.name
         };
         note.patientId = this.patientid;
         const meta: Meta = {
             date: moment().toDate(),
-            adminId: this.adminservice.userdata._id,
+            adminId: this.adminservice.userdata.id,
             hospitalId: this.hospitalservice.activehospital.value._id
         };
         note.metadata = {

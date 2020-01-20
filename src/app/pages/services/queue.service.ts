@@ -35,7 +35,7 @@ export class QueueService {
     currentpatient: BehaviorSubject<CurrentPatient> = new BehaviorSubject(null);
     currentpatientHistory: BehaviorSubject<Array<Visit>> = new BehaviorSubject<Array<Visit>>([]);
 
-    adminid: BSON.ObjectId;
+    adminid: string;
     fetchingpatientdata: BehaviorSubject<boolean> = new BehaviorSubject(false);
     fetchingCurrentpatientdata: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
@@ -74,10 +74,10 @@ export class QueueService {
          * Only filter if the admin id has changed, ignore every other admin change
          */
         adminservice.observableuserdata
-            .pipe(distinctUntilChanged((prev, curr) => prev._id.toHexString() === curr._id.toHexString()))
+            .pipe(distinctUntilChanged((prev, curr) => prev.id === curr.id))
             .subscribe((admin: HospitalAdmin) => {
-                if (admin._id) {
-                    this.adminid = admin._id;
+                if (admin.id) {
+                    this.adminid = admin.id;
                 }
             });
 
@@ -89,7 +89,7 @@ export class QueueService {
      * @param visit
      * @param adminid
      */
-    assignadmin(visit: Visit, adminid: BSON.ObjectID) {
+    assignadmin(visit: Visit, adminid: string) {
         visit.checkin = {
             status: 1,
             admin: adminid
@@ -270,12 +270,12 @@ export class QueueService {
     /**
      * checks whether a checkin is assigned to the current admin
      */
-    checkAdmin(checkinAdmin: BSON.ObjectID | null | undefined): boolean {
+    checkAdmin(checkinAdmin: string | null | undefined): boolean {
         if (!checkinAdmin) {
             return false;
         }
         else {
-            return checkinAdmin.toHexString() === this.adminid.toHexString();
+            return checkinAdmin === this.adminid;
         }
     }
 
@@ -367,7 +367,7 @@ export class QueueService {
     addPatientToQueue(newvist: NewVisit, patient: Patient): Promise<any> {
         const meta: Meta = {
             date: moment().toDate(),
-            adminId: this.adminservice.userdata._id,
+            adminId: this.adminservice.userdata.id,
             hospitalId: this.activehospitalid
         };
         const visitId = new BSON.ObjectId;

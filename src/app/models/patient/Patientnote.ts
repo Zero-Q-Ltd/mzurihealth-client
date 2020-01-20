@@ -5,7 +5,7 @@ export interface Patientnote {
     title: string;
     note: string;
     admin: {
-        _id: BSON.ObjectId,
+        id: string,
         name: string
     };
     _id: BSON.ObjectId;
@@ -24,7 +24,7 @@ export const emptynote: Patientnote = {
     _id: null,
     metadata: emptymetadata,
     admin: {
-        _id: null,
+        id: null,
         name: null
     },
     helpful: 0

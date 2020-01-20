@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit, Optional, OnDestroy } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-import { emptyadmin, HospitalAdmin } from '../../../models/user/HospitalAdmin';
+import { HospitalAdmin } from '../../../models/user/HospitalAdmin';
 import * as moment from 'moment';
 import { HospitalService } from '../../services/hospital.service';
 import { ReplaySubject } from 'rxjs';
@@ -12,7 +12,7 @@ import { takeUntil } from 'rxjs/operators';
     styleUrls: ['./admin-selection.component.scss']
 })
 export class AdminSelectionComponent implements OnInit, OnDestroy {
-    chosenadmin: HospitalAdmin = { ...emptyadmin };
+    chosenadmin: HospitalAdmin;
     hospitaladmins: Array<HospitalAdmin> = [];
     comopnentDestroyed: ReplaySubject<boolean> = new ReplaySubject<boolean>();
 

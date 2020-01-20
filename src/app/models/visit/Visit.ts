@@ -37,7 +37,7 @@ export interface Visit {
 }
 
 export interface Checkin {
-    admin: BSON.ObjectId;
+    admin: string;
     /**
      * 0 new
      * 1 waiting

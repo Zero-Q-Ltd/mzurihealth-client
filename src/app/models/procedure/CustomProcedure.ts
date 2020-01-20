@@ -2,7 +2,7 @@ import { emptymetadata, Metadata } from '../universal';
 import * as BSON from 'bson';
 
 export interface CustomProcedure {
-    creatorid: BSON.ObjectId;
+    creatorid: string;
     regularPrice: number;
     parentId: BSON.ObjectId;
     hospitalId: BSON.ObjectId;

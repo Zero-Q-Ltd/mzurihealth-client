@@ -18,15 +18,8 @@ export class UsersGuard implements CanActivate {
             return this.adminservice.observableuserdata
                 .pipe(map(userdata => {
                     console.log(userdata);
-                    if (userdata && userdata.hasOwnProperty('data')) {
-
-                        // if (activated.url === '/app/dashboard') {
-                        //     return false;
-                        // } else {
-                        //     return true;
-                        // }
+                    if (userdata) {
                         return true;
-
                     } else {
                         this.router.navigate(['authentication/signin']);
                         return false;

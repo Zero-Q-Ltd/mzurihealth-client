@@ -76,7 +76,6 @@ export class StitchService {
     }
 
     private onStitchAuthEvent(auth: StitchAuth): void {
-        // console.log('AuthService#onStitchAuthEvent', auth);
         if (auth.user && auth.user.loggedInProviderType !== 'anon-user') {
             this.user.next(auth.user);
         }

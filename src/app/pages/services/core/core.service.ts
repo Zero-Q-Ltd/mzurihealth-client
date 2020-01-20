@@ -81,18 +81,19 @@ export class CoreService {
       }))
       .subscribe(value => {
         this.getuser(value);
-        this.gethospitalDetails(value.config.hospitalId);
-        this.adminService.gethospitalAdmins(value.config.hospitalId).then(res => {
-          this.hospitaladmins.next(res);
-        });
-        console.log(value);
+
       });
     this.observableUserData.subscribe(value => {
       this.userData = value;
+      this.gethospitalDetails(value.config.hospitalId);
+      this.adminService.gethospitalAdmins(value.config.hospitalId).then(res => {
+        this.hospitaladmins.next(res);
+      });
+      console.log(value);
     });
 
     this.currentPatient.subscribe(value => {
-      if (value.patientdata._id) {
+      if (value) {
         this.fetchpatientnotes(value.patientdata._id);
       }
     });
@@ -178,7 +179,7 @@ export class CoreService {
      * Please.... be very careful before changing
      */
     const query = {
-      hospitalId: this.activehospital._id
+      hospitalId: this.activeHospitalId
     };
     const options = {};
 
